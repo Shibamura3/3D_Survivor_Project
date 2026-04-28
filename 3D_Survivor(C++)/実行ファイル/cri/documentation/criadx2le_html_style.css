@@ -1,0 +1,346 @@
+/****************************************************************************/
+/*                                                                          */
+/* Library : HTML SDK manual                                                */
+/* Module  : CRI HTML Style                                                 */
+/* File    : cri_html_style.css                                             */
+/* Date    : 2005-08-03                                                     */
+/*                                                                          */
+/*--------------------------------------------------------------------------*/
+/* [Revision History]                                                       */
+/*  2004-12-01: Default font change                                         */
+/*  2004-11-01: Fixup for Library Reference                                 */
+/*  2004-11-02: Add HR, Use px, Sort styles                                 */
+/*  2004-10-20: Add Title & SmallText                                       */
+/*  2004-10-18: Create New Style                                            */
+/*  2004-09-17: H1-H5 changed                                               */
+/*  2004-09-21: Add Link attribute                                          */
+/*  2004-09-23: font-famiry was changed to sans-serif                       */
+/*  2004-09-23: Add * attribute                                             */
+/*  2005-08-03: Removed Japanese font                                       */
+/*                                                                          */
+/****************************************************************************/
+
+/***全体標準値**************************************************/
+.SmallText
+	{
+	font-size:small;
+	line-height:0.9em;
+	}
+*
+	{
+/*	font-family:Verdana,"ＭＳ Ｐゴシック", sans-serif;  */
+	font-family:Verdana, sans-serif;
+	color:midnightblue;
+	}
+
+/***段落関連****************************************************/
+p
+	{
+	margin: 1em;
+	}
+
+/*** for Table *************************************************/
+td.list1 {
+	border-width: 1px 0px 0px 1px;
+}
+td.list2 {
+	border-width: 0px 1px 0px 1px;
+}
+td.list3 {
+	border-width: 0px 1px 1px 1px;
+}
+td.list4 {
+	border-width: 1px 1px 1px 0px;
+}
+
+/***水平線******************************************************/
+hr
+	{
+	border:solid 2px #a0aaaf;
+	/*	NN対策	*/
+	background-color:#a0aaaf;
+	}
+
+/*Pre関連*******************************************************/
+pre
+	{
+	line-height:1.3em;
+	letter-spacing:1px;
+	color:black;
+	font-family:Courier New,monospace;
+	margin-top:0px;
+	margin-bottom:0px;
+	}
+pre span
+	{
+	font-family:Courier New,monospace;
+	}
+pre u
+	{
+	text-decoration:underline;
+	}
+pre b{
+	font-weight:bold;
+	letter-spacing:0px;
+	}
+pre a:link
+	{
+	line-height:1.3em;
+	letter-spacing:1px;
+	color:#0000EE;
+	text-decoration:underline;
+	font-family:Courier New,monospace;
+	}
+pre a:visited
+	{
+	line-height:1.3em;
+	letter-spacing:1px;
+	color:#551A8B;
+	text-decoration:underline;
+	font-family:Courier New,monospace;
+	}
+pre a:hover
+	{
+	line-height:1.3em;
+	letter-spacing:1px;
+	color:#0000EE;
+	background=#FFddcc;
+	text-decoration:underline;
+	font-family:Courier New,monospace;
+	}
+pre a:active
+	{
+	line-height:1.3em;
+	letter-spacing:1px;
+	color:#;FF0000
+	background=#FFFFFF;
+	text-decoration:underline;
+	font-family:Courier New,monospace;
+	}
+
+/***Link関連******************************************************/
+a:link
+	{
+	color:#0000ee;
+	text-decoration:underline;
+	}
+a:visited
+	{
+	color:#771A9B;
+	text-decoration:underline;
+	}
+a:hover
+	{
+	color:#0000ee;
+	background=#FFddcc;
+	text-decoration:underline;
+	}
+a:active
+	{
+	color:#;f000f0
+	background=#FFFFFF;
+	text-decoration:underline;
+	}
+
+/***見出し関連******************************************************/
+h1
+	{
+/*	background-color:#ffffff;*/
+	margin:0px;
+	padding:4px;
+	border-width:1px 1px 1px 25px;
+	border-color:#d00116;
+	border-style:solid;
+	font-size:1.6em;
+	font-family:sans-serif;
+	font-weight:bold;
+	line-height:1.4em;
+	color:navy;
+	}
+h2
+	{
+/*	background-color:#ffffff;*/
+	margin:0px;
+	padding:2px 2px 2px 5px;
+	border-width:1px 1px 1px 25px;
+	border-color:#d00116;
+	border-style:solid;
+	font-size:1.25em;
+	font-family:sans-serif;
+	font-weight:bold;
+	line-height:1.2em;
+	color:navy;
+	}
+h3
+	{
+/*	background-color:#ffffff;*/
+	margin:0px 0px 5px 0px;
+	padding:2px 2px 2px 5px;
+	border-width:0px 0px 1px 25px;
+	border-color:#d00116;
+	border-style:solid;
+	font-size:1.2em;
+	font-weight:bold;
+	line-height:1.0em;
+	font-family:sans-serif;
+	color:navy;
+	}
+h4, h5, h6
+	{
+	font-size:1.1em;
+	font-weight:bold;
+	margin:0px;
+	font-family:sans-serif;
+	}
+
+/***図表番号********************************************************/
+.MsoCaption
+	{
+	text-align:center;
+	}
+
+/***タイトル関連****************************************************/
+.DocTitle
+	{
+	margin:0px;
+	font-size:2em;
+	line-height:1.4em;
+	text-indent:0.5em;
+	color:white;
+	background-color:#d00116;
+	font-weight:bold;
+	font-family:sans-serif;
+	white-space:nowrap;
+	}
+.DocHeader
+ 	{
+	font-size:1.2em;
+	line-height:1.6em;
+	padding-left:0.4em;
+	color:white;
+	background-color:#b21946;
+	font-weight:bold;
+	font-family:sans-serif;
+	white-space:nowrap;
+	/*	NN4対策	*/
+	border:none 1px;
+	}
+
+/***関数リファレンス関連****************************************************/
+/*	メニュー	*/
+.RefMenu
+	{
+	white-space:nowrap;
+	}
+.RefMenuH2
+	{
+	/*	NN4対策	*/
+	margin-left:0px;
+	border-width:1px 1px 1px 16px;
+	border-color:#80c0FF;
+	border-style:solid;
+	font-family:sans-serif;
+	font-weight:bold;
+	color:navy;
+	padding:2px;
+	}
+.RefMenuH3
+	{
+	margin-left:8px;
+	border-width:0px 0px 1px 8px;
+	border-color:#80c0FF;
+	border-style:solid;
+	font-family:sans-serif;
+	font-weight:bold;
+	color:navy;
+	padding:2px;
+	}
+.RefMenuItem
+	{
+	margin-left:8px;
+	}
+/*	名称	*/
+.RefName
+	{
+/*	background-color:#ffffff;*/
+	margin:0px;
+	padding:2px 2px 2px 5px;
+	border-width:1px 0px 0px 15px;
+	border-color:#80c0FF;
+	border-style:solid;
+	font-size:1.6em;
+	font-family:sans-serif;
+	font-weight:bold;
+	line-height:1em;
+	color:navy;
+	}
+/*	機能	*/
+.RefType
+	{
+	color:#FFFFFF;
+	border-style:solid;
+	border-width:0px 0px 0px 15px;
+	border-color:#80c0FF;
+	padding:2px;
+/*	white-space:nowrap;*/
+	background:#b21946;
+	/*	NN4対策	*/
+	margin-left:0px;
+	}
+/*	項目タイトル	*/
+.RefTitle
+	{
+	margin-left:-1em;
+	margin-bottom:0.5em;
+	padding:1px 8px;
+	border-width:2px 1px 1px 3px;
+	border-color:#80c0ff;
+	border-style:solid;
+	font-weight:bold;
+	white-space:nowrap;
+	width:7em;
+	}
+/*	本文のインデント	*/
+.RefBody
+	{
+	margin-left:2em;
+	}
+.RefBody p
+	{
+	text-indent:1em;
+	}
+.RefBody td
+	{
+	vertical-align:top;
+	line-height:1.4em;
+/*	white-space:nowrap;*/
+	}
+/*	書式	*/
+.RefForm
+	{
+	font-family:Courier New,monospace;
+	letter-spacing:0px;
+/*	white-space:nowrap;*/
+	}
+/*	表	*/
+.RefTable
+	{
+	}
+.RefTableTitle
+	{
+	color:white;
+	background-color:#b21946;
+	font-weight:bold;
+	}
+.RefWrap
+	{
+	font-size:normal;
+	width:48em;
+	}
+/*	右寄せリンク	*/
+.RefLink
+	{
+	text-align:right;
+	font-size:0.75em;
+	}
+/*-EOF-*/

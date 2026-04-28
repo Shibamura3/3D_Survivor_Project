@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Orca XML File Format -->
+<OrcaTrees ObjectTypeExpression="Full" BinaryEncodingType="Base64" FileVersion="3" FileRevision="0">
+  <OrcaTree OrcaName="(no name)">
+    <Orca OrcaName="GlobalSettings" DefaultMixer="/CriAtomCraftV2Root/GlobalSettings/DspBusSettings/DspBusSetting_0" FormatVersion="Ver.1.15.00" OoUniqId="e98eb579-1f9c-4fe9-bfdf-5b37cdb270ff" VersionInfo="Ver.2.35.10" VersionInfoV3="Ver.3.55.00" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoGlobalFolder">
+      <Orca OrcaName="TargetConfigs" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoTargetConfigFolder">
+        <Orca OrcaName="Public" EncodeType="HCA" HcaQuality="LowQuality" OoUniqId="95f8cbf3-46ec-4311-96ca-137d7731ce96" SpeakerSetting="/CriAtomCraftV2Root/GlobalSettings/SpeakerSettings/Public" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoTargetConfigPublic"/>
+      </Orca>
+      <Orca OrcaName="SpeakerSettings" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoSpeakerSettingFolder">
+        <Orca OrcaName="Public" EnableBinauralizer="True" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoSpeakerSetting"/>
+      </Orca>
+      <Orca OrcaName="LanguageSettings" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoLanguageSettingFolder">
+        <Orca OrcaName="Default" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoLanguageSetting"/>
+        <Orca OrcaName="English" OutputFolderName="en" ReplaceFolderName="en" ReplaceLanguage="/CriAtomCraftV2Root/GlobalSettings/LanguageSettings/Default" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoLanguageSetting"/>
+        <Orca OrcaName="French" OutputFolderName="fr" ReplaceFolderName="fr" ReplaceLanguage="/CriAtomCraftV2Root/GlobalSettings/LanguageSettings/Default" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoLanguageSetting"/>
+        <Orca OrcaName="German" OutputFolderName="de" ReplaceFolderName="de" ReplaceLanguage="/CriAtomCraftV2Root/GlobalSettings/LanguageSettings/Default" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoLanguageSetting"/>
+        <Orca OrcaName="Japanese" OutputFolderName="ja" ReplaceFolderName="ja" ReplaceLanguage="/CriAtomCraftV2Root/GlobalSettings/LanguageSettings/Default" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoLanguageSetting"/>
+        <Orca OrcaName="Korean" OutputFolderName="ko" ReplaceFolderName="ko" ReplaceLanguage="/CriAtomCraftV2Root/GlobalSettings/LanguageSettings/Default" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoLanguageSetting"/>
+        <Orca OrcaName="Spanish" OutputFolderName="es" ReplaceFolderName="es" ReplaceLanguage="/CriAtomCraftV2Root/GlobalSettings/LanguageSettings/Default" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoLanguageSetting"/>
+        <Orca OrcaName="Italian" OutputFolderName="it" ReplaceFolderName="it" ReplaceLanguage="/CriAtomCraftV2Root/GlobalSettings/LanguageSettings/Default" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoLanguageSetting"/>
+      </Orca>
+      <Orca OrcaName="OutputPortFolder" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoOutputPortFolder">
+        <Orca OrcaName="_object_based_audio" UseDedicatedMixer="True" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoOutputPort"/>
+      </Orca>
+      <Orca OrcaName="VoicePoolFolder" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoVoicePoolFolder"/>
+      <Orca OrcaName="DspBusSettings" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoDspSettingFolder">
+        <Orca OrcaName="DspBusSetting_0" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoDspSetting">
+          <Orca OrcaName="MasterOut" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoDspBusMaster"/>
+          <Orca OrcaName="_object_based_audio" BusConfigType="busConfig_OBA" FallbackMasterBus="/CriAtomCraftV2Root/GlobalSettings/DspBusSettings/DspBusSetting_0/MasterOut" IsEnableRestrictedOption="True" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoDspBusMaster"/>
+          <Orca OrcaName="BUS1" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoDspBus">
+            <Orca OrcaName="BusSendToBUS0" BusSend="/CriAtomCraftV2Root/GlobalSettings/DspBusSettings/DspBusSetting_0/MasterOut" BusSendLevel="1" BusSendType="PostPan" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoDspBusLink"/>
+            <Orca OrcaName="Reverb" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoDspFxReverb"/>
+          </Orca>
+          <Orca OrcaName="BUS2" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoDspBus">
+            <Orca OrcaName="AcOoDspFxEcho" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoDspFxEcho"/>
+            <Orca OrcaName="0" BusSend="/CriAtomCraftV2Root/GlobalSettings/DspBusSettings/DspBusSetting_0/MasterOut" BusSendLevel="1" BusSendType="PostPan" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoDspBusLink"/>
+          </Orca>
+          <Orca OrcaName="BUS3" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoDspBus"/>
+          <Orca OrcaName="BUS4" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoDspBus"/>
+          <Orca OrcaName="BUS5" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoDspBus"/>
+          <Orca OrcaName="BUS6" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoDspBus"/>
+          <Orca OrcaName="BUS7" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoDspBus"/>
+        </Orca>
+      </Orca>
+      <Orca OrcaName="BusMap" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoBusMapRootFolder">
+        <Orca OrcaName="BusMapforCue" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoBusMapFolder">
+          <Orca OrcaName="BusMap_Default" DspBusName1="BUS1" DspBusName2="BUS2" DspBusName3="BUS3" DspBusName4="BUS4" DspBusName5="BUS5" DspBusName6="BUS6" DspBusName7="BUS7" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoBusMap"/>
+        </Orca>
+        <Orca OrcaName="BusMapForAisacAndAutomation" DspBusName1="BUS1" DspBusName2="BUS2" DspBusName3="BUS3" DspBusName4="BUS4" DspBusName5="BUS5" DspBusName6="BUS6" DspBusName7="BUS7" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoBusMapAisacGraph"/>
+      </Orca>
+      <Orca OrcaName="Categories" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoCategoryFolder">
+        <Orca OrcaName="MAIN_GROUP" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoCategoryGroup">
+          <Orca OrcaName="MUSIC" CueLimitEnableFlag="True" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoCategory"/>
+          <Orca OrcaName="VOICE" CategoryId="1" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoCategory"/>
+          <Orca OrcaName="SE" CategoryId="2" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoCategory"/>
+        </Orca>
+      </Orca>
+      <Orca OrcaName="REACT" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoReactFolder">
+        <Orca OrcaName="Ducking" DecrementTime="300" DestCategory="/CriAtomCraftV2Root/GlobalSettings/Categories/MAIN_GROUP/MUSIC" IncrementTime="500" Level="0.1" SourceCategory="/CriAtomCraftV2Root/GlobalSettings/Categories/MAIN_GROUP/VOICE" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoReact"/>
+      </Orca>
+      <Orca OrcaName="VoiceLimitGroups" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoVoiceLimitGroupFolder">
+        <Orca OrcaName="VoiceLimitGroup_0" VoiceLimitNum="1" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoVoiceLimitGroup"/>
+      </Orca>
+      <Orca OrcaName="AISAC-Controls" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoAisacControlFolder">
+        <Orca OrcaName="Any" ControlId="0" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoAisacControl"/>
+        <Orca OrcaName="Distance" ControlId="1" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoAisacControl"/>
+        <Orca OrcaName="AisacControl02" ControlId="2" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoAisacControl"/>
+        <Orca OrcaName="AisacControl03" ControlId="3" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoAisacControl"/>
+        <Orca OrcaName="AisacControl04" ControlId="4" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoAisacControl"/>
+        <Orca OrcaName="AisacControl05" ControlId="5" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoAisacControl"/>
+        <Orca OrcaName="AisacControl06" ControlId="6" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoAisacControl"/>
+        <Orca OrcaName="AisacControl07" ControlId="7" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoAisacControl"/>
+        <Orca OrcaName="AisacControl08" ControlId="8" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoAisacControl"/>
+        <Orca OrcaName="AisacControl09" ControlId="9" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoAisacControl"/>
+        <Orca OrcaName="AisacControl10" ControlId="10" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoAisacControl"/>
+        <Orca OrcaName="AisacControl11" ControlId="11" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoAisacControl"/>
+        <Orca OrcaName="AisacControl12" ControlId="12" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoAisacControl"/>
+        <Orca OrcaName="AisacControl13" ControlId="13" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoAisacControl"/>
+        <Orca OrcaName="AisacControl14" ControlId="14" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoAisacControl"/>
+        <Orca OrcaName="AisacControl15" ControlId="15" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoAisacControl"/>
+      </Orca>
+      <Orca OrcaName="GlobalAISACs" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoGlobalAisacFolder"/>
+      <Orca OrcaName="GameVariables" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoGameVariableFolder">
+        <Orca OrcaName="Default" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoGameVariable"/>
+      </Orca>
+      <Orca OrcaName="SelectorFolder" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoSelectorFolder"/>
+      <Orca OrcaName="BeatSyncLabelFolder" OrcaType="CriMw.CriAtomCraft.AcCore.AcOoBeatSyncLabelFolder"/>
+    </Orca>
+  </OrcaTree>
+</OrcaTrees>
+<!-- Copyright (c) CRI Middleware Co.,LTD. -->
+<!-- end of document -->

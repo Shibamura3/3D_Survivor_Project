@@ -1,0 +1,3237 @@
+/****************************************************************************
+ *
+ * CRI ADX LE SDK for Windows
+ *
+ * Copyright (c) CRI Middleware Co., Ltd.
+ *
+ * Title   : CRI Atom ライブラリ(CRI ADX LE for PC)
+ * Module  : 変更履歴
+ * File    : history_criadx2le_lib_pc_j.txt
+ * Date    : 2025-10-31
+ * Version : 2.30.01
+ *
+ ****************************************************************************/
+
+１．動作環境
+　本バージョンは以下の環境で開発し、動作確認しています。
+
+１．１　ハードウェア
+　CPU       : Intel Core i7-7700K (4.20GHz)
+　Memory    : 16GB
+
+１．２  開発環境
+（１）  OS
+  Microsoft Windows 11 Professional
+
+（２）  コンパイラ／デバッガ
+  Microsoft Visual Studio Professional 2019
+
+２．変更履歴
+ [2025-10-29 CRI Atom Ver.2.30.191]-----------------------------------------
+（１）不具合修正
+　(a) 以下の条件に該当した場合にトラック遷移が遅延する不具合を修正しました。
+　　　- 「セレクターによるトラック遷移」タイプのキューを再生
+　　　- 再生開始から600ms以内にトラックを遷移
+　(b) 以下の操作を5回以上行うと、セレクターラベルを指定してもトラックが遷移し
+　　　なくなる不具合を修正しました。
+　　　- 「セレクターによるトラック遷移」タイプのキューを再生
+　　　- 該当キュー再生中にポーズしたまま再生を停止
+　(c) 以下に該当する場合、AISAC、オートメーション、アクションによるバスセンド
+　　　レベルの変更で、指定とは別のバスへのセンドレベルが変更されてしまう不具合
+　　　を修正しました。
+　　　- CRI Atom Craft Ver.2系を使用して出力したデータ
+　　　- センドレベルの変更に指定したバスがDSPバス設定上に存在しない
+　　　※CRI Atom Ver.2.24.126 から発生していました。
+　(d) ビート同期の分母情報がセレクターによるトラック遷移キューで正しく機能して
+　　　いない不具合を修正しました。
+
+ [2025-09-30 CRI Atom Ver.2.30.178]-----------------------------------------
+（１）機能追加
+　(a) ACB 情報構造体 CriAtomExAcbInfo に language メンバを追加しました。
+　(b) キュー3D情報構造体 CriAtomExCuePos3dInfo に cone_outside_volume メンバを
+　　　追加しました。
+　(c) ACF 情報構造体 CriAtomExAcfInfo に user_data メンバを追加しました。
+　(d) ACB 情報構造体 CriAtomExAcbInfo に user_data メンバを追加しました。
+　(e) マルチバンドコンプレッサーエフェクトを追加しました。
+　(f) マイクロ秒でシーク時刻を指定する関数criAtomExPlayer_SetStartTimeMicroを
+　　　追加しました。
+　(g) AsrRack毎のレベルメーター、ラウドネスメーター、トゥルーピークメーターの
+　　　情報を取得する下記APIを追加しました。
+　　　- criAtomExAsrRack_CalculateWorkSizeForLevelMeter
+　　　- criAtomExAsrRack_AttachLevelMeter
+　　　- criAtomExAsrRack_DetachLevelMeter
+　　　- criAtomExAsrRack_GetLevelInfo
+　　　- criAtomExAsrRack_CalculateWorkSizeForLoudnessMeter
+　　　- criAtomExAsrRack_AttachLoudnessMeter
+　　　- criAtomExAsrRack_DetachLoudnessMeter
+　　　- criAtomExAsrRack_GetLoudnessInfo
+　　　- criAtomExAsrRack_ResetLoudnessMeter
+　　　- criAtomExAsrRack_CalculateWorkSizeForTruePeakMeter
+　　　- criAtomExAsrRack_AttachTruePeakMeter
+　　　- criAtomExAsrRack_DetachTruePeakMeter
+　　　- criAtomExAsrRack_GetTruePeakInfo
+
+（２）仕様変更
+　(a) Tweenを使用した再生がある場合に破棄関数を実行する前に、それらの音声を停
+　　　止する必要がある仕様を削除しました。
+　　　※これにより任意のタイミングでTweenを破棄できるようになります。
+　(b) 次の警告を廃止し、代わりに W2025070800 警告に統一しました。
+　　　- W2010072212
+　　　- W2010072213
+　　　- W2010072214
+　　　- W2010072215
+　　　- W2012120601
+　　　- W2023020751
+　　　- W2023020752
+　　　- W2010072216
+　(c) ISpatialAudioClient::ActivateSpatialAudioStream関数が下記エラーを返す場
+　　　合、SASAPIを使用せずWASAPIにフォールバックするよう動作を変更しました。
+　　　- E_OUTOFMEMORY
+　　　- REGDB_E_CLASSNOTREG
+　(d) DSPバス設定アタッチ時、何らかの要因によってエフェクトがアタッチできない
+　　　場合でもDSPバス設定のアタッチ処理が正常終了するよう動作を変更しました。
+　　　※エフェクトのアタッチが失敗した場合エラーコールバックが発生し、アタッチ
+　　　　できなかったエフェクトは動作しません。
+
+（３）不具合修正
+　(a) リスナーのオートマッチング機能使用時、リスナー以外のパラメーターが更新さ
+　　　れていない場合に、リスナーの更新が反映されない問題を修正。
+　(b) バイノーラル化の有効無効を短い間隔で切り替えるとクラッシュすることがある
+　　　不具合を修正しました。
+　(c) バイノーラル化の有効無効を短い間隔で切り替えるとデッドロックが発生するこ
+　　　とがある不具合を修正しました。
+　(d) 複数の出力バスを作成した状態で、criAtomExAsr_EnableBinauralizerを呼び出
+　　　すとデッドロックが発生することがある不具合を修正しました。
+　(e) CRI Atom Craft Ver.3.50.00 より前のバージョンで出力したインゲームプレビュー
+　　　用 ACB のキューが正しく再生されないことがある不具合を修正しました。
+　　　※CRI Atom Ver.2.25.93 から発生していました。
+　(f) オブジェクトベースオーディオがフォールバック再生された後、新規の再生にオ
+　　　ブジェクトベースオーディオ再生が適用されないことがある不具合を修正しまし
+　　　た。
+　(g) ACF登録時に以下の条件を満たしている場合、不正アクセスが発生する不具合を
+　　　修正しました。
+　　　- ユーザーアロケーターを登録していない
+　　　- ACFのカテゴリ数がCriAtomExConfigのmax_categoriesを超えている
+　(h) CRIATOMEXPLAYER_RETRY_VOICE_ALLOCATION でのバーチャルボイスからの復帰が、
+　　　波形先頭からの再生し直しとなっていた不具合を修正しました。
+　　　※CRI Atom Ver.2.28.168 から発生していました。
+　(i) プロファイラログ取得にて、HCAボイスプールの生成ログにボイス数が正しく記
+　　　録されない不具合を修正しました。
+　(j) 以下の条件を満たす場合、再生が無音になる不具合を修正しました。
+　　　- 再生するデータにエンベロープの設定がない
+　　　- 再生前にプレーヤーでエンベロープのパラメーターを設定していない
+　　　- 再生後にプレーヤーからエンベロープのリリース時間を設定している
+　(k) インサーションDSPを使用した再生中に、 criAtomExVoicePool_DetachDsp 関数
+　　　を呼び出すと不正アクセスが発生することがある不具合を修正しました。
+　(l) 音声再生中に criAtomExVoicePool_AttachDspTimeStretch 関数を実行した際、
+　　　音声が正しく再生されないことがある不具合を修正しました。
+　(m) メモリアロケーター使用時、ACF登録に失敗すると不正アクセスやメモリリーク
+　　　が発生することががある不具合を修正しました。
+　(n) サウンドデバイスが存在しない環境でも、
+　　　criAtom_GetAudioClientMixFormat_WASAPI関数が成功する不具合を修正しました。
+　(o) 以下のチャンネル数の音声が誤ったスピーカーから出力される（デバッグ版ライ
+　　　ブラリ使用時はassertされる）不具合を修正しました。
+　　　- 3ch（LRC、LRCs）
+　　　- 4ch（Quad）
+　　　- 5ch（5ch、4.1ch）
+　　　- 7ch（6.1ch）
+　(p) デバッグ版ライブラリ使用時、criAtomEx_SetSpeakerAngleArray関数に以下の条
+　　　件を満たさない角度を指定するとassertが発生する不具合を修正しました。
+　　　- Lb <= Ls <= L <= C <= R <= Rs <= Rb
+　(q) OBAからフォールバックされた音声がバーチャル化から復帰する時正しく再生さ
+　　　れない不具合を修正しました。
+　(r) 下記関数で波形情報を取得した際に、波形が32bitFloatのwaveコーデックのデー
+　　　タの場合、formatが誤ってCRIATOMEX_FORMAT_NONEになる不具合を修正しました。
+　　　- criAtomExAcb_GetWaveformInfoById
+　　　- criAtomExAcb_GetWaveformInfoByName
+　(s) 以下の条件に該当するとW2022102722が発生し続ける不具合を修正しました。
+　　　- Microsoft Spatial Soundを使用しない。
+　　　- ASRの出力サンプリングレートとデバイスのサンプリングレートが異なる。
+　　　- アプリケーション実行中に全てのサウンドデバイスが無効になる。
+　　　※サウンドデバイスが最初から存在せず、かつASRの出力が48kHz以外の場合にも
+　　　　同様の症状が発生します。
+　(t) 追加で作成したラックで再生する音声が遅延することがある不具合を修正しまし
+　　　た。
+　(u) criAtom_SetSpatialAudioEnabled_WASAPI関数でMicrosoft Spatial Soundを無効
+　　　にした場合に、環境依存で音声が出力されなくなる不具合を修正しました。
+　　　※CRI Atom Ver.2.28.7 から発生していました。
+　(v) タイムストレッチDSPを使用する際、必要な量の2倍程度メモリが使用されていた
+　　　不具合を修正しました。
+　(w) シーケンスループマーカーと以下の機能を併用すると正しく動作しない不具合を
+　　　修正しました。
+　　　- 自動繰り返し
+　　　- 再生開始タイミングランダム
+　(x) ソースコード上で「_WINSOCKAPI_」を定義し、cri_atom_pc.hをインクルードす
+　　　ると、コンパイル時にC4005警告が発生することがある不具合を修正しました。
+　(y) ボイスプール内ボイス数のログに誤ったボイス数が記録される不具合を修正しま
+　　　した。
+　(z) フェーダーによるフェードアウトが適用されないことがある不具合を修正しまし
+　　　た。
+　(A) フェーダー使用時に停止時アクションが実行されない不具合を修正しました。
+　(B) フェードアウト付き停止アクションによる停止時に、停止時アクションが実行さ
+　　　れない不具合を修正しました。
+　(C) 以下の条件下で発生するクラッシュを修正しました。
+　　　- モニターライブラリを使用している
+　　　- criAtomEx3dRegion_Create と criAtomEx3dRegion_Destroyをこの順番で二
+　　　回呼び出す
+　(D) Ambisonics音声をSound xRでバイノーラル化する際、HRTFタイプの設定が適用さ
+　　　れず常時PCNのHRTFが適用される不具合を修正しました。
+　(E) 「セレクターによるトラック遷移」タイプのキューの再生にて、遷移待ちのボイ
+　　　スがバーチャル化した場合に遷移タイミングでクラッシュする不具合を修正しま
+　　　した。
+　(F) criAtomExMonitor_SetLogCallback を使用したテキストログ取得にて、キュー名
+　　　が正しく取得できない不具合を修正しました。
+　(G) 以下の条件において、不正アクセスによりクラッシュする不具合を修正しました。
+　　　- モニターライブラリを使用する
+　　　- criAtomExAcb_Releaseの第一引数にNULLを指定する
+　(H) プロファイラログ取得中に以下の関数を呼び出した際、不正アクセスが発生する
+　　　可能性のある不具合を修正しました。
+　　　- criAtomExPlayback_Stop
+　　　- criAtomExPlayback_StopWithoutReleaseTime
+　　　- criAtomExPlayback_Pause
+　　　- criAtomExPlayback_Resume
+　　　- criAtomExPlayer_SetSyncPlaybackId
+　　　- criAtomExPlayer_Update
+　　　- criAtomExPlayback_SetBeatSyncOffset
+　　　- criAtomEx_SetMonitoringVoiceStopPlaybackId
+　　　※CRI Atom Ver.1.23.31 から発生していました。
+　(I) インゲームプレビュー接続完了後、即座に切断した場合に、ロード済み ACB に
+　　　よる再生が行えないことがある不具合を修正しました。
+　(J) プロファイラーへの再接続開始処理において、スレッドの解放漏れが発生してい
+　　　た不具合を修正しました。
+　　　※CRI Atom Ver.2.28.227 から発生していました。
+　(K) プロファイラーに接続すると、モニターライブラリの終了時にデッドロックする
+　　　ことがある不具合を修正しました。
+　　　※CRI Atom Ver.2.28.227 から発生していました。
+
+ [2025-07-18 CRI Atom Ver.2.29.332]-----------------------------------------
+（１）仕様変更
+　(a) ISpatialAudioClient::ActivateSpatialAudioStream関数が下記エラーを返す場
+　　　合、SASAPIを使用せずWASAPIにフォールバックするよう動作を変更しました。
+　　　- E_OUTOFMEMORY
+　　　- REGDB_E_CLASSNOTREG
+
+（２）不具合修正
+　(a) メモリアロケーター使用時、ACF登録に失敗すると不正アクセスやメモリリーク
+　　　が発生することががある不具合を修正しました。
+　(b) 以下のチャンネル数の音声が誤ったスピーカーから出力される（デバッグ版ライ
+　　　ブラリ使用時はassertされる）不具合を修正しました。
+　　　- 3ch（LRC、LRCs）
+　　　- 4ch（Quad）
+　　　- 5ch（5ch、4.1ch）
+　　　- 7ch（6.1ch）
+　(c) デバッグ版ライブラリ使用時、criAtomEx_SetSpeakerAngleArray関数に以下の条
+　　　件を満たさない角度を指定するとassertが発生する不具合を修正しました。
+　　　- Lb <= Ls <= L <= C <= R <= Rs <= Rb
+　(d) OBAからフォールバックされた音声がバーチャル化から復帰する時正しく再生さ
+　　　れない不具合を修正しました。
+　(e) 下記関数で波形情報を取得した際に、波形が32bitFloatのwaveコーデックのデー
+　　　タの場合、formatが誤ってCRIATOMEX_FORMAT_NONEになる不具合を修正しました。
+　　　- criAtomExAcb_GetWaveformInfoById
+　　　- criAtomExAcb_GetWaveformInfoByName
+　(f) 以下の条件に該当するとW2022102722が発生し続ける不具合を修正しました。
+　　　- Microsoft Spatial Soundを使用しない。
+　　　- ASRの出力サンプリングレートとデバイスのサンプリングレートが異なる。
+　　　- アプリケーション実行中に全てのサウンドデバイスが無効になる。
+　　　※サウンドデバイスが最初から存在せず、かつASRの出力が48kHz以外の場合にも
+　　　　同様の症状が発生します。
+　(g) 追加で作成したラックで再生する音声が遅延することがある不具合を修正しまし
+　　　た。
+　(h) criAtom_SetSpatialAudioEnabled_WASAPI関数でMicrosoft Spatial Soundを無効
+　　　にした場合に、環境依存で音声が出力されなくなる不具合を修正しました。
+　　　※CRI Atom Ver.2.28.7 から発生していました。
+　(i) タイムストレッチDSPを使用する際、必要な量の2倍程度メモリが使用されていた
+　　　不具合を修正しました。
+
+ [2025-04-08 CRI Atom Ver.2.29.293]-----------------------------------------
+（１）機能追加
+　(a) CriAtomExSpeakerIdに下記の定義を追加しました。
+　　　- CRIATOMEX_SPEAKER_TOP_FRONT_LEFT
+　　　- CRIATOMEX_SPEAKER_TOP_FRONT_RIGHT
+　　　- CRIATOMEX_SPEAKER_TOP_BACK_LEFT
+　　　- CRIATOMEX_SPEAKER_TOP_BACK_RIGHT
+　　　- CRIATOMEX_SPEAKER_BOTTOM_FRONT_LEFT
+　　　- CRIATOMEX_SPEAKER_BOTTOM_FRONT_RIGHT
+　　　- CRIATOMEX_SPEAKER_BOTTOM_BACK_LEFT
+　　　- CRIATOMEX_SPEAKER_BOTTOM_BACK_RIGHT
+　　　※本修正により、criAtomExPlayer_SetSendLevel関数でトップスピーカーやボト
+　　　　ムスピーカーにもセンドレベルが指定可能になります。
+　(b) バスのチャンネル数を取得する関数を追加しました。
+　　　- criAtomExAsrRack_GetNumBusChannelsByName
+　(c) チャンネル数制限のないバス用のレベル取得関数を追加しました。
+　　　- criAtomExAsrRack_GetBusRmsLevelByName
+　　　- criAtomExAsrRack_GetBusPeakLevelByName
+　　　- criAtomExAsrRack_GetBusPeakHoldLevelByName
+　(d) デバイスIDを取得する関数を追加しました。
+　　　- criAtom_GetDeviceId_WASAPI
+　(e) CriAtomExAcfDspBusInfo 構造体に以下のメンバーを追加しました。
+　　　- speaker_mapping
+　　　- output_type
+　　　- output_options
+　(f) バスのミュート状態を設定するcriAtomExAsrRack_SetBusMuteByName関数を追加
+　　　しました。
+　(g) バスのミュート状態を取得するcriAtomExAsrRack_IsBusMutedByName関数を追加
+　　　しました。
+　(h) マイクロ秒でシーク時刻を指定する関数criAtomExPlayer_SetStartTimeMicroを
+　　　追加しました。
+　(i) AsrRack毎のレベルメーター、ラウドネスメーター、トゥルーピークメーターの
+　　　情報を取得する下記APIを追加しました。
+　　　- criAtomExAsrRack_CalculateWorkSizeForLevelMeter
+　　　- criAtomExAsrRack_AttachLevelMeter
+　　　- criAtomExAsrRack_DetachLevelMeter
+　　　- criAtomExAsrRack_GetLevelInfo
+　　　- criAtomExAsrRack_CalculateWorkSizeForLoudnessMeter
+　　　- criAtomExAsrRack_AttachLoudnessMeter
+　　　- criAtomExAsrRack_DetachLoudnessMeter
+　　　- criAtomExAsrRack_GetLoudnessInfo
+　　　- criAtomExAsrRack_ResetLoudnessMeter
+　　　- criAtomExAsrRack_CalculateWorkSizeForTruePeakMeter
+　　　- criAtomExAsrRack_AttachTruePeakMeter
+　　　- criAtomExAsrRack_DetachTruePeakMeter
+　　　- criAtomExAsrRack_GetTruePeakInfo
+
+（２）仕様変更
+　(a) DSPバス設定アタッチ時、何らかの要因によってエフェクトがアタッチできない
+　　　場合でもDSPバス設定のアタッチ処理が正常終了するよう動作を変更しました。
+　　　※エフェクトのアタッチが失敗した場合エラーコールバックが発生し、アタッチ
+　　　　できなかったエフェクトは動作しません。
+　(b) デバイスIDを指定せずハプティクス機能を使用しようとしたとき発生するエラー
+　　　を警告に変更しました。
+　(c) CRIATOMEXASR_NUM_OBJECT_BASED_AUDIO の値を128に変更しました。
+　(d) OBAからフォールバックされた音声がOBAに自動的に復帰しないように変更しまし
+　　　た。
+　(e) 3Dリージョンを破棄する際に、音源、リスナー、トランシーバーに設定したハン
+　　　ドルを外していない場合破棄処理が失敗する仕様を削除しました。
+　　　※これにより任意のタイミングで3Dリージョンを破棄できるようになります。
+　　　　ただし、破棄した3Dリージョンを使用している再生があった場合、その再生
+　　　　は3Dリージョン設定なし扱いになります。
+　(f) 3D音源リストを使用した再生がある場合、破棄関数を実行する前に、それらの音
+　　　声を停止する必要がある仕様を削除しました。
+　　　※これにより任意のタイミングで3D音源リストを破棄できるようになります。
+　　　　ただし、破棄した3D音源リストを使用している再生があった場合、その再生
+　　　　は無音になります。
+　(g) 3D音源及び3Dリスナーを使用した再生がある場合に破棄関数を実行する前に、
+　　　それらの音声を停止する必要がある仕様を削除しました。
+　　　※これにより任意のタイミングで3D音源及び3Dリスナーを破棄できるようになり
+　　　　ます。
+　　　　ただし、破棄した3D音源及び3Dリスナーを使用している再生があった場合、
+　　　　その再生は無音になります。
+　(h) スピーカーマッピングにオブジェクトベースオーディオの型式を表す以下の定義
+　　　を追加しました。
+　　　- CRIATOM_SPEAKER_MAPPING_OBJECT_16
+　　　- CRIATOM_SPEAKER_MAPPING_OBJECT_32
+　　　- CRIATOM_SPEAKER_MAPPING_OBJECT_64
+　　　- CRIATOM_SPEAKER_MAPPING_OBJECT_128
+　　　※CRIATOM_SPEAKER_MAPPING_OBJECTの定義は
+　　　　CRIATOM_SPEAKER_MAPPING_OBJECT_16に変更されました。
+
+（３）不具合修正
+　(a) シーケンスループマーカーと以下の機能を併用すると正しく動作しない不具合を
+　　　修正しました。
+　　　- 自動繰り返し
+　　　- 再生開始タイミングランダム
+　(b) ソースコード上で「_WINSOCKAPI_」を定義し、cri_atom_pc.hをインクルードす
+　　　ると、コンパイル時にC4005警告が発生することがある不具合を修正しました。
+　(c) ボイスプール内ボイス数のログに誤ったボイス数が記録される不具合を修正しま
+　　　した。
+　(d) 使用ボイス数について、使用プレイヤー数を誤って記録するケースについて修正
+　　　しました。
+　(e) フェーダーによるフェードアウトが適用されないことがある不具合を修正しまし
+　　　た。
+　(f) フェーダー使用時に停止時アクションが実行されない不具合を修正しました。
+　(g) フェードアウト付き停止アクションによる停止時に、停止時アクションが実行さ
+　　　れない不具合を修正しました。
+　(h) 以下の条件下で発生するクラッシュを修正しました。
+　　　- モニターライブラリを使用している
+　　　- criAtomEx3dRegion_Create と criAtomEx3dRegion_Destroyをこの順番に２
+　　　度呼び出す
+　(i) 「セレクターによるトラック遷移」タイプのキューの再生にて、ワンショットト
+　　　ラックへの遷移が波形長を超えたタイミングでも発生することがある不具合を修
+　　　正しました。
+　(j) Ambisonics音声をSound xRでバイノーラル化する際、HRTFタイプの設定が適用さ
+　　　れず常時PCNのHRTFが適用される不具合を修正しました。
+　(k) 「セレクターによるトラック遷移」タイプのキューの再生にて、遷移待ちのボイ
+　　　スが停止またはバーチャル化した場合に遷移タイミングでクラッシュする不具合
+　　　を修正しました。
+　(l) 「セレクターによるトラック遷移」タイプのキューの再生にて、トラック遷移後
+　　　にボイスビヘイビアが正しく動作しない不具合を修正しました。
+　(m) W2016111500が発生すると、再生が進まなくなったボイスがPLAYING状態のまま残
+　　　り続ける不具合を修正しました。
+　(n) ブロックのキューをキューリンクとして使用したとき、カテゴリキューリミット
+　　　が想定動作しないことがある不具合を修正しました。
+　(o) criAtomExMonitor_SetLogCallback を使用したテキストログ取得にて、キュー名
+　　　が正しく取得できない不具合を修正しました。
+　(p) 以下の条件において、不正アクセスによりクラッシュする不具合を修正しました。
+　　　- モニターライブラリを使用する
+　　　- criAtomExAcb_Releaseの第一引数にNULLを指定する
+　(q) 以下の条件においてパンタイプが誤って適用されてしまう不具合を修正しました。
+　　　- キューリンクを使用している
+　　　- キューリンク先のパンタイプがパン3D
+　(r) 以下の条件においてカテゴリキュープライオリティによる再生制御に失敗するこ
+　　　とがある不具合を修正しました。
+　　　- キューにカテゴリが1つも設定されていない
+　　　- プレイヤーにカテゴリを設定している
+　(s) プロファイラログ取得中に以下の関数を呼び出した際、不正アクセスが発生する
+　　　可能性のある不具合を修正しました。
+　　　- criAtomExPlayback_Stop
+　　　- criAtomExPlayback_StopWithoutReleaseTime
+　　　- criAtomExPlayback_Pause
+　　　- criAtomExPlayback_Resume
+　　　- criAtomExPlayer_SetSyncPlaybackId
+　　　- criAtomExPlayer_Update
+　　　- criAtomExPlayback_SetBeatSyncOffset
+　　　- criAtomEx_SetMonitoringVoiceStopPlaybackId
+　　　※CRI Atom Ver.1.23.31 から発生していました。
+　(t) criAtomEx_AnalyzeAudioHeader関数で非圧縮PCM以外の形式のWaveを解析すると
+　　　ゼロ除算が発生することがある不具合を修正しました。
+　　　※CRI Atom Ver.2.25.40 から発生していました。
+　(u) インゲームプレビュー接続完了後、即座に切断した場合に、ロード済み ACB に
+　　　よる再生が行えないことがある不具合を修正しました。
+　(v) プロファイラーへの再接続開始処理において、スレッドの解放漏れが発生してい
+　　　た不具合を修正しました。
+　　　※CRI Atom Ver.2.28.227 から発生していました。
+　(w) プロファイラーに接続すると、モニターライブラリの終了時にデッドロックする
+　　　ことがある不具合を修正しました。
+　　　※CRI Atom Ver.2.28.227 から発生していました。
+　(x) 3D音源ハンドルリストを使用した再生時にボイスのバーチャル化が正しく動作し
+　　　ない不具合を修正しました。
+　(y) ASRラックの出力チャンネル数に16を超える値を指定するとクラッシュする不具
+　　　合を修正しました。
+
+ [2024-11-19 CRI Atom Ver.2.28.258]-----------------------------------------
+（１）不具合修正
+　(a) 1st Order Ambisonics用のラックで音声を再生すると、音声の前後と上下の定位
+　　　が消える（X成分とZ成分がミュートされる）不具合を修正しました。
+　(b) 以下の条件に該当すると、criAtomAwb_LoadTocAsync関数実行時にE2024052311が
+　　　発生する不具合を修正しました。
+　　　- Debug版のライブラリを使用
+　　　- ファイルシステム初期化時にCriFsConfig::max_pathに2048を超える値を指
+定
+　(c) プロファイラーへの再接続開始処理において、スレッドの解放漏れが発生してい
+　　　た不具合を修正しました。
+　　　※CRI Atom Ver.2.28.227 から発生していました。
+　(d) プロファイラーに接続すると、モニターライブラリの終了時にデッドロックする
+　　　ことがある不具合を修正しました。
+　　　※CRI Atom Ver.2.28.227 から発生していました。
+　(e) モニターライブラリーを再初期化した際にハングすることがある不具合を修正し
+　　　ました。
+　(f) ブロック遷移時・ブロックループ時に、リセット条件を満たしていないにもかか
+　　　わらずパラメータ監視アクションがリセットされる不具合を修正しました。
+　(g) 以下の条件を満たしている時に、criAtomEx_InitializeForUserPcmOutput関数呼
+　　　び出すとクラッシュする不具合を修正しました。
+　　　- モニターライブラリを使用している
+　　　- 第1引数にNULL以外を指定している
+　　　- 第1引数に指定した引数のメンバー atom_ex.acf_info がNULLである
+　(h) 3D音源ハンドルリストを使用した再生時にボイスのバーチャル化が正しく動作し
+　　　ない不具合を修正しました
+　(i) プリペア解除時に、カテゴリキューリミットがキューリミットより優先処理され
+　　　ていた不具合を修正しました。
+　(j) ブロックの遷移時発音トラックにて、サブシーケンスやキューリンクが正しく再
+　　　生されない不具合を修正しました。
+
+ [2024-09-25 CRI Atom Ver.2.28.237]-----------------------------------------
+（１）機能追加
+　(a) マイクロ秒でシーク時刻を指定する関数criAtomExPlayer_SetStartTimeMicroを
+　　　追加しました。
+　(b) アタッチされている DSP バス設定の名前を取得する以下の関数を追加しました。
+　　　- criAtomExAsrRack_GetAttachedDspBusSettingName
+　(c) ACF 連携パススルーラックについて、生成時にACF の設定に従いミキサーをアタッ
+　　　チする機能を追加しました。
+　(d) プロファイラー接続状態を取得する機能を追加しました。
+　　　- criAtomExMonitor_IsConnectedToProfiler
+　(e) スナップショット変更アクションに対応しました。
+　(f) ボイスの停止要因 CriAtomVoiceStopReason に 
+　　　CRIATOM_VOICE_STOP_REASON_CANCEL_VOICE_LIMIT を追加しました。
+　(g) マルチタップディレイのVer.2を追加しました。
+　　　※Ver.2については、CRI ADX ツールマニュアルをご参照ください。
+　(h) CriAtomExCueInfo 構造体に下記メンバを追加しました。
+　　　- selector_index (セレクターインデックス)
+　(i) CriAtomExAisacGraphType に以下を追加しました
+　　　- CRIATOMEX_AISAC_GRAPH_TYPE_PAN3D_ELEVATION_ANGLE
+　(j) 立体音響機能使用時に機種固有機能パラメーターを設定する構造体を追加しまし
+　　　た。
+　　　- CriAtomExAsrRackSpatialChannelConfig
+　　　- CriAtomExAsrRackSpatialAmbisonicsConfig
+　　　- CriAtomExAsrRackSpatialObjectConfig
+　(k) バーチャル化した位置から音声を復帰させる無音時処理モード 
+　　　CRIATOMEX_SILENT_MODE_VIRTUAL_RESUME を追加しました。
+　(l) CriAtomExAisacGraphType に以下を追加しました
+　　　- CRIATOMEX_AISAC_GRAPH_TYPE_ARBITRARY_BUS_SEND
+　　　- CRIATOMEX_AISAC_GRAPH_TYPE_ARBITRARY_AISAC_CONTROL
+　　　※ACF Ver.1.32.00、ACB Ver.1.44.00 以降のデータでは、バスセンド AISAC グ
+　　　　ラフ、AISAC コントロール AISAC グラフの出力に上記タイプを使用します。
+　(m) パンの仰俯角を設定する以下の関数を追加しました。
+　　　- criAtomExPlayer_SetPan3dElevation
+　(n) CriAtomExCueInfo 構造体に下記メンバを追加しました。
+　　　- pitch (ピッチ)
+　(o) 登録されたACFに含まれるREACTの数を取得するcriAtomExAcf_GetNumReacts関数
+　　　を追加しました。
+　(p) ASRラックの機種固有コンフィグの CriAtomExAsrRackConfig_WASAPI を追加しま
+　　　した。
+　(q) バイノーラライザーの音量を変更する機能を追加しました。
+　　　- criAtomExAsr_SetBinauralizerVolume
+　(r) 出力ポートハンドルが破棄可能かを判定する以下の関数を追加しました。
+　　　- criAtomExOutputPort_IsDestroyable
+　(s) 7.1.4.4ch形式の音声データの入力に対応しました。
+　(t) ハプティクスデバイスのIDを設定する以下のAPIを追加しました。
+　　　- criAtom_SetHapticDeviceId_WASAPI
+
+（２）仕様変更
+　(a) 下記関数について、引数で指定した前方ベクトルと上方ベクトルとが同一直線上
+　　　にある場合、エラーコールバックを返すよう動作を変更しました。
+　　　- criAtomEx3dSource_SetOrientation
+　　　- criAtomEx3dListener_SetOrientation
+　(b) OBA再生時のフォールバック先の設定に CriAtomExAsrRackSpatialObjectConfig 
+　　　を用いるように動作を変更しました。
+　(c) Atomライブラリ内でローダーやバインダーを使用する際、必要なリソースをワー
+　　　ク領域から独自に確保するよう動作を変更しました。
+　　　※本修正により、File Systemライブラリの初期化パラメーターにAtomライブラ
+　　　　リ用のリソースを加算する必要がなくなります。
+　(d) ACBファイルをロードする際、旧フォーマットのACBファイル（Ver.1.20.00より
+　　　も古いバージョンのAtom Craftでビルドしたデータ）のロードに必要なリソース
+　　　を確保しないよう動作を変更しました。
+　　　※旧フォーマットのACBファイルをロードする場合、今後は
+　　　　criAtomEx_SetUserAllocator関数によるアロケーターの登録が必須となります。
+　(e) criAtomExPlayer_RemovePreferredOutputPortByName の第二引数 name の型に 
+　　　const 属性を付与しました。
+　(f) criAtomExPlayer_AddPreferredOutputPort 関数で優先出力ポートを登録すると
+　　　き、同じ名前の出力ポートを複数登録できるようにしました。
+　(g) 以下の関数を削除しました。
+　　　- criAtomExStreamingCache_LoadWaveformById
+　　　- criAtomExStreamingCache_LoadWaveformByName
+　　　※ストリーム用データをキャッシュにロードする際には、以下の非同期関数を使
+　　　　用してください。
+　　　　- criAtomExStreamingCache_LoadWaveformByIdAsync
+　　　　- criAtomExStreamingCache_LoadWaveformByNameAsync
+　(h) 16ch音声のデフォルトのチャンネルコンフィグを
+　　　CRIATOM_CHANNEL_CONFIG_7_1_4_4に変更しました。
+　　　※入力音声に3rd Order Ambisonicsを使用する場合、今後はツール又は下記関数
+　　　　を使用して明示的にチャンネルコンフィグを指定する必要があります。
+　　　　- criAtom_ChangeDefaultChannelConfig
+　　　　- criAtomExPlayer_SetChannelConfig
+　(i) CriAtomExPanSpeakerTypeに以下の定義を追加しました。
+　　　- CRIATOMEX_PAN_SPEAKER_TYPE_7_0_4_4CH
+　　　- CRIATOMEX_PAN_SPEAKER_TYPE_6_0_4_4CH
+　(j) チャンネルコンフィグにCRIATOM_CHANNEL_CONFIG_7_1_4_4を追加しました。
+　(k) スピーカーマッピングにCRIATOM_SPEAKER_MAPPING_7_1_4_4を追加しました。
+
+（３）不具合修正
+　(a) スナップショットの適用中にスナップショットを適用すると正しく再生されない
+　　　ことがある不具合を修正しました。
+　　　※CRI Atom Ver.2.27.248 から発生していました。
+　(b) DSPバス設定が複数あるACFファイルを使用する時、スナップショットが正しく適
+　　　用されないことがある不具合を修正しました。
+　　　※CRI Atom Ver.2.27.248 から発生していました。
+　(c) 以下の条件に該当した場合、音声の定位が後ろ方向にずれる不具合を修正しまし
+　　　た。
+　　　- 出力先ASRラックのスピーカー構成が7.1.4ch。
+　　　- 音源の位置がリスナーの真上。
+　(d) 以下の条件に該当した音声が正しく出力されない不具合を修正しました。
+　　　- 出力先ASRラックのスピーカー構成にハイトチャンネルが含まれる。
+　　　- 音源の定位位置がリスナーの真下。
+　(e) ASRラックの出力チャンネル数に16を超える値を指定するとクラッシュする不具
+　　　合を修正しました。
+　(f) 自キューの再生に関連するアクションが１サーバー遅れて適用される不具合を修
+　　　正しました。
+　(g) 以下の条件に一致した場合に、アクションの実行タイミングがビートに同期しな
+　　　い不具合を修正しました。
+　　　- 同期元がトラック遷移タイプキュー
+　　　- トラック遷移タイプキューにフェードオフセットを設定している
+　(h) 遷移禁止ブロックへのブロック遷移を指定した際ブロック遷移が発生しないにも
+　　　かかわらず、遷移時発音トラックが再生されてしまう不具合を修正しました。
+　(i) キューリンク先の音声が正しく再生されないことがある不具合を修正しました。
+　(j) モニターライブラリーで振動タイプの出力ポートから再生した音声が正しく再生
+　　　されない不具合を修正しました。
+　(k) モニターライブラリ使用時、criAtomExStreamingCache_Destroy関数を実行する
+　　　とエラーコールバックが発生する不具合を修正しました。
+　(l) 以下の関数で無効化したカテゴリのパラメーターが、再生開始時に適用されてし
+　　　まう不具合を修正しました。
+　　　- criAtomExOutputPort_IgnoreCategoryParametersById
+　(m) WASAPI排他モードとSonicSYNCを使用している場合、初期化に失敗することがあ
+　　　る不具合を修正しました。
+
+ [2024-06-25 CRI Atom Ver.2.27.378]-----------------------------------------
+（１）仕様変更
+　(a) CriAtomExOutputPortConfigTag構造体のnameの型にconst属性を付与しました。
+　(b) criAtomExPlayer_AddPreferredOutputPort 関数で優先出力ポートを登録すると
+　　　き、同じ名前の出力ポートを複数登録できるようにしました。
+　(c) キューリミットを使用していない 32 bit 環境向け ACB について、 64 bit 環
+　　　境でもロードできるように制限を緩和しました。
+
+（２）不具合修正
+　(a) プレーヤーを破棄する瞬間にアクションが実行された際に稀にクラッシュするこ
+　　　とがある不具合を修正しました。
+　　　※CRI Atom Ver.2.26.105 から発生していました。
+　(b) 多重再生禁止時間により再生キャンセルとなった場合でも、キューシートキュー
+　　　リミット処理が動作してしまう不具合を修正しました。
+　(c) モニターライブラリーで振動タイプの出力ポートから再生した音声が正しく再生
+　　　されない不具合を修正しました。
+　(d) サウンドデバイスが存在しない環境で音声を再生すると、再生が進まない（再生
+　　　済みサンプル数が常に0になる）不具合を修正しました。
+　　　※CRI Atom Ver.2.27.350 から発生していました。
+　(e) 波形の再生開始タイミングランダムが動作しない不具合を修正しました。
+　　　※CRI Atom Ver.2.27.334 から発生していました。
+　(f) 再生開始時にプレーヤーに設定したカテゴリでカテゴリキューリミットが発生し
+　　　た場合、正しく停止処理が行われない不具合を修正しました。
+　(g) 3D音源ハンドルリストを使用した再生でパラメーターが正しく適用されない不具
+　　　合を修正しました。
+　(h) プロファイラー接続中に以下の関数を実行すると、エラー E2012092812 が発生
+　　　することがある不具合を修正しました。
+　　　- criAtomEx_SetGameVariableByName
+　(i) オブジェクトベース再生の音が再生されないことがある不具合を修正しました。
+　(j) セレクタによるトラック遷移再生で、異なる BPM 間の遷移時に再生位置のズレ
+　　　が発生していた不具合を修正しました。
+　　　※再生条件によっては、低 BPM トラックへの遷移時にピッチ上限警告が発生し
+　　　　ます。
+　　　　警告が発生する場合、ボイスプール作成時の最大サンプリングレートを高く
+　　　　してください。
+　(k) criAtomExAsrRack_GetBusAnalyzerInfo関数で取得したRMSレベル、ピークレベル、
+　　　ピークホールドレベルの値が正しくないことがある不具合を修正しました。
+　(l) セレクタによるトラック遷移を行った際、ビート同期タイミング1回分遷移が遅
+　　　れる不具合を修正しました。
+　　　※CRI Atom Ver.2.26.342 から発生していました。
+　(m) キューがプリペア状態のとき、下記関数による停止が行われない不具合を修正し
+　　　ました。
+　　　- criAtomExCategory_StopById
+　　　- criAtomExCategory_StopByName
+　　　- criAtomExCategory_StopWithoutReleaseTimeById
+　　　- criAtomExCategory_StopWithoutReleaseTimeByName
+　(n) CRI Atom Craft Ver.1 系で出力した ACB にて、E2013080844 が発生しキューが
+　　　再生されないことがある不具合を修正しました。
+
+ [2024-04-19 CRI Atom Ver.2.27.353]-----------------------------------------
+（１）仕様変更
+　(a) 下記APIの戻り値をASRラックID用に定義されたCriAtomExAsrRackId型に変更しま
+　　　した。
+　　　- criAtomExAsrRack_GetAmbisonicRackId
+
+（２）不具合修正
+　(a) 以下の設定を行った場合に、音声が途切れ途切れ再生される不具合を修正しまし
+　　　た。
+　　　- SonicSYNCを有効にする。
+　　　- ボイスプール作成時、サウンドレンダラタイプにHW2～4のいずれかを指定す
+　　　る。
+　(b) プロファイラー接続中に、以下の関数を実行するとクラッシュする不具合を修正
+　　　しました。
+　　　- criAtomEx_SetGameVariableByName
+　(c) 以下の関数のプロファイラーログが正しくない不具合を修正しました。
+　　　- criAtomEx3dListener_Set3dRegionHn
+　　　- criAtomEx3dSource_SetRandomPositionList
+　(d) CRI Atom Craft Ver.2.13 にて出力した ACB が正しい音量で再生されないこと
+　　　がある不具合を修正しました。
+　(e) 以下の関数にて、同一の出力ポートの重複設定が出来てしまう不具合を修正しま
+　　　した。
+　　　- criAtomExPlayer_AddOutputPort
+　　　- criAtomExPlayer_AddPreferredOutputPort
+　(f) プリディレイ機能が動作していない不具合を修正しました。
+　　　※CRI Atom Ver.2.27.145 から発生していました。
+　(g) 以下の条件を満たす場合、リスナー及び音源の参照カウンタが不正になる不具合
+　　　を修正しました。
+　　　・キューリンクで再生したキューからさらにキューリンクを使用するなどでキュー
+　　　リンクを二重以上で使用している
+　　　・キューリンク部分が再生されている間にプレーヤーのAPIでリスナー・音源
+　　　を変更する
+　　　※参照カウンタが不正になることで各種破棄関数が失敗してしまう不具合が発生
+　　　　します。
+　(h) 以下の条件を満たすACFを読み込んだ際、不正アクセスが発生する可能性がある
+　　　不具合を修正しました。
+　　　- ACFに設定されているDSPバス設定が1つ
+　　　- DSPバス設定に登録されているバスが1つ(MasterOutのみ)
+　　　- スナップショットを使用している
+　(i) サウンドデバイスやヘッドセット、コントローラー等の抜き差しを行ったタイミ
+　　　ングでcriAtomEx_PauseTimer関数が実行されると、クラッシュすることがある不
+　　　具合を修正しました。
+　(j) 自動繰り返しを設定したデータをシーク再生すると正しく再生されない不具合を
+　　　修正しました。
+　(k) ボイスのプロファイルログにおいて、ASRラックID 情報が正しく出力されない不
+　　　具合を修正しました。
+　(l) インゲームプレビューによる ACF の更新が行われると、ACF 出力ポートによる
+　　　振動が行われなくなる不具合を修正しました。
+　(m) 複数の出力ポートでカテゴリを無効した際に無効化が適用されないことがある不
+　　　具合を修正しました。
+　　　※CRI Atom Ver.2.28.71 から発生していました。
+　(n) AISAC コントロールのオートメーションが設定されているキューを再生した際に、
+　　　警告 W2021032300 が不適切に発生していた不具合を修正しました。
+　(o) 以下の条件に該当した場合に、assertが発生する不具合を修正しました。
+　　　- デバッグ版ライブラリを使用
+　　　- サウンドレンダラタイプにCRIATOM_SOUND_RENDERER_ANYを指定してボイスプー
+　　　ルを作成
+　(p) 出力ポートを設定しているトラックのシーケンスが正しく再生されないことがあ
+　　　る不具合を修正しました。
+　　　※CRI Atom Ver.2.27.219 から発生していました。
+　(q) 以下の関数で無効化したカテゴリのボリュームが再生開始時に適用されてしまう
+　　　不具合を修正しました。
+　　　- criAtomExOutputPort_IgnoreCategoryParametersById
+　(r) 以下の関数にて、キューの音量が正しく取得できないことがある不具合を修正し
+　　　ました。
+　　　- criAtomExAcb_GetCueInfoByName
+　　　- criAtomExAcb_GetCueInfoById
+　　　- criAtomExAcb_GetCueInfoByIndex
+　　　※CRI Atom Ver.2.26.207 から発生していました。
+
+ [2024-02-02 CRI Atom Ver.2.27.320]-----------------------------------------
+（１）機能追加
+　(a) 出力ポートハンドルが破棄可能かを判定する以下の関数を追加しました。
+　　　- criAtomExOutputPort_IsDestroyable
+　(b) バス単位のスナップショットに対応しました。
+　　　※詳しくは CRI ADX マニュアルを参照してください。
+　(c) 新方式のスプレッドを指定する関数を新規に追加しました。
+　　　- criAtomExPlayer_SetSpread
+　(d) ボイスの停止要因 CriAtomVoiceStopReason に 
+　　　CRIATOM_VOICE_STOP_REASON_VOICE_DROP_IN_OBA を追加しました。
+　(e) アプリケーション中で作成したボイスプールを列挙する下記関数を追加しました。
+　　　- criAtomExVoicePool_EnumerateVoicePools
+　(f) ASRラックの総レンダリングサンプル数を取得する下記関数を追加しました。
+　　　- criAtomExAsrRack_GetNumRenderedSamples
+　(g) プレーヤーで再生中のプレイバックを列挙する下記関数を追加しました。
+　　　- criAtomExPlayer_EnumeratePlaybacks
+　(h) デフォルトのパンニング処理を、ユーザーの独自実装に置き換える機能を追加し
+　　　ました。
+　　　- criAtomExPlayer_OverrideDefaultPanMethod
+　(i) CRIATOM_SOUND_RENDERER_OBJECT を使用したオブジェクトベースオーディオ再生
+　　　に対応しました。
+　　　※詳しくは CRI ADX マニュアルを参照してください。
+　(j) 出力ポートのコンフィグについてデフォルト値を設定する以下のマクロ関数を追
+　　　加しました。
+　　　- criAtomExOutputPort_SetDefaultConfig
+　(k) CriAtomExOutputPortConfigに無視設定するカテゴリ数を変更する以下のメンバー
+　　　を追加しました。
+　　　- max_ignored_categories
+　(l) カテゴリ無視設定をリセットする以下の関数を追加しました。
+　　　- criAtomExOutputPort_ResetIgnoreCategory
+　(m) 出力ポートが指定カテゴリのパラメータを無視するように設定する以下の関数を
+　　　追加しました。
+　　　- criAtomExOutputPort_IgnoreCategoryParametersById
+　(n) エフェクトのバイパス設定の情報を取得する以下の関数を追加しました。
+　　　- criAtomExAsrRack_GetEffectBypass
+　(o) 内部の各種リソースの状況を示す構造体 CriAtomExDebugResourcesInfo に下記
+　　　メンバを追加しました。
+　　　- parameter_block (パラメータブロック数)
+　　　- beat_sync_info (ビート同期情報)
+　　　- beat_sync_transition_setting (ビート同期遷移設定)
+　　　- beat_sync_job (ビート同期ジョブ)
+　(p) AsrRack毎のレベルメーター、ラウドネスメーター、トゥルーピークメーターの
+　　　情報を取得する下記APIを追加しました。
+　　　- criAtomExAsrRack_CalculateWorkSizeForLevelMeter
+　　　- criAtomExAsrRack_AttachLevelMeter
+　　　- criAtomExAsrRack_DetachLevelMeter
+　　　- criAtomExAsrRack_GetLevelInfo
+　　　- criAtomExAsrRack_CalculateWorkSizeForLoudnessMeter
+　　　- criAtomExAsrRack_AttachLoudnessMeter
+　　　- criAtomExAsrRack_DetachLoudnessMeter
+　　　- criAtomExAsrRack_GetLoudnessInfo
+　　　- criAtomExAsrRack_ResetLoudnessMeter
+　　　- criAtomExAsrRack_CalculateWorkSizeForTruePeakMeter
+　　　- criAtomExAsrRack_AttachTruePeakMeter
+　　　- criAtomExAsrRack_DetachTruePeakMeter
+　　　- criAtomExAsrRack_GetTruePeakInfo
+
+（２）仕様変更
+　(a) タイムストレッチのストレッチ比率の範囲を0.25~3.0に変更しました。
+　(b) スプレッドの仕様を刷新しました。
+　　　従来のスプレッドに相当する機能を「Wideness」に名称変更し、モノラル音源
+　　　に対しても適用可能な新方式のスプレッドを導入しました。
+　　　本修正に伴いcriAtomExPlayer_SetPanSpread関数は廃止されました。
+　　　※互換性維持のため、既存のcriAtomExPlayer_SetPanSpread呼び出しは
+　　　　criAtomExPlayer_SetWidenessにマクロで置換されます。
+　　　　従来のスプレッドに相当するパラメーターを操作する場合、
+　　　　criAtomExPlayer_SetWideness関数を使用してください。
+　(c) CriAtomExAcfDspBusInfo構造体に以下のパラメーターを追加しました。
+　　　- pan3d_wideness
+　　　※criAtomExAcf_GetDspBusInformation関数は、従来のスプレッドに相当するパ
+　　　　ラメーターをCriAtomExAcfDspBusInfo::pan3d_widenessに格納します。
+　(d) CriAtomExAsrBusPanInfo構造体に以下のパラメーターを追加しました。
+　　　- wideness
+　　　※criAtomExAsr_GetBusPanInfoByName関数は、従来のスプレッドに相当するパラ
+　　　　メーターをCriAtomExAsrBusPanInfo::widenessに格納します。
+　　　　また、criAtomExAsr_SetBusPanInfoByName関数を使用する場合、従来のスプ
+　　　　レッドに相当するパラメーターをCriAtomExAsrBusPanInfo::widenessに指定す
+　　　　る必要があります。
+　(e) ボイス停止要因 CriAtomVoiceStopReason について一部の定義を変更しました。
+　(f) criAtomExPlayer_SetAsrRackId 関数でASRラックIDを指定した場合、データに設
+　　　定されている出力ポートを無視するように変更しました。
+　(g) 下記関数について、対象のプレーヤーの再生前にしかコールバックが設定できな
+　　　い制限を撤廃しました。
+　　　- criAtomExPlayer_SetBlockTransitionCallback
+　　　- criAtomExPlayer_SetPlaybackTrackInfoNotificationCallback
+　　　- criAtomExPlayer_SetPlaybackEventCallback
+　(h) 以下のAPIで、指定したバス名のバスセンドレベル・レベルオフセットが設定さ
+　　　れていなくても、エラーコールバックが発生しないよう動作を変更しました。
+　　　- criAtomExPlayer_GetBusSendLevelByName
+　　　- criAtomExPlayer_GetBusSendLevelOffsetByName
+　　　※指定のバス名のバスセンドレベル・レベルオフセットが設定されていない場合
+　　　　は、戻り値がCRI_FALSEになります。
+　(i) 以下のエラーを警告に変更しました。
+　　　- E2020112003 -> W2020112003
+　　　- E2020112008 -> W2020112008
+　(j) Microsoft Spatial Soundが使用できない環境では、警告を出してWASAPIを使用
+　　　するよう動作を変更しました。
+　　　※以前のバージョンでは、Microsoft Spatial Soundが使用できない場合、エラー
+　　　　が発生して音声が出力されませんでした。
+　(k) WASAPIで音声を出力するASRラックが、デバイスの優先フォーマットより設定さ
+　　　れたフォーマットを優先するように修正しました。
+　　　※例えば以下のような場合、
+　　　　- デバイスが 8ch と 2ch をサポート
+　　　　- 優先フォーマットは 8ch
+　　　　- ASRを 2ch で作成
+　　　　今まではデバイスに 8ch のバッファーで 2ch を信号を出力していたが、デ
+　　　　バイスに 2ch で出力するようになりました。
+　(l) Tweenがいずれかのプレーヤーにアタッチされているか、いずれかの再生で使用
+　　　されている場合、criAtomExTween_Destroyを使用してもTweenが破棄されないよ
+　　　う動作を変更しました。
+　　　※破棄するTweenについて破棄する前に下記条件を満たしてください。
+　　　　- プレーヤーにアタッチしているTweenをデタッチする。
+　　　　- Tweenを使用している音声をすべて停止させる。
+　(m) 再生中の音声のカテゴリがプレーヤーのAPIで変更されないよう動作を変更しま
+　　　した。
+　　　※再生中の音声に対してカテゴリ設定の更新を行うと、カテゴリの再生数カウン
+　　　　トが異常になる危険があったため。
+　(n) ラウドネス測定法をITU-R BS.1770-4 Annex 3に準拠した仕様に変更しました。
+　　　※従来の実装はITU-R BS.1770-3であったため、7ch目以上の音声データがラウド
+　　　　ネス測定に加味されていませんでした。
+
+（３）不具合修正
+　(a) 不正なHCAデータを再生した場合に、メモリ破壊が起きることがある不具合を修
+　　　正しました。
+　(b) 出力ポートの設定を使用しているACFを下記関数で登録するとメモリ破壊が発生
+　　　する不具合を修正しました。
+　　　- criAtomEx_RegisterAcfFile
+　　　- criAtomEx_RegisterAcfFileById
+　　　※CRI Atom Ver.2.23.107 から発生していました。
+　(c) タイムストレッチのストレッチ比率が1.0の時原音を出力しない不具合を修正し
+　　　ました。
+　　　※CRI Atom Ver.2.21.41 から発生していました。
+　(d) FuMa maxN形式のAmbisonicsに対するパンニングが正しく動作しない不具合を修
+　　　正しました。
+　　　※CRI Atom Ver.2.26.120 から発生していました。
+　(e) 以下の設定でライブラリを初期化すると、音声の再生が完了しなくなる不具合を
+　　　修正しました。
+　　　- CriAtomExConfig::enable_atom_sound_disabled_modeにCRI_TRUEを指定
+　　　- スレッドモデルにCRIATOMEX_THREAD_MODEL_MULTI_WITH_SONICSYNCを指定
+　(f) サウンドデバイスが存在しない環境で音声を再生すると、再生時刻が倍速で進む
+　　　不具合を修正しました。
+　　　※CRI Atom Ver.2.25.100 から発生していました。
+　(g) ASRの出力チャンネル数を1に設定した場合、センターチャンネルに出力した音声
+　　　や、右側（R、Rs、Rb等）に定位させた音声がミュートされる不具合を修正しま
+　　　した。
+　　　※CRI Atom Ver.2.24.101 から発生していました。
+　(h) 以下の条件の時、ASRラックのスピーカーマッピングが正しく適用されない不具
+　　　合を修正しました。
+　　　- ASRラックのスピーカーマッピングが CRIATOM_SPEAKER_MAPPING_AUTO
+　　　- ASRラックの出力チャンネル数が 8
+　　　- 8 ch のデフォルトチャンネルコンフィグが 5.1.2 ch
+　(i) ループ音声をストリーム再生した際、データの供給が間に合っているにも関わら
+　　　ず、エラーコールバック（E2010052905）が発生することがある不具合を修正し
+　　　ました。
+　(j) ブロック再生で「分割位置を維持して遷移」を使用した際、遷移後の音声が正し
+　　　いタイミングで再生されない不具合を修正しました。
+　(k) キュー再生の場合、criAtomExPlayer_ResetParameters関数を実行しても
+　　　criAtomExPlayer_SetStartTime関数で設定したシーク時刻がリセットされない不
+　　　具合を修正しました。
+　　　※ファイル名指定再生、AWB再生などの場合はシーク時刻がリセットされていま
+　　　　した。
+　(l) サブシーケンスの停止時に誤って親キューのカテゴリ情報がクリアされてしまう
+　　　ことがある不具合を修正しました。
+　(m) Steam Deck環境でアプリケーションをスリープすると、復帰後に音声が出なくな
+　　　る不具合を修正しました。
+　　　※CRI Atom Ver.2.26.3 から発生していました。
+　(n) 以下の条件を満たす場合に、再生音が無音となる不具合を修正しました。
+　　　- 初期化コンフィグの enable_auto_matching_in_pan_type_auto に TRUE を
+　　　設定して、パンタイプがオートの場合におけるリスナーのオートマッチング機能
+　　　を有効化している
+　　　- パンタイプにオートを指定している
+　　　- プレーヤーに3Dソースは設定しているが、リスナーは設定していない
+　　　- リスナーが１つも無い
+　(o) criAtomExPlayer_SetFile関数を呼び出した際、クラッシュすることがある不具
+　　　合を修正しました。
+　　　※CRI Atom Ver.2.18.02 から発生していました。
+　(p) 以下のAPIの第一引数にNULLを指定するとNULLアクセスが発生する不具合を修正
+　　　しました。
+　　　- criAtomExCategory_SetFadeInTimeByName
+　　　- criAtomExCategory_SetFadeOutTimeByName
+　(q) プロファイラーを接続して特定の引数でプレーヤーに対してキューをセットする
+　　　とクラッシュする不具合を修正しました。
+　(r) 以下の条件を満たす際、Tweenを破棄するとハングする不具合を修正しました。
+　　　- criAtomExPlayer_AttachTween関数にて、プレーヤーにTweenをアタッチして
+　　　いる
+　　　- criAtomExPlayer_Start関数にて、プレーヤーが再生状態になっている
+
+ [2023-06-29 CRI Atom Ver.2.26.305]-----------------------------------------
+（１）機能追加
+　(a) Microsoft Spatial Soundを使用せずに音声を出力するための機能を追加しまし
+　　　た。
+　　　- criAtom_SetSpatialAudioEnabled_WASAPI
+　(b) WASAPI出力の共有方式を取得する関数を追加しました。
+　　　- criAtom_GetAudioClientShareMode_WASAPI
+　(c) AsrRack毎のレベルメーター、ラウドネスメーター、トゥルーピークメーターの
+　　　情報を取得する下記APIを追加しました。
+　　　- criAtomExAsrRack_CalculateWorkSizeForLevelMeter
+　　　- criAtomExAsrRack_AttachLevelMeter
+　　　- criAtomExAsrRack_DetachLevelMeter
+　　　- criAtomExAsrRack_GetLevelInfo
+　　　- criAtomExAsrRack_CalculateWorkSizeForLoudnessMeter
+　　　- criAtomExAsrRack_AttachLoudnessMeter
+　　　- criAtomExAsrRack_DetachLoudnessMeter
+　　　- criAtomExAsrRack_GetLoudnessInfo
+　　　- criAtomExAsrRack_ResetLoudnessMeter
+　　　- criAtomExAsrRack_CalculateWorkSizeForTruePeakMeter
+　　　- criAtomExAsrRack_AttachTruePeakMeter
+　　　- criAtomExAsrRack_DetachTruePeakMeter
+　　　- criAtomExAsrRack_GetTruePeakInfo
+　(d) CriAtomExBeatSyncInfo構造体にビート同期ラベルを追加しました。
+　(e) キュー情報構造体 CriAtomExCueInfo に silent_mode メンバを追加しました。
+　(f) チャンネル順序のデフォルト値を変更する以下の関数を追加しました。
+　　　- criAtom_ChangeDefaultChannelOrder
+　(g) ボイスプール当たりのボイス数の最大値、最小値を示す下記定義を追加しました。
+　　　- CRIATOMEX_MAX_VOICES_PER_POOL
+　　　- CRIATOMEX_MIN_VOICES_PER_POOL
+　(h) ゲーム変数を利用した AISAC コントロールの機能を追加しました。
+　　　※詳しくは CRI ADX マニュアルを参照してください。
+　(i) 最大16chに対応したマトリクスエフェクトを追加しました。 - 
+　　　"CRIWARE/Matrix16"
+　(j) AWBハンドルからindexで指定した波形データIDを取得する以下の関数を追加しま
+　　　した。
+　　　- criAtomAwb_GetIdByIndex
+　(k) 不正な波形データIDを示す以下の定義を追加しました。
+　　　- CRIATOMAWB_ILLEGAL_ID
+　(l) ログ取得モードに CRIATOMEX_MONITOR_LOG_MODE_VOICE_VOLUME を追加しました。
+　(m) 停止時アクション機能を追加しました。
+　　　※詳しくは CRI ADX マニュアルを参照してください。
+　(n) プレーヤー再生時におけるパンタイプを取得する機能を追加しました。
+　　　- criAtomExPlayer_GetPanTypeOnPlayback
+　(o) CriAtomExAcbHn にアタッチしている任意の AWB スロットのストリーミング再生
+　　　用 AWB ハンドルを取得する関数を追加しました。
+　　　- criAtomExAcb_GetStreamingAwbHandleBySlotName
+　　　- criAtomExAcb_GetStreamingAwbHandleBySlotIndex
+　(p) ストリーム再生専用のボイスプールが作成可能になりました。
+　　　※ボイスプール作成コンフィグ構造体のis_streaming_onlyにCRI_TRUEが指定さ
+　　　　れた場合、当該ボイスプールはストリーム再生にのみ使用されます。
+　(q) セレクターによるシーケンススタートマーカーの選択機能を追加しました。
+　(r) バイノーライザーの有効化関数・有効化状態を取得する下記関数を追加しました。
+　　　- criAtomExAsr_EnableBinauralizer
+　　　- criAtomExAsr_IsEnabledBinauralizer
+　(s) パラメータ監視アクション機能を追加しました。
+　　　※詳しくは CRI ADX マニュアルを参照してください。
+　(t) 5.1.2ch音声データの再生に対応しました。
+　(u) プレーヤーに設定されているバスセンドをリセットする下記関数を追加しました。
+　　　- criAtomExPlayer_ResetBusSends
+　(v) キュー情報構造体 CriAtomExCueInfo に volume メンバを追加しました。
+　(w) エンベロープのカーブを設定する以下の関数を追加しました。
+　　　- criAtomExPlayer_SetEnvelopeAttackCurve
+　　　- criAtomExPlayer_SetEnvelopeDecayCurve
+　　　- criAtomExPlayer_SetEnvelopeReleaseCurve
+　(x) ヘッドフォンバーチャルサラウンドのパラメーター定義を追加しました。
+　(y) 入力音声データのチャンネルコンフィグを指定する機能を追加しました。
+　　　- criAtomExPlayer_SetChannelConfig
+　(z) 入力音声データのチャンネル設定のデフォルト値を変更する関数を追加しました。
+　　　- criAtom_ChangeDefaultChannelConfig
+　(A) ライブラリ初期化時にスレッドモデル
+　　　「CRIATOMEX_THREAD_MODEL_MULTI_WITH_SONICSYNC」を指定できるようになりま
+　　　した。
+
+（２）仕様変更
+　(a) criAtomExAsrConfig::ambisonics_order_type を使用を廃止しました。
+　　　Ambisonicsを再生するためには CRIATOM_SOUND_RENDERER_AMBISONCS を使用しま
+　　　す。
+　　　※詳しくは CRI ADX マニュアルを参照してください。
+　(b) CriAtomExOutputPortType に CRIATOMEX_OUTPUT_PORT_TYPE_INVALID を追加し、
+　　　criAtomExOutputPort_GetType 関数の引数が不正のときこの値を返すように修正
+　　　しました。
+　(c) criAtomEx_RegisterAcfData関数にACFの登録が成功したかを返す戻り値を追加し
+　　　ました。
+　(d) criAtomExPlayback_GetNumPlayedSamples関数が返す再生済みサンプル数の値が、
+　　　32bit幅でオーバーフローしないよう動作を変更しました。
+　(e) 以下の条件を満たす場合、エンベロープのリリース時間が経過するのを待たずに
+　　　音声を即座に停止するよう動作を変更しました。
+　　　- プレーヤーにフェーダーがアタッチされている。
+　　　- 停止対象の音声がフェードイン前又はフェードアウト後で、ボリュームが0
+　　　に設定されている。
+　(f) ボイスプール作成時、最小チャンネル数が指定可能になりました。
+　　　※作成されたボイスプールは、最小チャンネル数以上かつ最大チャンネル数以下
+　　　　の音声を再生する場合にのみ使用されます。
+　(g) 以下の関数の指定時間について、上限値の制限を撤廃しました。
+　　　- criAtomExPlayer_SetPreDelayTime
+　　　- criAtomExPlayer_SetEnvelopeAttackTime
+　　　- criAtomExPlayer_SetEnvelopeHoldTime
+　　　- criAtomExPlayer_SetEnvelopeDecayTime
+　　　- criAtomExPlayer_SetEnvelopeReleaseTime
+　(h) マトリクスのサイズとパラメーター数の定義名を以下のように変更しました。
+　　　- CRIATOMEXASR_MATRIX_MAX_NUM_CHANNELS    ->  
+　　　CRIATOMEXASR_MATRIX_DEFAULT_NUM_CHANNELS
+　　　- CRIATOMEXASR_MATRIX_MAX_NUM_PARAMETERS  ->  
+　　　CRIATOMEXASR_MATRIX_DEFAULT_NUM_PARAMETERS
+　　　※変更前のマクロは変更後のマクロのエイリアスとなります。
+　(i) 不正なチャンクやパディングを含むWave、AIFFデータであっても、再生に必要な
+　　　最低限の情報が取得できていれば、ステータスをエラーにせず音声を再生するよ
+　　　う動作を変更しました。
+　　　※CRI Base Ver.2.52.13 以上が必要です。
+　(j) criAtomExAcf_GetOutputPortHnByName 関数の引数をconst型に変更しました。
+　(k) デフォルトの音声出力にMicrosoft Spatial Soundを使用するよう動作を変更し
+　　　ました。
+　　　本修正により、以下のように動作が変更されます。
+　　　- Windows Sonic for Headphones等、システム標準の立体音響機能が利用でき
+　　　るようになります。
+　　　- ダウンミックス処理がOS側で行われるようになります（ダウンミックス結果
+　　　が以前のバージョンと異なります）。
+　　　- Windows 8.1以前のOSがサポート対象外となります。
+　(l) CriAtomSoundRendererType に以下の定義を追加しました。
+　　　- CRIATOM_SOUND_RENDERER_SPATIAL
+　　　- CRIATOM_SOUND_RENDERER_SPATIAL_CHANNELS
+　　　- CRIATOM_SOUND_RENDERER_AMBISONICS
+　　　- CRIATOM_SOUND_RENDERER_PASSTHROUGH
+　　　- CRIATOM_SOUND_RENDERER_OBJECTS
+　(m) CriAtomSoundRendererType の各 enum の値を変更しました。
+　(n) カーブタイプを定義する列挙型の型名および定義名を以下のように変更しました。
+　　　- CriAtomExReactDuckerCurveType                         -> 
+　　　CriAtomExCurveType
+　　　- CRIATOMEX_REACT_DUCKER_CURVE_TYPE_LINEAR              -> 
+　　　CRIATOMEX_CURVE_TYPE_LINEAR
+　　　- CRIATOMEX_REACT_DUCKER_CURVE_TYPE_SQUARE              -> 
+　　　CRIATOMEX_CURVE_TYPE_SQUARE
+　　　- CRIATOMEX_REACT_DUCKER_CURVE_TYPE_SQUARE_REVERSE      -> 
+　　　CRIATOMEX_CURVE_TYPE_SQUARE_REVERSE
+　　　- CRIATOMEX_REACT_DUCKER_CURVE_TYPE_S                   -> 
+　　　CRIATOMEX_CURVE_TYPE_S
+　　　- CRIATOMEX_REACT_DUCKER_CURVE_TYPE_FLAT_AT_HALF        -> 
+　　　CRIATOMEX_CURVE_TYPE_FLAT_AT_HALF
+　　　- CRIATOMEX_REACT_DUCKER_CURVE_TYPE_ENUM_SIZE_IS_4BYTES -> 
+　　　CRIATOMEX_CURVE_TYPE_ENUM_SIZE_IS_4BYTES
+　　　※CriAtomExReactDuckerCurveType は CriAtomExCurveType のエイリアスとなり
+　　　　ます。
+　　　　また、 CriAtomExReactDuckerCurveType に関する定義は全てマクロ定義と
+　　　　なります。
+　(o) 初期化時のデフォルトスレッドモデルを
+　　　「CRIATOMEX_THREAD_MODEL_MULTI_WITH_SONICSYNC」に変更しました。
+　(p) 以下の関数を非推奨関数としました。
+　　　- criAtom_SetChannelMapping
+
+（３）不具合修正
+　(a) criAtomExPlayer_SetPan3dAngle関数に非数（NaN）が指定されると、サーバー処
+　　　理内で無限ループに陥る不具合を修正しました。
+　(b) 以下の条件を満たす場合に、不正アクセスが発生する不具合を修正しました。
+　　　- ACB 内にキューリミットが設定されたキューが 16384 個以上ある
+　　　- 16384 個目以降のキューリミットが設定されたキューを再生する
+　(c) 音声再生中にcriAtomExPlayer_SetFilterCallback関数を実行すると、正しく動
+　　　作しないことがある不具合を修正しました。
+　　　※排他制御漏れにより、新たに設定したコールバックに1つ前の実行時に設定し
+　　　　たユーザ指定オブジェクトが渡されてしまうなどの症状が発生します。
+　(d) インゲームプレビュー接続が行えないことがある不具合を修正しました。
+　(e) ビート同期位置検出コールバックでビート同期情報の同期オフセットが常時0を
+　　　返していた不具合を修正しました。
+　(f) 強制ループ設定時、かつデータ終端以降にシークして再生を行った場合に、音声
+　　　が再生されない不具合を修正しました。
+　(g) criAtomExPlayer_ClearOutputPorts 関数でプレーヤーから出力ポートを削除し
+　　　ても、削除した出力ポートが適用されることがある不具合を修正しました。
+　(h) ボイス数が32768以上のボイスプールを作成した際にクラッシュする不具合を修
+　　　正しました。
+　(i) 以下の条件に一致する状態でモニターライブラリの初期化に失敗すると不正アク
+　　　セスが発生する不具合を修正しました。
+　　　- ACF 登録後のモニターライブラリ初期化
+　　　- ACB ロード後のモニターライブラリ初期化
+　(j) AISAC のコントロールタイプ「ランダム」の場合に、以下の2つの AISAC 効果を
+　　　適用していた不具合を修正しました。
+　　　- ランダマイズしたコントロール値による AISAC 効果
+　　　- コントロール値更新による AISAC 効果
+　　　※本修正により、コントロールタイプ「ランダム」の AISAC に対する再生中の
+　　　　コントロール値更新は無視されます。
+　(k) 「セレクターによるトラック遷移」タイプのキューの停止時に、エンベロープの
+　　　リリースが適用されない不具合を修正しました。
+　(l) 以下の条件で音声が正しく再生されない不具合を修正しました。
+　　　- CRIATOM_SOUND_RENDERER_ASR を指定してASRラックを作成している
+　　　- 出力元のASRラックのスピーカーマッピングより出力チャンネルが小さい
+　(m) 以下の条件の際に、一部チャンネルの音声が欠落する不具合を修正しました。
+　　　- CRIATOM_SOUND_RENDERER_ASR を指定してASRラックを作成している
+　　　- 出力元のASRラックのスピーカーマッピングが出力先のASRラックより大きい
+　(n) 再生直後のキューに対するアクションが動作しない不具合を修正しました。
+　(o) 以下の関数で得られる再生時刻について、タイムストレッチ比率が考慮されてい
+　　　なかった不具合を修正しました。
+　　　- criAtomExPlayback_GetTimeSyncedWithAudio
+　　　- criAtomExPlayback_GetTimeSyncedWithAudioMicro
+　(p) 以下の関数を実行した後にライブラリを再初期化すると、当該関数によるコール
+　　　バック設定がクリアされない不具合を修正しました。
+　　　- criAtomEx_SetVoiceEventCallback
+　(q) criAtomExPlayer_UnsetCategory関数の第1引数にNULLを指定するとNULLアクセス
+　　　が発生する不具合を修正しました。
+
+ [2023-03-13 CRI Atom Ver.2.24.199]-----------------------------------------
+（１）仕様変更
+　(a) 以下のエラーを警告に変更しました。
+　　　- E2013091001 → W2013091001
+
+（２）不具合修正
+　(a) 単位バーチャルボイス当たりの発音数が16384回を超えると、該当ボイスで発音
+　　　がされなくなる不具合を修正しました。
+　　　※CRI Atom Ver.2.24.133 から発生していました。
+　(b) インゲームプレビューにてゼロレイテンシーストリーム設定の音声が
+　　　正しく再生されない不具合を修正しました。
+　(c) アプリケーション動作中にデバイスのプロパティを変更すると、音声が停止して
+　　　復帰しないことがある不具合を修正しました。
+　(d) 代替ASRラックIDを使用する再生が正しく行われない不具合を修正しました。
+　　　※CRI Atom Ver.2.24.102 から発生していました。
+　(e) モニターライブラリにてモニター機能の終了時に不正アクセスが発生する可能性
+　　　のある不具合を修正しました。
+　(f) 下記関数でバスのパン情報を指定すると音声が正しくパンニングされなくなる不
+　　　具合を修正しました。
+　　　- criAtomExAsr_SetBusPanInfoByName
+　　　- criAtomExAsrRack_SetBusPanInfoByName
+　　　- criAtomExAsr_SetBusPan3d
+　　　- criAtomExAsr_SetBusPan3dByName
+　　　※CRI Atom Ver.2.23.51 から発生していました。
+　(g) criAtomEx_RegisterAcfFile関数実行中にエラーが発生した後、クラッシュする
+　　　ことがある不具合を修正しました。
+　(h) ASRの出力チャンネル数が2chの環境で音声を再生した場合に、以下の問題が発生
+　　　する不具合を修正しました。
+　　　- センターチャンネルの音声が無音になる。
+　　　- バックレフト、バックライトの音声がセンターから出力される。
+　　　※CRI Atom Ver.2.24.94 から発生していました。
+　(i) ASRの出力チャンネル数に6を指定した環境で7.1chの音声を再生すると、6ch目と
+　　　7ch目の音声がフロントセンターから出力される不具合を修正しました。
+　　　※CRI Atom Ver.2.24.94 から発生していました。
+　(j) プレビューやインゲームプレビューでのリアルタイムパラメーター更新が適用さ
+　　　れないことがある不具合を修正しました。
+
+ [2022-08-23 CRI Atom Ver.2.24.175]-----------------------------------------
+（１）機能追加
+　(a) WAVE_FORMAT_EXTENSIBLE形式のWaveファイルの再生に対応しました。
+　(b) IRリバーブとI3DL2リバーブ Ver.2 のパラメーター定義を追加しました。
+　(c) CriAtomExAsrConfigにミキサーの動作チャンネルマッピングを変更する以下のメ
+　　　ンバーを追加しました。
+　　　- speaker_mapping
+　　　※デバイスへの出力チャンネル数とは別にASRラックに使用するチャンネル構成
+　　　　を指定できます。
+　(d) 出力チャンネル数に応じたパンを自動で行うパンスピーカータイプを追加しまし
+　　　た。
+　　　- CRIATOMEX_PAN_SPEAKER_TYPE_AUTO
+　　　- CRIATOMEX_PAN_SPEAKER_TYPE_AUTO_WITH_CENTER
+
+（２）仕様変更
+　(a) デフォルトのパンスピーカータイプをCRIATOMEX_PAN_SPEAKER_TYPE_AUTOに変更
+　　　しました。
+　　　※変更前はCRIATOMEX_PAN_SPEAKER_TYPE_4CHでした。
+
+（３）不具合修正
+　(a) 以下の関数の返り値が正しくない不具合を修正しました。
+　　　- criAtomExVoicePool_CalculateWorkSizeForDspPitchShifter
+　　　- criAtomExVoicePool_CalculateWorkSizeForDspAfx
+　(b) 以下の条件に該当した場合に、assertが発生することがある不具合を修正しました。
+　　　- CRI Atom Craft Ver.3.45.00、CRI Atom Encoder Ver.3.00.06以降のバージョ
+　　　ンを使用
+　　　- モノラル以外の音声を中品質以下の設定でHCAエンコード
+　　　- デバッグ版ライブラリを使用
+　　　※CRI Atom Ver.2.21.77 から発生していました。
+　(c) デバイスが変更された時、音が復帰しないことがある不具合を修正しました。
+　(d) スナップショット適用時にノイズが発生することがある不具合を修正しました。
+　(e) Wave/AIFFファイルを再生した際、音声データの終端にノイズが入ることがある
+　　　不具合を修正しました。
+　　　※CRI Atom Ver.2.21.89 から発生していました。
+　(f) ユーザーアロケーターを使用せずにライブラリを初期化しようとした際に、エラー
+　　　が発生し初期化できないことがある不具合を修正しました。
+　　　※CRI Atom Ver.2.23.110 から発生していました。
+　(g) ミキサーAISAC へのコントロール設定を行うとエラーが発生する不具合を修正し
+　　　ました。
+　　　※CRI Atom Ver.2.23.49 から発生していました。
+　(h) CriAtomExConfig::max_bus_sendsを8未満に指定してライブラリを初期化すると、
+　　　再生時にクラッシュすることがある不具合を修正しました。
+　　　※CRI Atom Ver.2.23.94 から発生していました。
+　(i) 3ch 波形が再生出来ない不具合を修正しました。
+　　　※対応した 3ch データの並びは（L, R, C）となります。2.1ch 波形には対応し
+　　　　ていません。
+　(j) 以下の条件でキューを再生した際に、不正アクセスが発生する不具合を修正しま
+　　　した。
+　　　- モニターライブラリを使用している
+　　　- キュー名が含まれていない ACB データを使用している
+
+ [2022-05-12 CRI Atom Ver.2.23.219]-----------------------------------------
+（１）機能追加
+　(a) ユーザー PCM 出力方式における PCM バッファーサイズを取得する関数を追加し
+　　　ました。
+　　　- criAtomExAsr_GetPcmBufferSize
+　(b) 音声を既定の通信デバイスから出力するための機能を追加しました。
+　　　- criAtom_SetDefaultDeviceRole_WASAPI
+　(c) ASRラックの出力デバイスのタイプを取得する以下の関数を追加しました。
+　　　- criAtomExAsrRack_GetDeviceType
+　　　※プラットフォームによって仕様が異なります。詳しくは CRI ADX マニュアル
+　　　　を参照してください。
+　(d) 出力デバイス更新時のコールバック関数を追加する以下の関数を追加しました。
+　　　- criAtom_SetDeviceUpdateCallback
+　　　※プラットフォームによって仕様が異なります。詳しくは CRI ADX マニュアル
+　　　　を参照してください。
+　(e) CriAtomExConfig構造体に最大バスセンド数を設定するmax_bus_sendsメンバーを
+　　　追加しました。
+　　　※ボイスプールにCriAtomPlayerConfig_ASR構造体のmax_routesメンバーからセ
+　　　　ンド可能バス数を合わせて設定する必要があります。
+　(f) ボイス単位のセンド可能バス数を設定できるCriAtomPlayerConfig_ASRを追加し
+　　　ました。max_routesメンバに設定した値だけ同時にセンドできます。
+　　　※この設定を行わない場合のセンド可能バス数は8になります。
+　(g) 出力ポート機能を追加しました。
+　　　※出力ポート機能の詳細については、CRI ADX マニュアルを参照してください。
+　(h) I3DL2 リバーブの Ver.2 を追加しました。
+　　　※Ver.2については、CRI ADX ツールマニュアルをご参照ください。
+　(i) アクションによる「セレクターへのグローバル参照ラベル設定」機能に対応しま
+　　　した。
+　(j) キュー再生時のキャンセルコールバックタイプ CriAtomExPlaybackCancelType 
+　　　に以下を追加しました。
+　　　- CRIATOMEX_PLAYBACK_CANCEL_TYPE_NO_TRACK_TO_PLAY
+
+（２）仕様変更
+　(a) 以下の関数仕様を変更し、プレーヤーの再生中でも実行可能にしました。
+　　　- criAtomExPlayer_SetFilterCallback
+　(b) CriAtomVoiceStopReason 列挙体から未使用項目を削除しました。
+　(c) ストリーム再生中、ストリーミング流量の合計が、CRIライブラリ内部で算出さ
+　　　れた上限値を超える場合、エラーコールバックにW2021120700が返されるよう動
+　　　作を変更しました。
+　　　D-BAS作成時にビットレート上限を超える値が指定された場合については、従
+　　　来通りE2010052705が返されます。
+　　　※CRI Base Ver.2.49.7 が必要です。
+　(d) CriAtomExReactDuckerParameter 構造体の control_id メンバを 
+　　　CriAtomExAisacControlId 型に変更しました。
+　(e) CriAtomExCuePos3dInfo 構造体の AISAC コントロール関連メンバを 
+　　　CriAtomExAisacControlId 型に変更しました。
+　(f) レベルメーター、トゥルーピークメーターで最大16ch分の情報が取得できるよう、
+　　　下記構造体の定義を変更しました。
+　　　- CriAtomLevelInfo
+　　　- CriAtomTruePeakInfo
+　(g) ACF 内データの取得処理にて、指定データが見つからなかった場合に発生させて
+　　　いた次のエラーを警告に変更しました。
+　　　- E2013080822→W2013080822：VoiceLimitGroup 検索失敗
+　　　- E2013013002→W2013013002：VoiceLimitGroup 検索失敗
+　　　- E2013080922→W2013080922：Selector 検索失敗
+　　　- E2013081350→W2013081350：Selector 検索失敗
+　　　- E2020120107→W2020120107：Selector 検索失敗
+　　　- E2013013001→W2013013001：Category 検索失敗
+　　　- E2021012000→W2021012000：DspBusSetting 検索失敗
+　　　- E2014080522→W2014080522：Bus 検索失敗
+　　　- E2021012002→W2021012002：AisacGraph 検索失敗
+
+（３）不具合修正
+　(a) ゲーム変数を参照するスイッチタイプキューについて、下記関数による取得結果
+　　　が一部不正になることがある不具合を修正しました。
+　　　- criAtomExAcb_GetCueInfoById
+　　　- criAtomExAcb_GetCueInfoByName
+　　　- criAtomExAcb_GetCueInfoByIndex
+　(b) 3ch 波形が再生出来ない不具合を修正しました。
+　　　※対応した 3ch データの並びは（L, R, C）となります。2.1ch 波形には対応し
+　　　　ていません。
+　(c) ACB Ver.1.23.00 より古い ACB データのキューを再生した際に設定されている
+　　　ビート同期設定が無効になってしまう不具合を修正しました。
+　(d) カテゴリの AISAC 領域が、初期化時の CriAtomExConfig.max_aisacs 設定値を
+　　　反映しておらず、 8 個固定となっていた不具合を修正しました。
+　(e) 「AISAC Mod トリガー」タイプの REACT での動作開始時に、戻り用に設定した 
+　　　AISAC モジュレーションも動作していた不具合を修正しました。
+　(f) RawPcmボイスプールにタイムストレッチをアタッチして再生を開始すると、
+　　　W2010091302 の警告が発生する不具合を修正しました。
+　(g) 以下の条件を満たす場合に、プレーヤーへのポーズ設定が適用されない不具合を
+　　　修正しました。
+　　　- プレーヤーにフェーダーをアタッチしている
+　　　- Start 関数 → Pause 関数と同フレーム内で呼び出している
+　　　- エンコーダーで作成した ACB データを再生している
+　(h) IRリバーブを使用すると起動時にクラッシュすることがある不具合を修正しまし
+　　　た。
+　(i) criAtomEx_SetMonitoringVoiceStopPlaybackId 関数によるボイス停止監視にて、
+　　　以下のボイスの停止時に停止監視コールバックが発生していなかった不具合を修
+　　　正しました。
+　　　- キューリンク先で再生しているボイス
+　　　- トラック遷移タイプキューで再生しているボイス
+　(j) 以下の条件に該当した場合に、NULLアクセスが発生する不具合を修正しました。
+　　　- メモリ再生用のボイスプールを使用
+　　　- サスティンレベルが0に設定された音声を再生
+　　　※CRI Atom Ver.2.22.75 から発生していました。
+　(k) 3D ポジショニング再生にて以下のパラメーターが正常に適用されないことがあ
+　　　る不具合を修正しました。
+　　　- バイクアッドフィルター
+　　　- エンベロープ
+　　　※CRI Atom Ver.2.20.42 から発生していました。
+　(l) シーク再生時にプレーヤーとプレイバックとでステータスが PREP から PLAYING 
+　　　に遷移するタイミングが異なっていた不具合を修正しました。
+　(m) 以下の条件でキューを再生した際に、不正アクセスが発生する不具合を修正しま
+　　　した。
+　　　- モニターライブラリを使用している
+　　　- キュー名が含まれていない ACB データを使用している
+　(n) ブロック遷移後にビート同期コールバックが発生しないことがある不具合を修正
+　　　しました。
+　　　※本修正は CRI Atom Craft Ver.3.47.00 以降で出力した ACB を使用した場合
+　　　　に適用されます。
+　(o) トランシーバーハンドルよりリージョンハンドルを先に破棄したとき、トランシー
+　　　バーの破棄時にクラッシュする不具合を修正しました。
+　(p) スイッチタイプキューでの条件不一致による発音キャンセルコールバック通知の
+　　　タイプが CRIATOMEX_PLAYBACK_CANCEL_TYPE_SWITCH ではなく 
+　　　CRIATOMEX_PLAYBACK_CANCEL_TYPE_PROBABILITY で呼び出されていた不具合を修
+　　　正しました。
+　(q) ASRの出力チャンネル数に2を指定した場合、最小距離内の音源の音量が想定より
+　　　大きくなる不具合を修正しました。
+
+ [2021-11-26 CRI Atom Ver.2.22.89]------------------------------------------
+（１）不具合修正
+　(a) criAtomExPlayer_SetStartTime 関数を実行してからキューを再生した場合に、
+　　　下記関数にて取得する時刻が大きくなることがある不具合を修正しました。
+　　　- criAtomExPlayer_GetTime
+　　　- criAtomExPlayback_GetTime
+　(b) 非インゲームプレビュー用 ACB データをロードした状態でインゲームプレビュー
+　　　を実行した場合に、CRI Atom Craft からのデータ更新が正常に動作しない不具
+　　　合を修正しました。
+　(c) キューの再生開始後サーバー処理が実行される前に、下記関数にて取得するシー
+　　　ケンスポジションが 1271310319 となる不具合を修正しました。
+　　　- criAtomExPlayback_GetSequencePosition
+　　　※CRI Atom Ver.2.22.56 から発生していました。
+　(d) トラックオートメーションが 8000 個以上ある場合に、8000 個目以降が正常動
+　　　作しない不具合を修正しました。
+　(e) 以下の条件を満たしたとき、最初のトラックしか再生されなくなる不具合を修正
+　　　しました。
+　　　- キューのシーケンスタイプがコンボシーケンシャルであるキューを再生して
+　　　いる
+　　　- ライブラリの初期化から4294967296マイクロ秒(約1時間)以上経過している
+　(f) 以下の関数を複数スレッドから同時に呼び出した場合、無関係なエラー
+　　　「E2013082904」が発生することがある不具合を修正しました。
+　　　- criAtomExAcb_GetWaveformInfoByName
+　　　- criAtomExAcb_GetWaveformInfoById
+
+ [2021-09-17 CRI Atom Ver.2.22.77]------------------------------------------
+（１）機能追加
+　(a) REACTの動作ステータスを取得する関数を追加しました。
+　　　- criAtomExCategory_GetReactStatus
+
+（２）不具合修正
+　(a) モニターライブラリ使用時に、ツール未接続にも関わらず警告 W2010111005 が
+　　　発生しうる不具合を修正しました。
+　(b) 以下のいずれかの条件を満たした状態で再生したとき、エラーが発生することが
+　　　ある不具合を修正しました。
+　　　- データ設定値にてサスティンレベルが0に設定されている
+　　　- プレーヤー設定値にてサスティンレベルが0に設定されている
+　(c) カテゴリに設定した AISAC オートモジュレーションが正常動作しない不具合を
+　　　修正しました。
+　(d) criAtomExPlayback_GetTimeSyncedWithAudio 関数で得られる再生時刻が、
+　　　criAtomExPlayer_SetStartTime 関数で再生開始位置を指定した場合でも再生開
+　　　始直後に0を返す不具合を修正しました。
+　(e) 以下の条件を満たす時、3Dリージョンを破棄する際にクラッシュすることがある
+　　　不具合を修正しました。
+　　　- 3Dソース・3Dリスナー・3Dトランシーバーのいずれかに当該3Dリージョンが
+　　　設定されている
+　　　※本修正以降では上記条件に合致する際の破棄処理時にエラーが発生するように
+　　　　なります。
+　　　　そのため、3Dリージョンの破棄前に当該3Dリージョンを設定している全ての
+　　　　ハンドルを破棄するか、設定を外すようにしてください。
+　(f) criAtomExHcaMx_SetAsrRackId関数内で処理が無限ループに陥る不具合を修正し
+　　　ました。
+　　　※CRI Atom Ver.2.22.9 から発生していました。
+　(g) criAtomExPlayer_SetAsrRackIdArray 関数にて、過去に同関数にて設定した ASR 
+　　　ラック ID がプレーヤーの設定値として残り続けることがある不具合を修正しま
+　　　した。
+　　　※新たに設定する ASR ラック ID 配列にが過去に設定した ASR ラック ID 配列
+　　　　よりも小さい場合、その差分となった部分が設定値として残存していました。
+　　　※CRI Atom Ver.2.17.20 から発生していました。
+　(h) 以下の状態でプレーヤーを再生した場合にクラッシュする不具合を修正しました。
+　　　- プレーヤーまたはキューのパンタイプが3Dポジショニングである
+　　　- プレーヤーに対して criAtomExPlayer_SetSendLevel 関数を実行している
+　　　※CRI Atom Ver.2.20.36 から発生していました。
+
+ [2021-07-14 CRI Atom Ver.2.22.61]------------------------------------------
+（１）不具合修正
+　(a) 中品質以下でエンコードしたHCAデータを再生した場合に、ノイズが入る不具合
+　　　を修正しました。
+　　　※CRI Atom Ver.2.22.56 から発生していました。
+　(b) 以下の条件を満たす場合に、ビート同期処理用の小節カウントが不正になる不具
+　　　合を修正しました。
+　　　- セレクタによるトラック遷移タイプキューである
+　　　- トラック毎に BPM 設定がある
+　　　- イントロ付きループ波形を使用している
+　(c) criAtomExPlayer_SetStartTime 関数に 2,147,483 msec 以上の値を設定した場
+　　　合に、正しい位置から再生されない不具合を修正しました。
+　　　※CRI Atom Ver.2.20.36 から発生していました。
+
+ [2021-06-29 CRI Atom Ver.2.22.56]------------------------------------------
+（１）機能追加
+　(a) ASRラック毎の信号処理負荷を計測する機能を追加しました。
+　　　- criAtomExAsrRack_ResetPerformanceMonitor
+　　　- criAtomExAsrRack_GetPerformanceInfo
+　(b) CriAtomExThreadModelに以下の値を追加しました。
+　　　- CRIATOMEX_THREAD_MODEL_MULTI_WITH_SONICSYNC
+　　　CRIATOMEX_THREAD_MODEL_MULTI_WITH_SONICSYNCを指定してライブラリを初期
+　　　化することで、「SonicSYNC」による低遅延なサウンド出力が行われます。
+　　　※SonicSYNCの詳細については、CRI ADX マニュアルを参照してください。
+
+（２）仕様変更
+　(a) 以下のAPIにおける第二引数の型をCriUint16からCriAtomExAisacControlIdに変
+　　　更しました。
+　　　- criAtomEx3dSource_SetDistanceAisacControlId
+　　　- criAtomEx3dSource_SetListenerBasedAzimuthAngleAisacControlId
+　　　- criAtomEx3dSource_SetListenerBasedElevationAngleAisacControlId
+　　　- criAtomEx3dSource_SetSourceBasedAzimuthAngleAisacControlId
+　　　- criAtomEx3dSource_SetSourceBasedElevationAngleAisacControlId
+　　　- criAtomEx3dTransceiver_SetDistanceAisacControlId
+　　　- criAtomEx3dTransceiver_SetListenerBasedAzimuthAngleAisacControlId
+　　　- criAtomEx3dTransceiver_SetListenerBasedElevationAngleAisacControlId
+　　　- criAtomEx3dTransceiver_SetTransceiverOutputBasedAzimuthAngleAisacControlId
+　　　- criAtomEx3dTransceiver_SetTransceiverOutputBasedElevationAngleAisacControlId
+
+（３）不具合修正
+　(a) 以下の条件に該当するHCAデータを再生した場合に、カットオフ周波数近辺にノ
+　　　イズが入る不具合を修正しました。
+　　　- CRI Atom Craft Ver.3.45.00、CRI Atom Encoder Ver.3.00.06以降のバージョ
+　　　ンを使用
+　　　- カットオフ周波数を設定
+　　　- 中品質以下でエンコード
+　(b) criAtomExPlayback_GetSequencePosition 関数が想定よりも早いタイミングで負
+　　　値を返す不具合を修正しました。
+　　　※CRI Atom Ver.2.20.36 から発生していました。
+　(c) criAtomExPlayer_ResetParameters 関数が再生中の音声に対するバスセンド設定
+　　　をリセットしていなかった不具合を修正しました。
+　(d) ASRラックを作成する際にCriAtomExAsrRackConfig::output_rack_idで出力先の
+　　　ASRラックIDを指定しても、指定したIDが無視され、常にデフォルトASRラックへ
+　　　出力される不具合を修正しました。
+　(e) WebGLターゲット向けにビルドしたACBを、Web以外の環境でロードできない不具
+　　　合を修正しました。
+　(f) 3D ソースの位置ランダム化機能使用時に以下の操作を行うと、当該 3D ソース
+　　　の位置ではなく原点を中心にランダム化された音声の位置が移動する不具合を修
+　　　正しました。
+　　　- 「元の 3D ソースに追従するかどうか」を有効にしている
+　　　- 3D ソースの向きを変更している
+　　　※CRI Atom Ver.2.21.141 から発生していました。
+　(g) 下記関数でキュー情報を取得した際、角度AISACの情報が正しく取得できない不
+　　　具合を修正しました。
+　　　- criAtomExAcb_GetCueInfoByIndex
+　　　- criAtomExAcb_GetCueInfoById
+　　　- criAtomExAcb_GetCueInfoByName
+　　　※CRI Atom Ver.2.20.36 から発生していました。
+　(h) シーケンススタートマーカーを使用しているキューをシーク再生すると、正しく
+　　　シーク再生されない不具合を修正しました。
+　　　※CRI Atom Ver.2.20.36 から発生していました。
+
+ [2021-05-21 CRI Atom Ver.2.21.141]------------------------------------------
+（１）機能追加
+　(a) 3D 音源の位置を再生時にランダムになる機能を追加しました。
+　　　※詳しくはCRI ADX マニュアルを参照してください。
+　(b) 以下のACFデータパラメーターに対応しました。
+　　　- キューリンクにキューシートキューリミットを適用
+　(c) ミキサーAISAC機能を追加しました。本機能追加に伴い、以下の関数を追加しま
+　　　した。
+　　　- criAtomExAsrRack_SetAisacControlById
+　　　- criAtomExAsrRack_SetAisacControlByName
+　　　- criAtomExAsrRack_GetAisacControlById
+　　　- criAtomExAsrRack_GetAisacControlByname
+　(d) アクションによるブロック遷移機能に対応しました。
+　(e) 以下のIRリバーブの負荷測定関数を追加しました。
+　　　- criAtomExAsr_ResetIrReverbPerformanceInfo
+　　　- criAtomExAsr_GetIrReverbPerformanceInfo
+　　　※本関数はプラットフォームによって仕様が異なることがあります。
+　　　　詳しくは各プラットフォームのCRI ADX マニュアルの IR リバーブを参照
+　　　　してください。
+　(f) IRリバーブエフェクトを追加しました。
+　　　※負荷が高いため、機種に依っては制限事項があります。
+　　　　詳しくは各機種の CRI ADX マニュアルを参照してください。
+　(g) プレーヤーに設定されているセレクターラベルを削除する以下の関数を追加しま
+　　　した。
+　　　- criAtomExPlayer_UnsetSelectorLabel
+　(h) AIFFファイルのループ再生に対応しました。
+　　　※ただし、ストリーム再生を行う場合には、AIFFファイル内のPCMデータよりも
+　　　　手前にループ情報が配置されている必要があります。（INSTチャンクがSSNDチャ
+　　　　ンクよりも手前に配置されている必要があります。）
+　(i) プレーヤーに設定されているバスセンドレベル、バスセンドレベルのオフセット
+　　　を取得する関数をそれぞれ追加しました。
+　　　- criAtomExPlayer_GetBusSendLevelByName
+　　　- criAtomExPlayer_GetBusSendLevelOffsetByName
+　(j) 32ビットのWAVファイルとAIFFファイルを再生する機能を追加しました。
+　(k) ライブラリのバージョン・ビルドした日時・プラットフォームを文字列で取得す
+　　　る以下の関数を追加しました。
+　　　- criAtom_GetVersionString 関数
+　(l) バスのパン情報を設定・取得する以下の関数を追加しました。
+　　　- criAtomExAsr_SetBusPanInfoByName
+　　　- criAtomExAsr_GetBusPanInfoByName
+　　　- criAtomExAsrRack_SetBusPanInfoByName
+　　　- criAtomExAsrRack_GetBusPanInfoByName
+　(m) CRI Atom Craft LE のインゲームプレビュー接続開始時にクラッシュする問題を修正しました。 
+
+（２）仕様変更
+　(a) 以下の関数を非推奨関数としました。
+　　　- criAtomExAcf_GetDspFxType
+　　　※今後は以下の関数を使用してください。
+　　　　- criAtomExAcf_GetDspFxName
+　(b) EまたはWから始まっていないエラーコードをEまたはWから始まるように変更しま
+　　　した。
+　(c) ライブラリ初期化時にデフォルトの疑似乱数生成器のシード値にシステム時間を
+　　　設定するようにしました。
+　　　※従来はシード値が固定でした。
+　(d) Wizz に表示されるバージョン情報を削減しました。
+　(e) バージョン番号を数値で表記していた以下のマクロ定義の使用を非推奨としまし
+　　　た。
+　　　- CRI_ATOM_VERSION
+　　　- CRIATOMEX_VERSION
+　　　- CRIATOMEX_MONITOR_VERSION
+　　　今後は下記のマクロ定数を使用してください。
+　　　- CRI_ATOM_VER_MAJOR
+　　　- CRI_ATOM_VER_MINOR
+　　　- CRI_ATOM_VER_PATCH
+　　　- CRI_ATOM_VER_RELEASE
+　　　- CRI_ATOM_VER_REVISION
+　　　- CRIATOMEX_VER_MAJOR
+　　　- CRIATOMEX_VER_MINOR
+　　　- CRIATOMEX_VER_PATCH
+　　　- CRIATOMEX_VER_RELEASE
+　　　- CRIATOMEX_VER_REVISION
+　　　- CRIATOMEX_MONITOR_VER_MAJOR
+　　　- CRIATOMEX_MONITOR_VER_MINOR
+　　　- CRIATOMEX_MONITOR_VER_PATCH
+　　　- CRIATOMEX_MONITOR_VER_RELEASE
+　　　- CRIATOMEX_MONITOR_VER_REVISION
+　　　※今回非推奨となったマクロ定数には今後常に 0xFFFFFFFF が設定されます。
+　(f) 以下の関数を非推奨としました。
+　　　- criAtom_GetVersionNumber 関数
+　(g) 以下の関数を非推奨関数としました。
+　　　- criAtomExAsr_SetBusPan3dByName
+　　　- criAtomExAsr_GetBusPan3dByName
+　　　- criAtomExAsrRack_SetBusPan3dByName
+　　　- criAtomExAsrRack_GetBusPan3dByName
+　(h) 再生中ボイスのエンベロープがレベル 0 のサスティン状態になった場合に、ボ
+　　　イスを停止するように仕様を変更しました。
+
+（３）不具合修正
+　(a) 以下の条件を満たした場合に不正アクセスが発生する不具合を修正しました。
+　　　- 「キューリンクにカテゴリキューリミットを適用」を有効にしてビルドした
+　　　ACFデータを使用している
+　　　- リンク元キューとリンク先キューが共に同一のカテゴリを参照している
+　　　- リンク先キューの再生に伴うカテゴリキューリミット処理により、リンク元
+　　　キューの停止が行われた後に、同カテゴリを参照するキューを再生する
+　(b) 3Dトランシーバーハンドルを破棄した後、再生が正常に行われなくなることがあ
+　　　る不具合を修正しました。
+　(c) カテゴリに対するフェード時間付き停止アクションを実行されると、以後そのカ
+　　　テゴリが無音になる不具合を修正しました。
+　(d) 警告 W2010072211 をエラーとしてコールバックしていた不具合を修正しました。
+　(e) AISACコントロールを操作するAISACグラフによって、AISACが巡回する構造となっ
+　　　ているデータを使用すると、スタックオーバーフローが発生する不具合を修正し
+　　　ました。
+　(f) 以下の条件を満たす場合に、データ側で設定している MasterOut バスへの1.0 
+　　　以外のセンドレベル設定が無効化され、1.0 を適用して再生する不具合を修正し
+　　　ました。
+　　　- CRI Atom Craft Ver.2.15.00 以降を使用して出力した ACF を使用している
+　　　- CRI Atom Craft Ver.2.14.02 以前を使用して出力した ACB を使用している
+　(g) 疑似乱数生成器インターフェース (CriAtomExRngInterface) に指定してライブ
+　　　ラリを初期化したとき、以下の関数が未実装の場合にクラッシュする不具合を修
+　　　正しました。
+　　　- Create
+　　　- Destroy
+　　　- Generate
+　　　- SetSeed
+　(h) PCMデータの終端以降にループ情報が付いたWaveファイルをメモリ再生した場合
+　　　に、再生が途中で停止する不具合を修正しました。
+　　　※本修正により、PCMデータの終端以降にループ情報が付いたWaveファイルであっ
+　　　　ても、メモリ再生時に限りループ再生されるよう動作が変更されています。
+　(i) エラーコード[E2010022306]が警告として出力されていた不具合を修正しました。
+　(j) サウンドデバイスのプロパティが変更された場合、その後の音声出力がミュート
+　　　される不具合を修正しました。
+　(k) 以下の条件に該当する場合、正しくパンニングされない不具合を修正しました。
+　　　- ASRの出力チャンネル数が8
+　　　- バスのパン情報を変更している
+　(l) criAtomExHcaMx_SetBusSendLevelByName関数によるバスセンドレベルの設定が、
+　　　2回目以降エラーになる不具合を修正しました。
+
+ [2021-02-01 CRI Atom Ver.2.20.86]------------------------------------------
+（１）不具合修正
+　(a) パラメーターパレットのプレーヤーフェーダーパラメーターの設定で
+　　　「プレーヤーフェーダー」にチェックを入れたキューを再生した場合、
+　　　プレーヤーの初回再生時フェーダーが駆動しない不具合を修正しました。
+　　　※ CRI Atom Ver.2.20.36 から発生していました。
+　(b) スタートアクションで開始ブロックを指定していた場合に警告が
+　　　発生する不具合を修正しました。
+　　　※動作上の問題はありませんでした。
+　(c) キューの「AtomExPlayerの無視」を有効にした場合でも、プレーヤーに
+　　　設定したシーク時間が無視されない不具合を修正しました。
+　(d) エラーコード[E2010022306]が警告として出力されていた不具合を修正しました。
+　(e) REACT用シーケンスエンドと、キューリンクを組み合わせたキューの再生において、
+　　　REACT用シーケンスエンド処理後に一時停止を行うとREACTが不正な
+　　　状態になる不具合を修正しました。
+　　　※ CRI Atom Ver.2.20.36 から発生していました。
+　(f) Raw PCM再生時、サンプル境界ではない位置で分割したバッファを
+　　　criAtomExPlayer_SetData関数に指定すると、再生が進まなくなる
+　　　不具合を修正しました。
+　(g) REACT用シーケンスエンドを使用しているキューでキューリンクを使用すると、
+　　　REACTの動作が不正になることがある不具合を修正しました。
+　　　※ CRI Atom Ver.2.20.36 から発生していました。
+　(h) REACTの戻りタイミングが停止命令を受けたタイミングから、キュー内の波形が
+　　　完全に再生終了されるタイミングに変わってしまっていた不具合を修正しました。
+　　　※ CRI Atom Ver.2.20.36 から発生していました。
+　(i) 以下の設定が行われているキューをキューリンクで呼び出している場合、
+　　　呼び出し元のキューを一時停止するとREACTの動作が不正になる不具合を
+　　　修正しました。
+　　　- 再生モードがPlayListである
+　　　- シーケンスエンドマーカーを使用
+　　　※ CRI Atom Ver.2.20.36 から発生していました。
+　(j) ビート同期機能によりクロスフェードしているキューがフェーダーによって
+　　　フェードアウトされると、意図しない音声がフェードインしてしまう場合がある
+　　　不具合を修正しました。
+　(k) 以下の条件に該当する場合に、ブロック遷移後に発音される音声がデフォルトの
+　　　ASRラックから出力されてしまう不具合を修正しました。
+　　　- プレーヤーに対して出力ASRラック設定している
+　　　- criAtomExPlayback_SetNextBlockIndex関数を使用している
+
+ [2020-10-05 CRI Atom Ver.2.20.83]------------------------------------------
+(1) 不具合修正
+　(a) 再生中のキューに対するポーズアクションが、ミュート処理となっていた
+　　　不具合を修正しました。
+　　　※CRI Atom Ver.2.17.20 から発生していました。
+　(b) ブロック遷移の振る舞いに「ブロック停止」を指定しているキューにおいて、
+　　　ブロック遷移時に音声が停止しない不具合を修正しました。
+　　　※CRI Atom Ver.2.20.72 から発生していました。
+
+ [2020-09-25 CRI Atom Ver.2.20.82]------------------------------------------
+(1) 不具合修正
+　(a) CRI Atom Craft以外で作成したデータを再生する場合、DSPバス設定依存で
+　　　無音になる不具合を修正しました。
+　　　※CRI Atom Ver.2.20.36から発生していました。
+　(b) 「セレクターによるトラック遷移」タイプのキューで、
+　　　遷移タイミングから数フレーム遅れて再生される不具合を修正しました。
+　　　※Ver.2.17.13以降のライブラリで発生していました。
+　(c) criAtomMeter_GetLevelInfo 関数実行時に 0 除算が行われることがある
+　　　不具合を修正しました。
+　(d) ビートに同期したアクションの実行が遅れる不具合を修正しました。
+　(e) マルチポジショニング再生を使用した場合に、サーバー処理内で
+　　　無限ループに陥る不具合を修正しました。
+　　　※ CRI Atom Ver.2.20.36 から発生していました。
+　(f) ブロック遷移の振る舞いに「ブロック停止」を指定しているキューにおいて、
+　　　遷移時発音トラックの音声がブロック遷移時に停止してしまう不具合を
+　　　修正しました。
+　　　※CRI Atom Ver.2.20.36 から発生していました。
+　(g) プリディレイ中に音声を停止すると、その後再生した音声に
+　　　プリディレイがつくことがある不具合を修正しました。
+　　　※Ver.2.20.31以降のライブラリで発生していました。
+　(h) 以下の関数の引数にNULLを指定した場合に、エラーコールバックが通知
+　　　された後、アクセス違反が発生する不具合を修正しました。
+　　　- criAtomExPlayer_Start
+　　　- criAtomExPlayer_Prepare
+　　　※Ver.2.18.02以降のライブラリで発生していました。
+　　　【補足】
+　　　本修正によりアクセス違反は発生しなくなりますが、不正な操作である
+　　　ため、エラーコールバックは通知されます。
+　(i) 以下の条件に該当するキューの再生時に不正アクセスが発生する不具合を
+　　　修正しました。
+　　　- セレクターラベルを参照している
+　　　- 再生モードに"PlayList"を指定している
+　(j) 以下の条件に該当する場合、正しくパンニングされない不具合を修正
+　　　しました。
+　　　- ASRの出力チャンネル数が8
+　　　- バスのパン情報を変更している
+
+(2) 仕様変更
+　(a) 以下の構造体にプラットフォーム固有コンフィグを設定するための
+　　　メンバー変数 context を追加しました。
+　　　- CriAtomStandardPlayerConfig
+　　　- CriAtomAdxPlayerConfig
+　　　- CriAtomHcaPlayerConfig
+　　　- CriAtomWavePlayerConfig
+　　　- CriAtomAiffPlayerConfig
+　　　- CriAtomRawPcmPlayerConfig
+　(b) 以下のコンフィグ構造体のデフォルト設定関数にて設定される値を
+　　　一部変更しました。
+　　　- criAtomPlayer_SetDefaultConfigForStandardPlayer
+　　　- criAtomPlayer_SetDefaultConfigForAdxPlayer
+　　　- criAtomPlayer_SetDefaultConfigForHcaPlayer
+　　　- criAtomPlayer_SetDefaultConfigForHcaMxPlayer
+　　　- criAtomPlayer_SetDefaultConfigForWavePlayer
+　　　- criAtomPlayer_SetDefaultConfigForAiffPlayer
+　　　【備考】
+　　　ストリーミング再生フラグ (streaming_flag) が以下のように変更されます。
+　　　- CRI_TRUE -> CRI_FALSE
+　(c) リバーブエフェクトの最大ルームサイズパラメーターの上限値を50から100に
+　　　拡張しました。
+
+(3) 機能追加
+　(a) サウンドバッファに書き込み済みのサンプル数を取得する機能を追加
+　　　しました。
+　　　- criAtomExPlayback_GetNumRenderedSamples
+　　　criAtomExPlayback_GetNumPlayedSamples関数と異なり、
+　　　criAtomExPlayback_GetNumRenderedSamples関数はサウンドバッファに
+　　　書き込まれた未出力の音声データのサンプル数を含む値を返します。
+
+ [2020-08-04 CRI Atom Ver.2.20.57]------------------------------------------
+(1) 不具合修正
+　(a) criAtomExHcaMx_SetBusSendLevelByName関数によるバスセンドレベル
+　　　の設定が、2回目以降エラーになる不具合を修正しました。
+　(b) 再生時のカテゴリ参照数が設定した値と同数の場合、
+　　　E2019100900エラーが発生し、再生がキャンセルされる不具合を修正しました。
+　　　※CRI Atom Ver.2.20.31から発生していました。
+　　　【備考】
+　　　正しくは再生時のカテゴリ参照数が設定した値より大きい場合に
+　　　エラーが発生します。
+　(c) CRI Atom Encoderで作成したキューを、バスセンド設定していない
+　　　プレーヤーで再生し、下記関数を呼び出すと無音になってしまう
+　　　不具合を修正しました。
+　　　- criAtomExPlayer_UpdateAll
+　　　- criAtomExPlayer_Update
+　　　※CRI Atom Ver.2.20.31から発生していました。
+　(d) モニターライブラリを使用したインゲームプレビューにおいて、
+　　　CRI Atom Craftによるデータ転送中にインゲームプレビュー接続を解除すると、
+　　　次回の接続時に不正アクセスが発生する可能性のある不具合を修正しました。
+　(e) Ver.1.24.00未満のACBファイルを再生した際に、無音になってしまう
+　　　ことがある不具合を修正しました。
+　　　※CRI Atom Ver.2.20.31から発生していました。
+　(f) criAtomExMonitor_Finalize関数によるモニター機能の終了時に不正アクセス
+　　　が発生する可能性のある不具合を修正しました。
+
+ [2020-07-06 CRI Atom Ver.2.20.46]------------------------------------------
+(1) 不具合修正
+　(a) モニターライブラリを使用したインゲームプレビュー中に複数のスレッドから
+　　　同時にACBロードを行うと、ツールによるデータ転送待ち処理が終了しなくなる
+　　　不具合を修正しました。
+　　　※本修正に伴いAtomCraftとの通信プロトコルバージョンを更新しています。
+　　　　本バージョン以降のライブラリとの接続にはAtomCraft Ver.3.44.05以降を
+　　　　使用してください。
+　(b) アクションによるパラメーター変更処理適用中にブロック遷移が行われた
+　　　場合に、パラメーター変更処理が中断されてしまう不具合を修正しました。
+　(c) 3Dポジショニング再生時に以下のパラメーターが適用されないことがある
+　　　不具合を修正しました。
+　　　- エンベロープのアタック時間
+　　　- エンベロープのリリース時間
+　　　- プリディレイ時間
+　　　- バンドパスフィルターの各パラメーター
+　　　- バイクアッドフィルターの各パラメーター
+　　　※CRI Atom Ver.2.20.36から発生していました。
+　(d) CRI Atom Encoderで作成したキューを、バスセンド設定していない
+　　　プレーヤーで再生した際に、MasterOutにセンドされない不具合を
+　　　修正しました。
+　　　※CRI Atom Ver.2.20.36から発生していました。
+　(e) キューにキューリンクが含まれ、キューリンクの参照構造が
+　　　循環構造となってしまっている場合に、以下の関数を呼び出すと
+　　　スタックオーバーフローが発生する不具合を修正しました。
+　　　- criAtomExAcb_GetWaveformInfoById
+　　　- criAtomExAcb_GetWaveformInfoByName
+　　　- criAtomExStreamingCache_LoadWaveformByIdAsync
+　　　- criAtomExStreamingCache_LoadWaveformByNameAsync
+　　　- criAtomExStreamingCache_IsCachedWaveformById
+　　　- criAtomExStreamingCache_IsCachedWaveformByName
+　(f) プレーヤーに下記関数でCRIATOMEXPLAYER_FORCE_LOOPを指定し、
+　　　強制ループ再生を行った際、2ループ目以降でビート同期機能が
+　　　利用できない不具合を修正しました。
+　　　- criAtomExPlayer_LimitLoopCount
+
+ [2020-06-16 CRI Atom Ver.2.20.39]------------------------------------------
+(1) 不具合修正
+　(a) モニターライブラリを使用したインゲームプレビューにおいて、非インゲーム
+　　　プレビュー用ACFデータを使用した場合に、ACBデータのロード、解放処理等で
+　　　デッドロックが発生する不具合を修正しました。
+　(b) 下記関数を使用して一時停止したのちに再開した際に、
+　　　再生時刻が不正になり、シーケンスが正しく再生できない問題を修正しました。
+　　　- criAtomExCategory_PauseById
+　　　- criAtomExCategory_PauseByName
+　　　- criAtomExPlayer_Pause
+　　　- criAtomExPlayback_Pause
+　　　※CRI Atom Ver.2.20.36から発生していました。
+
+ [2020-06-04 CRI Atom Ver.2.20.36]------------------------------------------
+(1) 不具合修正
+　(a) 指定分割遷移設定のあるブロックの遷移実行時に、未発音の遷移時発音トラッ
+　　　クの要素があるにも関わらず遷移が行われてしまう不具合を修正しました。
+　　　※Ver.2.19.09以降のライブラリで発生していました。
+　(b) 不正なACBデータをロードした際にクラッシュする不具合に対して
+　　　以下の対策を行いました。
+　　　- 不正なACBデータの一部検出処理を追加しました。
+　　　- モニターライブラリ使用時、criAtomExAcb_Release 関数にNULLを渡すと
+　　　　 クラッシュするため、エラーが発生するように修正しました。
+　(c) 下記条件を全て満たすとき、当該キュー再生終了時にクラッシュする不具合を
+　　　修正しました。
+　　　- CriAtomMonitor ライブラリをリンクしている
+　　　- インゲームプレビュー用バイナリデータをロードしている
+　　　- 以下の設定が行われているカテゴリを持つキューを再生している
+　　　　- カテゴリキューリミットフラグが False
+　(d) ACFの登録解除を行っていない状態でモニタライブラリの終了処理を行った場
+　　　合にデッドロックが発生する可能性のある不具合を修正しました。
+　(e) キューリンクを使用して再生されたブロックキューに対し、リンク元キューの
+　　　パラメーターが適用されない不具合を修正しました。
+　(f) 振幅解析器が不定領域にアクセスしていた不具合を修正しました。
+　(g) モニターライブラリの初期化コンフィグの通信用バッファサイズに0を指定した際、
+　　　Releaseライブラリでクラッシュが発生するため、エラーコールバックを発生
+　　　させるように修正しました。
+　　　※CRI AtomEx Monitor Ver.1.00.00以降のライブラリで発生していました。
+　(h) 以下の条件を満たす際、リスナーを破棄するとハングする不具合を修正しました。
+　　　　- criAtomExPlayer_Set3dListenerHn関数にて、プレーヤーにリスナーを
+　　　　　セットしている
+　　　　- criAtomExPlayer_Start関数にて、プレーヤーが再生状態になっている
+　　　【備考】
+　　　本修正より、プレーヤーにセットされているリスナーに対して、
+　　　criAtomEx3dListener_Destory関数を使用して破棄処理を実行すると、
+　　　エラーが発生します。
+　(i) 3D音源ハンドルもしくは3D音源ハンドルリストを使用した
+　　　3Dポジショニング再生を行った再生IDのステータスが、
+　　　CRIATOMEXPLAYBACK_STATUS_REMOVEDになったにも関わらず
+　　　その後の3D音源ハンドル（リスト）破棄に失敗する不具合を修正しました。
+　　　※Atom Ver.2.14.03 以降のライブラリで発生していました。
+　(j) ビート同期情報を使用したキューに対するアクションによるパラメーター変更
+　　　がビート同期処理されていない不具合を修正しました。
+　(k) キューリンク再生又はアクションによる再生リクエストがサーバ処理前の
+　　　最後の再生リクエストだった場合に、タイミング依存で、リンク先の
+　　　キュー及びアクションによって呼び出されるキューの再生が次のサーバー
+　　　処理時に遅延しまう不具合を修正しました。
+　(l) アクショントラックを含むキューをプリペアした際、時刻ゼロに配置されて
+　　　いるアクションが実行されてしまう不具合を修正しました。
+　(m) フェーダーのアタッチされているプレーヤーで再生アクションを
+　　　含むキューを再生する場合において、以下の条件をすべて満たす場合に
+　　　再生アクション呼び出し元のキューに適用されているフェーダーの
+　　　ボリュームが誤って適用され、その後変更されない不具合の修正を
+　　　行いました。
+　　　- 再生するキューのパラメーターパレットによってプレーヤーフェーダー
+　　　　への登録が無効になっていない。
+　　　　※デフォルトでは有効になっています。無効の場合は呼び出し元キューに
+　　　　　フェーダーのボリュームが適用されない為、問題が発生しません。
+　　　- プレーヤーに設定しているフェードイン時間以内に再生アクションが
+　　　　トリガーされている。
+　　　　※再生するキューのフェード完了後の場合はフェードボリュームが
+　　　　　1.0の為、事実上問題が発生しません。
+　　　- 再生アクションの呼び出し先のキューのパラメーターパレットによって
+　　　　プレーヤーフェーダーへの登録が有効になっていない。
+　　　　※アクションで呼び出したキューはデフォルトでフェーダーへの
+　　　　　登録は無効になっています。有効の場合は呼び出し先のキューで
+　　　　　フェードが実行され、ボリュームが更新される為、
+　　　　　問題は発生しません。
+　(n) カテゴリを設定したプレーヤーで再生確率付きのキューを再生する場合に
+　　　おいて、再生確率によるキャンセルが発生した場合、REACTが一瞬駆動して
+　　　しまう不具合を修正しました。
+　(o) 以下の手順、設定値にてライブラリ初期化を行うと不正アクセスが発生する
+　　　不具合を修正しました。
+　　　- CriFsConfig構造体のnum_loadersメンバーに0を指定してファイルシステム
+　　　　を初期化
+　　　- CriAtomExConfig構造体のacf_infoメンバーを設定し、初期化時にACFの登録
+　　　　を指定
+　(p) 以下の条件に当てはまるとき、音源基準方位角AISACによるAISACコントロール値が
+　　　不正になる不具合を修正しました。
+　　　- 3Dソースの位置座標におけるY成分にて、0.0以外の値を設定している
+　(q) criAtomEx3dSource_SetOrientation関数において、3Dソースに対して設定した
+　　　前方および上方ベクトルが正規化されていなかった不具合を修正しました。
+　(r) プリディレイ付きで再生を行う際、波形の先頭数ミリ秒がフェードイン
+　　　してしまう不具合を修正しました。
+　(s) ユーザPCM出力向けの初期化を行わずにPCMの出力を行うと、不正アクセスに
+　　　よる例外が発生する不具合を修正しました。
+
+(2) 仕様変更
+　(a) 出力先サウンドデバイスのサンプリングレートにおいて、
+　　　ASRの出力サンプリングレートの8倍ないし1/8倍までを許容するように
+　　　変更しました。
+　　　例えば、ASRの出力サンプリングレートが48kHzの場合、
+　　　出力先サウンドデバイスのサンプリングレートは、384kHzまでが正常に
+　　　再生されるようになります。
+　(b) シーク再生が不可能な音声データに対してシーク再生が行われた場合、
+　　　エラーコールバックに警告を返すよう動作を変更しました。
+　(c) 下記関数によってプレーヤーにリスナーが割り当てられていなくても
+　　　再生できるようになりました。
+　　　 - criAtomExPlayer_Set3dListenerHn
+　　　【備考】
+　　　リスナーが一つも生成されていない場合、リスナーを割り当てることが
+　　　できないため、再生される音声はミュートされます。
+　(d) プレーヤーとキューそれぞれに設定したカテゴリが共存するようにしました。
+　　　※キュー側のカテゴリとプレーヤーに設定したカテゴリのグループが
+　　　　競合している場合はプレーヤー側のカテゴリが有効になります。
+　　　※キュー側のカテゴリ設定数とプレーヤーへのカテゴリ設定数が
+　　　　設定可能なカテゴリ数を超える場合、エラーが発生します。
+　　　　設定可能なカテゴリ数を増やすか、
+　　　　プレーヤーでのカテゴリ設定数を減らしてください。
+　(e) HCA-MX音声のボリューム上限値を廃止しました。
+　　　本修正により、HCA-MX音声に対しても1.0以上のボリューム設定が反映
+　　　されるようになります。
+　　　※Ver.2.46.06以降のCRI Baseライブラリを併用する必要があります
+　(f) 一部の関数名を以下のように変更しました。
+　　　- criAtomEx3dSource_SetListenerBasedAngleAisacControlId
+　　　　-> criAtomEx3dSource_SetListenerBasedAzimuthAngleAisacControlId
+　　　- criAtomEx3dSource_SetSourceBasedAngleAisacControlId
+　　　　-> criAtomEx3dSource_SetSourceBasedAzimuthAngleAisacControlId
+　　　【備考】
+　　　旧関数名は互換性維持のためマクロ化されますが、実行は可能です。
+　(g) 一部の機能名を以下のように変更しました。
+　　　- リスナー基準角度AISAC -> リスナー基準方位角AISAC
+　　　- 音源基準角度AISAC -> 音源基準方位角AISAC
+　(h) CriAtomExConfig構造体へのsequence_prepare_ratioメンバ追加による
+　　　シーケンサー先読み処理方式の変更に伴い、
+　　　criAtomExPlayer_SetSequencePrepareTime関数を無効化しました。
+　　　シーケンス内のストリーム再生開始遅延が問題になる場合は、
+　　　ゼロレイテンシーストリームを使用してください。
+　(i) 最大ピッチ設定値を超えるピッチが適用される際に発生する
+　　　警告を追加しました。
+　(j) サーバー処理粒度に丸め込まれていたシーケンサー時刻管理粒度をマイクロ秒に
+　　　変更し、精度の高いシーケンス処理が行えるようになりました。
+　(k) WASAPI APIの返り値(HRESULT)が失敗だった場合に発生するコールバックを
+　　　エラーから警告に変更しました。
+
+(3) 機能追加
+　(a) キュー情報取得用構造体 CriAtomExCueInfo に関連する波形数取得用の下記
+　　　メンバを追加しました。
+　　　- num_related_waveforms
+　(b) ビート同期情報取得用構造体 CriAtomExBeatSyncInfo にオフセット情報用の
+　　　下記メンバを追加しました。
+　　　- offset
+　(c) 再生中のキューのビート同期オフセットを設定する関数を追加しました。
+　　　- criAtomExPlayback_SetBeatSyncOffset
+　(d) リスナーのオートマッチング機能を追加しました。
+　　　下記関数によって明示的にリスナーをセットしない場合、ソースから
+　　　一番近いリスナーが自動的に割り当てられます。
+　　　 - criAtomExPlayer_Set3dListenerHn
+　(e) リスナーのオートマッチング機能をパンタイプがオートに設定されている
+　　　場合に有効化する設定を追加しました。
+　　　デフォルトでは無効になっています。
+　　　有効にするためには、CriAtomExConfig構造体の下記メンバ変数に
+　　　CRI_TRUEを設定してください。
+　　　- enable_auto_matching_in_pan_type_auto
+　(f) 3Dポジショニングの機能に、空間音響接続機能「3Dトランシーバー」
+　　　を追加しました。
+　　　- criAtomEx3dSource_Set3dRegionHn
+　　　- criAtomEx3dListener_Set3dRegionHn
+　　　- criAtomEx3dRegion_CalculateWorkSize
+　　　- criAtomEx3dRegion_Create
+　　　- criAtomEx3dRegion_Destroy
+　　　- criAtomEx3dTransceiver_CalculateWorkSize
+　　　- criAtomEx3dTransceiver_Create
+　　　- criAtomEx3dTransceiver_Destroy
+　　　- criAtomEx3dTransceiver_Update
+　　　- criAtomEx3dTransceiver_SetInputPosition
+　　　- criAtomEx3dTransceiver_SetOutputPosition
+　　　- criAtomEx3dTransceiver_SetInputOrientation
+　　　- criAtomEx3dTransceiver_SetOutputOrientation
+　　　- criAtomEx3dTransceiver_SetOutputConeParameter
+　　　- criAtomEx3dTransceiver_SetOutputMinMaxAttenuationDistance
+　　　- criAtomEx3dTransceiver_SetOutputInteriorPanField
+　　　- criAtomEx3dTransceiver_SetInputCrossFadeField
+　　　- criAtomEx3dTransceiver_SetOutputVolume
+　　　- criAtomEx3dTransceiver_AttachAisac
+　　　- criAtomEx3dTransceiver_DetachAisac
+　　　- criAtomEx3dTransceiver_SetMaxAngleAisacDelta
+　　　- criAtomEx3dTransceiver_SetDistanceAisacControlId
+　　　- criAtomEx3dTransceiver_SetListenerBasedAzimuthAngleAisacControlId
+　　　- criAtomEx3dTransceiver_SetTransceiverBasedAzimuthAngleAisacControlId
+　　　- criAtomEx3dTransceiver_Set3dRegionHn
+　(g) AtomExConfigに下記メンバを追加しました。CRI_TRUEを指定すると、
+　　　キューのカテゴリ設定をExプレーヤーのカテゴリ設定で上書きします。
+　　　- enable_category_override_by_ex_player
+　(h) 「リスナー基準仰俯角AISAC」を実装しました。リスナーから見た音源の仰俯角に
+　　　よって指定したAISACコントロールIDの値が変化します。
+　　　なお、AISACコントロールIDの指定には以下の関数をご利用ください。
+　　　- criAtomEx3dSource_SetListenerBasedElevationAngleAisacControlId
+　　　- criAtomEx3dTransceiver_SetListenerBasedElevationAngleAisacControlId
+　(i) サーバー処理タイミングの揺れによるシーケンサー処理範囲の揺れを抑えるために、
+　　　CriAtomExConfig構造体にシーケンサーが先読みする割合を指定する以下のメンバを
+　　　追加しました。
+　　　- sequence_prepare_ratio
+　(j) 「音源基準仰俯角AISAC」および「3Dトランシーバー基準仰俯角AISAC」を
+　　　実装しました。音源から見たリスナーへの仰俯角によって指定した
+　　　AISACコントロールIDの値が変化します。
+　　　なお、AISACコントロールIDの指定には以下の関数をご利用ください。
+　　　- criAtomEx3dSource_SetSourceBasedElevationAngleAisacControlId
+　　　- criAtomEx3dTransceiver_SetTranscieverOutputBasedElevationAngleAisacControlId
+　　　【備考】
+　　　音源基準仰俯角AISACを使用する場合、criAtomEx3dSource_SetOrientation関数の
+　　　使用が必須となります。
+　　　非推奨関数であるcriAtomEx3dSource_SetConeOrientation関数を使用した場合、
+　　　仰俯角を算出することが出来ないため、音声再生時に警告が発生します。
+　(k) カテゴリによるプライオリティー制御にて、3Dポジショニング再生時にリスナーに
+　　　より近いものを優先する機能を追加しました。
+　　　キュープライオリティー近距離優先フラグを有効にすることで、使用することが
+　　　可能です。
+　　　【備考】
+　　　キュープライオリティー近距離優先フラグは、CRI Atom Craftでのみ設定可能です。
+　(l) キュー3D情報構造体CriAtomExCuePos3dInfoに、仰俯角AISACに関する以下の
+　　　メンバ変数を追加しました。
+　　　- listener_base_elevation_aisac_control
+　　　- source_base_elevation_aisac_control
+　(m) 下記関数で取得可能なキューの情報(CriAtomExCueInfo構造体)にパンタイプを
+　　　追加しました。
+　　　　- criAtomExAcb_GetCueInfoByName
+　　　　- criAtomExAcb_GetCueInfoById
+　　　　- criAtomExAcb_GetCueInfoByIndex
+　　　【注意】
+　　　ACB Ver.1.35.00未満のACBデータ内のキューの情報を取得した場合、
+　　　パンタイプが判別不能なため、CRIATOMEX_PAN_TYPE_UNKNOWNが返却されます。
+　(n) I3DL2リバーブの8ch出力対応を行いました。
+　　　修正前は5.1ch出力までに対応していました。修正後は7,8ch目からも残響出力が
+　　　発生します。
+　(o) サウンドレンダラタイプにCRIATOM_SOUND_RENDERER_PSEUDOを指定
+　　　できるようになりました。
+　　　CRIATOM_SOUND_RENDERER_PSEUDOを指定してASRラックを作成することで、
+　　　他機種向けに出力先ASRラック番号が設定されている音声を再生した場合
+　　　でも、エラーを発生させずに音声をミュートさせることが可能です。
+
+ [2020-02-07 CRI Atom Ver.2.19.11]------------------------------------------
+(1) 不具合修正
+　(a) インゲームプレビュー機能、プロファイラー機能を使用中にWaveボイスプール
+　　　を作成した際、ログ生成処理でエラーが発生する不具合を修正しました。
+　(b) ループが設定されているブロックで、ブロック遷移実行時に未発音の遷移時
+　　　発音トラックの要素があると再生が停止してしまう不具合を修正しました。
+　(c) 停止状態のAtomExプレーヤーに対してcriAtomExPlayer_Start関数で再生
+　　　を行った場合に、発音タイミングが1V遅れる不具合を修正しました。
+　　　※Ver.2.18.02以降のライブラリで発生していました。
+
+(2) ヒストリの修正
+　(a) CRI Atom Ver.2.19.05 の不具合修正(i)の記述を追記しました。
+
+ [2019-12-03 CRI Atom Ver.2.19.08]------------------------------------------
+　内部修正のみ
+
+ [2019-11-29 CRI Atom Ver.2.19.07]------------------------------------------
+(1) 不具合修正
+　(a) criAtomEx_UnregisterAcf 関数を実行するとタイミング依存で例外が発生する
+　　　不具合を修正しました。
+　　　※Atom Ver.2.16.18以降のライブラリで発生していました。
+　(b) データにドライセンド、ドライセンドオフセットパラメーターが設定されて
+　　　いる場合、それらのパラメーターが適用されない不具合を修正しました。
+　(c) CriAtomExPlayerをUpdateすると、アクション経由でのAISACコントロール値
+　　　変更が無効化される不具合を修正しました。
+　(d) アクショントラックからのキュー再生においてプレーヤーに設定した
+　　　カテゴリが呼び出されたキューに適用されない不具合を修正しました。
+　(e) ピッチ変更操作やドップラー演算により極端に小さなピッチが設定
+　　　された場合に、エラーコールバック（E2016110710）が発生する不具合
+　　　を修正しました。
+　(f) セレクタに対するグローバル参照ラベルの設定を行う以下の関数が動作せず、
+　　エラーを発生させていた不具合を修正しました。
+　　- criAtomExAcf_SetGlobalLabelToSelectorByName
+　　- criAtomExAcf_SetGlobalLabelToSelectorByIndex
+　　※CRI Atom Ver.2.19.03以降のライブラリで発生していました。
+　(g) 3バンドEQと32バンドEQのゲインが最大5（約14dB）の範囲に制限されており、
+　　　14dB以上のゲインが反映されない不具合を修正。
+　(h) I3DL2リバーブ使用時に、入力データの7,8ch目が無視され、
+　　　残響として出力されない不具合を修正しました。
+　　　※Atom Ver.1.28.06 以降のライブラリで発生していました。
+
+ [2019-09-03 CRI Atom Ver.2.19.05]------------------------------------------
+(1) 不具合修正
+　(a) 以下の条件を満たすACFを使用した場合に、発音が無音になってしまう不具合
+　　　を修正しました。
+　　　- 複数のDSPバス設定がある。
+　　　- DSPバス設定内のバスがMasterOutバスのみである。
+　(b) 音声同期タイマが再生終了間際に0を返してしまう問題を修正しました。
+　(c) acbハンドルロード直後の再生において、シャッフル再生を使用したキューの
+　　　先頭のトラックが再生されない不具合を修正しました。
+　(d) 音声リソースが破棄される直前に、criAtomExPlayback_GetStatus関数を
+　　　呼び出した場合、誤ってCRIATOMEXPLAYBACK_STATUS_REMOVEDを返される
+　　　不具合を修正しました。
+　(e) Waveformリージョン再生トラックが１つもないキューの再生時に、再生キャン
+　　　セルを意味するログ出力が行われていた不具合を修正しました。
+　(f) ピッチシフタの出力音声ボリュームが小さくなっていた不具合を修正しました。
+　　　※CRI Atom Ver.2.14.02 以降のライブラリで発生していました。
+　(g) CRIATOM_SOUND_RENDERER_HW1?CRIATOM_SOUND_RENDERER_HW4を指定して
+　　　再生しようとすると、エラーとなる不具合を修正しました。
+　(h) Atomライブラリをシングルスレッドモードで動作させた時に、サーバー処理を
+　　　実行するとアサート例外が発生する不具合を修正しました。
+　(i) 以下の設定でエンコードされたHCAデータを再生すると、音声がノイズ
+　　　になる不具合を修正しました。
+　　　- 44kHz音声に16kHzのカットオフを設定している
+　　　- 最低品質（最高圧縮）設定でHCAをエンコードしている
+
+ [2019-05-17 CRI Atom Ver.2.19.03]------------------------------------------
+(1) 不具合修正
+　(a) カテゴリによるミュート機能もしくはソロ機能を使用してミュートした音声が
+　　　-96dB程の振幅で再生されており、再生デバイスによっては音声が聞こえてしまう
+　　　不具合を修正しました。
+　(b) 以下の条件を満たした場合に、ブロックエンド遷移処理が早く行われてしまう
+　　　不具合を修正しました。
+　　　- ブロックに対して分割数指定が行われている。
+　　　- ブロック長（msec単位）が分割数で割り切れない。
+　　　- 再生プレーヤに対し、criAtomExPlayer_SetSequencePrepareTime関数を
+　　　　使用している。
+　(c)  CRI Atom Craft Ver.3.40.00?Ver.3.41.03によって出力したACFデータ使用
+　　　時に、セレクタラベル情報にアクセスすると不正アクセスが発生する可能性の
+　　　ある不具合を修正しました。
+　(d) 以下のエフェクトを使用した際に、遅延（残響）が途切れてしまう不具合を
+　　　修正しました。
+　　　　- ディレイ
+　　　　- エコー
+　　　　- マルチタップディレイ
+　(e) criAtom_GetAudioClient_WASAPI関数が未初期化のAudioClientを返す
+　　　不具合を修正しました。
+　(f) 以下のエフェクトに非正規化数を入力すると負荷が増加する不具合を
+　　　修正しました。
+　　　　- バイクアッドフィルタ
+　　　　- バンドパスフィルタ
+　　　　- 3バンドイコライザ
+　　　　- 32バンドイコライザ
+　(g) WebGL用ACBデータに対して波形情報取得を行った際に、不正引数エラーが発生して
+　　　いた問題を修正しました。
+
+(2) 仕様変更
+　(a) 非推奨関数 criAtomEx3dListener_SetDistanceFactor を呼び出した際の
+　　　警告（W2019021901）を廃止しました。
+
+ [2019-02-28 CRI Atom Ver.2.19.00]------------------------------------------
+(1) 不具合修正
+　(a) ACBハンドル指定での停止処理及び、解放確認処理にて、マルチAWB機能にて
+　　　複数のAWBハンドルが使用されていても、最初のAWBだけが処理対象になって
+　　　いた不具合を修正しました。
+　(b) エラーE2017031600が発生し、ライブラリの終了処理が完了しない不具合
+　　　を修正しました。
+　(c) ACFデータ内にキュー再生に必要なセレクタ情報が存在しない場合に、キュー
+　　　の再生処理内で不正アクセスが発生する不具合を修正しました。
+　(d) 複数のアクショントラックを使用しているキューの再生時に、アクションの
+　　　ターゲットに指定されているキューの検索に失敗した場合、以降にあるアク
+　　　ショントラックの再生が行われない不具合を修正しました。
+　(e) CRI Atom Craft Ver.1系にて出力したACBを使用した再生で、キューの構造が
+　　　シーケンスではない場合に、ボイスリミットグループによる発音制御が動作
+　　　しない不具合を修正しました。
+　(f) CRI Atom Craft Ver.1系にて出力したACBを使用した再生で、バスセンド設定
+　　　が正しく適用されず、無音再生となる可能性のある不具合を修正しました。
+　(g) カテゴリに対するレジューム/ポーズアクションが適用されない不具合を修正しました。
+　(h) サイドチェインを使用しないコンプレッサに対して、以下の関数の実行に
+　　　失敗してしまう不具合を修正しました。
+　　　 - criAtomExAsrRack_GetCompressorRms
+　　　 - criAtomExAsrRack_GetCompressorRmsByName
+　(i) コンプレッサのアタック時間の上限値をCRI AtomCraft側の上限値に合わせ、
+　　　200[ms]から3000[ms]に変更しました。
+　(j) 遷移時初回再生トラックを使用したブロックシーケンスの再生で遷移（再生）
+　　　済みブロック処理が適切に行われおらず、意図しないタイミングでブロック
+　　　遷移が発生してしまう不具合を修正しました。
+　(k) 以下の条件を満たした際に、ACFの登録処理内でエラーE2018090601が発生し、
+　　　ACFの登録に必要なワークサイズの計算に失敗する不具合を修正しました。
+　　　　- カテゴリキューリミットアイテムを使用していない
+　　　※CRI Atom Ver.2.17.20以降のライブラリで発生していました。
+　(l) 再生確率設定により再生をキャンセルされたキューが再生本数にカウントさ
+　　　れ、カテゴリキューリミット処理が動作していた不具合を修正しました。
+　(n) PCx64環境とPCx86環境でリバーブの出力が異なる不具合を修正しました。
+
+(2) 仕様変更
+　(a) 以下の関数を実行する際に、ベクトルの座標値に非数(NaN)が含まれている
+　　　場合は、エラーコールバックが返るよう仕様を変更しました。
+　　　- criAtomEx3dSource_SetPosition
+　　　- criAtomEx3dListener_SetPosition
+　(b) 下記関数が非推奨となりました。
+　　　 - criAtomEx3dListener_SetDistanceFactor
+　　　代わりに下記関数の使用をご検討ください。
+　　　 - criAtomEx3dListener_SetDopplerMultiplier
+　(c) criAtomEx_Initialize_PC関数を使ってライブラリを初期化した場合、
+　　　WASAPIによる音声出力が行われるよう動作を変更しました。
+　　　（以前のバージョンでは、XAudio2が使用されていました。）
+　(d) XAudio2音声出力に関する機能を削除しました。
+　　　仕様変更に伴い、下記APIが使用できなくなります。
+　　　- criAtomEx_CalculateWorkSize_XAUDIO2
+　　　- criAtomEx_Finalize_XAUDIO2
+　　　- criAtomEx_Initialize_XAUDIO2
+　　　- criAtom_CalculateWorkSize_XAUDIO2
+　　　- criAtom_Finalize_XAUDIO2
+　　　- criAtom_Initialize_XAUDIO2
+　　　- criAtom_IsCriticalErrorOccurred_XAUDIO2
+　　　- criAtom_SetOutputDeviceIndex_XAUDIO2
+　　　- criAtom_SetOutputVoice_XAUDIO2
+　　　- criAtom_SetSoundBufferSize_XAUDIO2
+　　　- criAtom_SetXAudio2Object_XAUDIO2
+　　【補足】
+　　　仕様変更に伴い、criAtomEx_Initialize_XAUDIO2関数を使用している
+　　　アプリケーションは以下のコード修正を行う必要があります。
+　　　(1) cri_atom_xaudio2.hの代わりに、cri_atom_wasapi.hをインクルード
+　　　　　する。
+　　　(2) criAtomEx_Initialize_XAUDIO2関数の代わりに、
+　　　　　criAtomEx_Initialize_WASAPI関数を使用してライブラリを初期化する。
+　　　(3) criAtomEx_Finalize_XAUDIO2関数の代わりに、
+　　　　　criAtomEx_Finalize_WASAPI関数を使用してライブラリを終了する。
+　　　(4) 削除されたAPIを呼び出さないようコードを修正する。
+
+(3) 機能追加
+　(b) CriAtomEx3dSourceHn, CriAtomEx3dListenerHnが設定され3Dポジショニング
+　　　計算が可能なプレーヤにて、パンタイプとしてPan3Dタイプが適用される再生
+　　　を行った際に、距離AISAC、角度AISACの演算結果を適用するか否かを切り替
+　　　えるAPIを追加しました
+　　　【補足】
+　　　本関数はAtom Ver.2.17.19以前との動作互換性を取るために追加しました。
+　　　バージョン間の挙動の差異は以下になります：
+　　　【Ver.2.17.19以前の動作】
+　　　パンタイプに関わらず、距離AISAC、角度AISACの演算結果が適用されていた。
+　　　【Ver.2.17.20以降】
+　　　パンタイプが3Dポジショニングの場合のみ、距離AISAC、角度AISACの演算結果
+　　　を適用する。
+　(c) 再生イベントコールバックの登録機能を追加しました。
+　　　- criAtomExPlayer_SetPlaybackEventCallback
+　　　再生イベントコールバックを登録することで、再生用リソースの確保／
+　　　解放やボイスの割り当て、バーチャル化のタイミングをアプリケーション
+　　　で把握することが可能となります。
+　(d) REACTの駆動パラメータを設定取得する関数を追加しました。
+　　　　- criAtomExCategory_SetReactParameter
+　　　　- criAtomExCategory_GetReactParameter
+　(e) 以下のアクションに対応しました。
+　　　 - フェード時間付きポーズアクション
+　　　 - フェード時間付きレジュームアクション
+　　　 - フェード時間付き停止アクション
+　(f) ドップラー効果の倍率を設定する関数を追加しました。
+　　　 - criAtomEx3dListener_SetDopplerMultiplier
+　(g) コンプレッサと振幅解析器の内部値を取得する外部公開関数を追加しました。
+　　　 - criAtomExAsrRack_GetAmplitudeAnalyzerRms
+　　　 - criAtomExAsrRack_GetAmplitudeAnalyzerRmsByName
+　　　 - criAtomExAsrRack_GetCompressorGain
+　　　 - criAtomExAsrRack_GetCompressorGainByName
+　　　 - criAtomExAsrRack_GetCompressorRms
+　　　 - criAtomExAsrRack_GetCompressorRmsByName
+
+(4) 最適化
+　(a) 設定していないパラメータに対する冗長な計算処理を削減しました。
+　(b) 大量に音声を発音した際のCPU負荷を軽減しました。
+
+(5) 過去リリース履歴への更新
+　(a) CRI Atom Ver.2.17.20に不具合修正の(h)を追記しました。
+
+[2019-01-23 CRI Atom Ver.2.17.22]------------------------------------------
+(1) 不具合修正
+  (a) 以下の条件を満たすとき、再生した音声に対して criAtomExPlayer_SetAsrRackId 
+      関数等にて設定した出力先ASRラックIDが適用されない不具合を修正しました。
+      - 再生する音声がキューリンクである
+      - キューリンク元のパラメータパレットにて出力先ASRラックIDが指定されている
+  (b) パラメータ適用処理内で例外が発生することがある不具合を修正しました。
+      ※CRI Atom Ver.2.17.12 以降のライブラリで発生していました。
+  (c) シーク再生を行った際、criAtomExPlayer_GetTimeによって得られる再生時間が
+      シークした時刻からではなく、0から進んでしまう不具合修正を修正しました。
+      ※CRI AtomEx Sequencer Ver.1.05.05以降のライブラリで発生していました。
+  (d) CriAtomPlayerConfigのmax_aisacsを奇数に設定すると例外が発生することがある
+      不具合を修正しました。
+  (e) 音声再生中にASRラックを破棄すると、アクセス違反が発生する不具合
+      を修正しました。
+  (f) コンプレッサ・リミッタのアタックタイムもしくはリリースタイムが
+      0に設定されている際に、ゲインの適用処理が正しく適用されない
+      不具合を修正しました。
+  (g) インサーションDSPのピッチシフタを使用して再生を行うと、
+      CriAtomExPlayerの状態がPLAYENDに遷移しない不具合を修正しました。
+
+[2018-10-30 CRI Atom Ver.2.17.21]------------------------------------------
+(1) 不具合修正
+  (a) ACBハンドルリリース時にエラーE2011080599が発生し、処理が進まなく
+      なる不具合を修正しました。
+  (b) PanTypeがAutoで設定されているキューがランタイム実行時に強制的にPantypeが
+      Pan3dとなってしまう不具合を修正しました。
+  (c) ブロック再生での指定分割遷移時に、遷移時分割位置維持が設定されてない
+      場合でも最大で１フレーム分のシークが行われてしまう不具合を修正しました。
+  (d) ASRの出力サンプリングレートよりも低いレートの音声を再生した場合、
+      AtomExPlayerのステータスがPLAYENDに遷移しない場合がある不具合を
+      修正しました。
+  (e) DSPバスエフェクトのコンプレッサ、またはリミッタを使用した際、
+      無音入力から再度音声入力を行うと、無音入力前の状態から
+      出力ゲインがフェードインしてしまう不具合を修正しました。
+  (f) シーク再生を行なったデータに対して再生の停止を行うと、
+      以下の関数により得られるサンプル数が巻き戻ってしまう不具合を修正しました。
+      - criAtomExPlayback_GetNumPlayedSamples 関数
+      - criAtomPlayer_GetNumPlayedSamples 関数
+
+[2018-09-26 CRI Atom Ver.2.17.20]------------------------------------------
+(1) 不具合修正
+  (a) ブロックシーケンス再生でのブロック遷移時にサーバー間隔による遷移タイ
+      ミング補正が入っていない不具合を修正しました。
+  (b) 再生IDを指定して各種パラメータを取得する以下の関数について、再生IDの状態が
+    PREP/PLAYING状態でもパラメータが未設定の場合に失敗する不具合を修正しました。
+      - criAtomExPlayback_GetParameterFloat32
+      - criAtomExPlayback_GetParameterUint32
+      - criAtomExPlayback_GetParameterSint32
+      - criAtomExPlayback_GetAisacById
+      - criAtomExPlayback_GetAisacByName
+  (c) AISAC数を8個以外に設定したときワークサイズ計算の不整合が生じる場合が
+      ある不具合を修正しました。
+  (d) ストリームAWBを使用するACBに対してAWBをアタッチしないままインゲーム
+      プレビューを行った場合、サーバー処理内で無限ループが発生する不具合を修正。
+  (e) キューリンクを用いた音声再生で距離減衰AISACが適用できない不具合を修正
+      しました。
+  (f) ACFデータ内にあるカテゴリキューリミット用ワーク領域の初期化時に、本来
+      は領域外となるパディング用領域をもワークとして使用してた不具合を修正し
+      ました。
+  (g) プリディレイとエンベロープのアタックを同時に使用したとき、
+      プリディレイとアタックが同時に開始されてしまう不具合を修正しました。
+      プリディレイが完了してからアタックが始まるのが正しい挙動です。
+
+(2) 仕様変更
+  (a) 以下のAPIを非推奨としました。使用はお控え下さい。
+      - criAtomEx_SetDefaultConfigForAcf
+      - CriAtomExAcfConfig
+      - criAtomEx_CalculateWorkSizeForRegisterAcfConfig
+      - criAtomEx_RegisterAcfConfig
+
+(3) 機能追加
+  (a) モニタライブラリ使用したインゲームプレビューにおいて、オーサリングツ
+      ールからのACFデータ, ACBデータの更新処理の開始・終了情報を取得するた
+      めの機能を追加しました。
+      - criAtomExMonitor_SetDataUpdateNotificationCallback
+  (b) プレーヤに対して複数のASRラックIDを指定可能な関数を追加しました。
+      - criAtomExPlayer_SetAsrRackIdArray
+      【補足】
+      1つのプレーヤに対して設定可能なASRラックの最大数は下記のマクロ定数に
+      定義されています。
+      - CRIATOMEXPLAYER_MAX_ASR_RACKS
+  (c) CriAtomEx3dSourcHn、CriAtomEx3dListenerHnから座標値を設定されている
+      取得する関数を追加しました。
+      - criAtomEx3dSource_GetPosition
+      - criAtomEx3dListener_GetPosition
+  (d) 一つのキューに紐づけることができるAISACの最大数が変更可能になりました。
+      (以前は8個で固定でした。)
+      AISACの最大数を変更するにはCriAtomExConfig構造体のメンバ変数である
+      "max_aisacs"の値を変更します。
+      指定できる最大値はCRIATOMPARAMETER2_MAX_NUM_AISACS以下の値です。
+  (e) 任意のカテゴリが持つ全てのAISACコントロール値をデフォルト値にリセット
+      する機能を追加しました。
+      - criAtomExCategory_ResetAllAisacControlById
+      - criAtomExCategory_ResetAllAisacControlByName
+  (f) 任意のカテゴリAISACコントロールの現在値を取得する機能を追加しました。
+      - criAtomExCategory_GetCurrentAisacControlValueById
+      - criAtomExCategory_GetCurrentAisacControlValueByName
+  (g) 下記関数によって取得できるAISAC情報の種類を追加しました。
+      - criAtomExPlayer_GetAttachedAisacInfo
+      - criAtomExCategory_GetAttachedAisacInfoById
+      - criAtomExCategory_GetAttachedAisacInfoByName
+      取得可能なAISAC情報一覧
+      - AISAC名
+      - デフォルトコントロール値が設定されているか(新)
+      - デフォルトAISACコントロール値(新)
+      - Control Id(新)
+      - Control Name(新)
+  (h) プレーヤにプリディレイタイムを設定するAPIを追加しました。
+      - criAtomExPlayer_SetPreDelayTime
+  (i) 再生しているキューからビート同期情報を取得するAPIを追加しました。
+      - criAtomExPlayback_GetBeatSyncInfo
+  (j) CriAtomExBeatSyncInfo構造体に以下のメンバ変数を追加しました。
+      - bpm: 現在のBPM
+      - beat_progress: 拍の進捗割合(0.0f〜1.0f)
+  (k) ブロック再生での分割遷移時に分割位置を維持する機能に対応しました。
+  (l) ポーズ、レジュームアクションに対応しました。
+  (m) 開始ブロック番号指定のスタートアクションに対応しました。
+  (n) キューのデフォルトセレクタラベルに対応しました。
+  (o) MixDownCenterボリュームとMixDownLFEボリュームのデータ設定値に対して、
+      オフセット値を加算する下記APIを追加しました。
+      - criAtomExPlayer_AddMixDownCenterVolumeOffset
+      - criAtomExPlayer_AddMixDownLFEVolumeOffset
+  (p) Headphone Virtual Surroundエフェクトを追加しました。
+  (q) サウンドデバイスが更新された際、コールバックで通知を受け取る機能
+      を追加しました。
+      - criAtom_SetDeviceUpdateCallback_WASAPI
+
+[2018-07-25 CRI Atom Ver.2.16.27]------------------------------------------
+(1) 不具合修正
+  (a) criAtomExPlayback_GetTimeSyncedWithAudio により取得可能な再生時刻が一時
+      停止中も進んでしまう問題を修正しました。
+  (b) criAtomEx_CalculateWorkSizeForRegisterAcfFileがメモリアロケータ必須と
+      なっていたのを、メモリアロケータなしでもワークサイズ領域の計算を行える
+      よう修正しました。
+  (c) AtomCraftで「AtomExPlayerのパラメータを無視する」をtrueに設定した音声
+      を再生すると意図しないエラーが発生する場合がある不具合を修正ました。
+  (d) セレクタによるトラック遷移タイプキューの再生で、トラック遷移と再生開
+      始の同期処理が登録されている場合に、再生開始処理が正しく処理されない
+      不具合を修正しました。
+  (e) セレクタによるトラック遷移タイプキューの再生で、アクションによって切
+      り替えたセレクタ設定がプレーヤに対するパラメータ更新処理の適用を行う
+      ことで無効化されてしまう不具合を修正しました。
+  (f) 下記条件を満たす時、ACFデータが登録されていない状態になってしまう不具合を
+      修正しました。
+      - 下記の関数を実行している
+        - criAtomEx_RegisterAcfData 関数
+        - criatomEx_RegisterAcfFile 関数
+      - 下記関数を上記関数実行後に実行している
+        - criAtomEx_CalculateWorkSizeForRegisterAcfData 関数
+        - criAtomEx_CalculateWorkSizeForRegisterAcfFile 関数
+      ※CRI Atom Ver.2.16.18より発生していました。
+  (g) コンプレッサ、リミッタエフェクトをサイドチェインにより駆動する際、
+      スナップショットを適用すると、振幅解析器の解析結果に連動しなくなる
+      不具合を修正しました。
+
+[2018-06-11 CRI Atom Ver.2.16.26]------------------------------------------
+(1) 不具合修正
+  (a) 以下の条件を満たしたときに、再生中にバスセンドのリセット動作を行うと
+      再生音声が無音になる不具合を修正しました。
+       - 再生データにバスセンドが設定されていない
+         → データ再生あるいはエンコーダで作成したキューが該当します。
+      以下の条件を満たす場合には、不具合は発生しません。
+       - モニターライブラリを使用し、かつキュー再生を行う
+      【補足】
+      バスセンドのリセットは、以下の関数呼び出しにより発生します
+       - DSPバス設定のアタッチ
+         criAtomEx_AttachDspBusSetting, またはcriAtomExAsr_AttachDspBusSetting
+  (b) Atomライブラリを使用し、以下の条件(A), (B), (C)を全て満たした際に
+      再生時に無音となる不具合を修正しました。
+  (c) Atomモニターライブラリ使用し、以下の条件(A), (B), (C)を全て満たすか、
+      (A), (B), (D)を全て満たした際に、再生時に無音となる不具合を修正しました。
+        (A) 以下のツールを使用して作成したACBデータを使用している
+            - CriAtomEncoder.exe
+            - criatomencd.exe
+        (B) 以下の関数を実行して"MasterOut"以外のバスセンドを
+            設定している
+            - criAtomExPlayer_SetBusSendLevel
+            - criAtomExPlayer_SetBusSendLevelByName
+        (C) 再生中に以下の関数を実行する
+            - criAtomEx_AttachDspBusSetting
+            - criAtomEx_DetachDspBusSetting
+        (D) 以下の関数を実行して再生パラメータの更新を行う
+            - criAtomExPlayer_Update
+            - criAtomExParameter_UpdateAll
+  (d) Acfファイルを登録した際に、DspBusSettingが自動でアタッチされない場合
+      がある不具合を修正しました。
+  (e) criAtomExAcf_GetAisacControlNameById関数に対して、ACFデータ内に存在す
+      るAISACコントロールIDを指定してもAISACコントロール名取得が行えない不具
+      合を修正しました。
+  (f) 以下のバージョンのAtomCraftで作成したACFについて、
+      サラウンダのパラメータ解釈を正しく行えていなかった不具合を修正しました。
+       - AtomCraft Ver.2.32.00 - Ver.2.35.00
+       - AtomCraft Ver.3.34.00 - Ver.3.35.01
+  (g) AdmPlayerのワークサイズ計算時に、エラー E2017020301 および
+      E2017041802 が発生する不具合を修正しました。
+  (h) ピッチシフタエフェクトをバスに使用している際、以下の条件を満たすと、
+      処理系によってはバスの出力が無音になる不具合を修正しました。
+       - ピッチ周波数をサンプリングレートの半分より大きい値に設定する
+  (i) 下記条件を満たす時、REACT制御用のカテゴリ内発音数が不正になり、駆動した
+      REACTが戻らなくなる不具合を修正しました。
+      - フェーダーをプレーヤにアタッチしている
+      - REACTの設定にて、「ポーズ中のキューも含む」をoffに設定している
+  (j) 下記条件を満たす時、REACT制御用のカテゴリ内発音数が不正になり、駆動した
+      REACTが戻らなくなる不具合を修正しました。
+      - criAtomExPlayer_Prepare関数またはPause関数を実行し、プレーヤまたは
+        プレイバックのステータスが再生準備状態（PREP）になっている
+      - 同一フレーム内でPause解除とStop関数を実行している
+  (k) 停止処理によりエンベロープリリース中のボイスに対してパラメータ更新
+      処理が適用されると、停止処理によって下げたボイス優先度が元に戻って
+      しまう不具合を修正しました。
+  (l) ビート同期による同期待ちのキューが、再生開始時にキューリミット処理等
+      で発音キャンセルとなった場合に不正アクセスが発生する可能性のある不具合
+      を修正しました。
+  (m) プリペア解除時にキューリミット処理が適用されない不具合を修正しました。
+  (n) 再生中にイヤホン抜き差しなどにより長時間出力がブロックされた場合に、音声
+      同期タイマから取得した時刻が音声から大きくずれてしまう問題を修正しました。
+  (o) スイッチタイプキューをプレイリストモードに設定し、再生を行った場合に
+      ２回目以降のリスト再生時にスイッチ処理が行われず、無音となってしまう
+      不具合を修正しました。
+  (p) 下記条件を満たす時、データに指定していた出力先ASRラックナンバーパラメータ
+      （ASRラックID）が適用されない不具合を修正しました。
+      - プレーヤに対してcriAtomExPlayer_ResetParameters関数を実行している
+  (q) 下記条件を満たす時、criAtomExPlayer_SetAsrRackId関数にて指定した
+      ASRラックIDを使用して、パラメータパレットに設定したASRラックID数分の
+      キュー再生が行われてしまう不具合を修正しました。
+      - criAtomExPlayer_SetAsrRackId関数にてプレーヤにASRラックIDを指定した
+      - パラメータパレットにて、複数のASRラックIDを指定しているキューを
+        当該プレーヤにて再生した
+      【補足】
+      本来は、criAtomExPlayer_SetAsrRackId関数にて指定したASRラックID分のみの
+      キュー再生が行われることを想定していました。
+  (r) 以下の条件を満たしたときに、バス名指定APIがエラーコールバックを返し、
+      処理が完了しない不具合を修正しました。
+       - 複数のASRラックを使用している。
+       - デフォルトASRラックはDSPバス設定をアタッチしている
+       - デフォルトではない方のASRラックにDSPバス設定をアタッチしていない
+     【補足】
+       バス名指定APIとは criAtomExAsrRack_(任意の文字列)ByName の命名規則を
+       満たす関数です。
+  (s) 以下の条件を満たしたときに、当該プレーヤまたはデータを使用した再生を行う
+      と、バスセンドの設定が無視され、MasterOutに対して直接出力されていた不具合
+      を修正しました。
+      - バスセンドをプレーヤまたはデータに設定している
+      - 存在しないASRラックIDをプレーヤまたはデータに指定している
+
+[2018-03-08 CRI Atom Ver.2.16.22]------------------------------------------
+(1) 不具合修正
+  (a) ACFデータでReact数をCategory数より多く設定している場合に、E2010110100が
+      発生する不具合を修正しました。
+  (b) AtomExライブラリの初期化処理に置いて、ユーザアロケータを利用した
+      初期化を行った際に、ASRとHcaMXのメモリ領域が二重に確保されてしまう
+      不具合を修正しました。
+  (c) criAtomEx_RegisterAcfFile関数で余分なメモリ領域が確保されてしまう不具
+      合を修正しました。
+  (d) criAtomEx_CalculateWorkSizeForRegisterAcfData関数で余分なメモリ
+      領域が確保されてしまう不具合を修正しました。
+  (e) criAtomEx_RegisterAcfConfig関数実行後にACFデータにアクセスする処理を
+      実行すると、アクセス例外が発生する不具合を修正しました。
+      【補足】
+      criAtomEx_RegisterAcfConfig関数は次回SDKアップデート（Ver.2.18.00）にて
+      廃止する予定です。
+  (f) インゲームプレビュー中にオーサリングツール上でのACFデータ情報の編集に
+      伴うACFデータ更新処理が行われたときに、ゲーム変数情報が初期化されてし
+      まう不具合を修正しました。
+  (g) モニタライブラリ使用時に以下のツールを使用して作成したACBデータが無音
+      再生となってしまう不具合を修正しました。
+      - CriAtomEncoder.exe
+      - criatomencd.exe
+
+(2) 仕様変更
+  (a) 以下の関数を実行した際、ライブラリ内でnew演算子による動的なメモリ
+      確保が発生しないよう動作を変更しました。
+      - criAtomEx_CalculateWorkSize_WASAPI
+      - criAtomEx_Initialize_WASAPI
+
+[2018-01-31 CRI Atom Ver.2.16.20]------------------------------------------
+(1) 不具合修正
+  (a) ブロックシーケンス再生で設定されていた再生レート情報がブロックループ
+      時にクリアされてしまう不具合を修正しました。
+  (b) ACBデータロード後、ランダムノーリピートタイプキューの初回再生で、常に
+      １トラック目が再生される不具合を修正しました。
+  (c) 以下の条件に一致した場合に、MasterOutバスに対するバス名指定系APIが
+      失敗してしまう不具合を修正しました。
+      - ACFをワーク領域渡しによって登録している。
+      - DSPバス設定をアタッチしていない。
+  (d) モニタライブラリを使用したインゲームプレビューで、アプリケーション起
+      動中、２回目以降のインゲームプレビューの開始処理にてAtomCraftによるACF
+      データの更新が行われない不具合を修正しました。
+      ※CRI Atom Ver.2.14.29以降のバージョンで発生していました。
+  (e) 以下の条件に一致した場合に、ラックID "0" 以外で再生する音声が意図
+      したバスを経由せずに再生される不具合を修正しました。
+      - 複数のASRラックを使用し、それぞれにDSPバス設定を適用している。
+      - ラック毎に設定しているDSPバス設定のバス名の並び順が異なっている。
+      - ラックID "0" 以外の指定をAPIにて行っている。
+      - ラックID "0" 以外の再生でMasterOutバスへの直接出力ではなく、複数
+        のバスを経由した再生をしている。
+
+(2) 仕様変更
+  (a) ACFデータの解除処理の条件から、「生成済みの全てのACBハンドルの解放」を
+      無くし、任意のタイミングでの解除処理が行えるように仕様を変更しました。
+      本仕様変更に伴い、以下の点が変更されています。
+      - ユーザーアロケータを利用したライブラリ初期化を行なった場合に、これまで
+        初期化時に確保していたカテゴリやREACT用のワーク領域をACF登録時に確保
+        するよう変更しました。
+        （ワーク領域を独自に確保してライブラリを初期化している場合は、これまで
+        同様に初期化時に指定された領域を使用してACFの登録処理が行われます。）
+      - ACF登録関数（criAtomEx_RegisterAcfConfig、criAtomEx_RegisterAcfData、
+        criAtomEx_RegisterAcfFile、criAtomEx_RegisterAcfFileById）を実行すると、
+        再生中の音声をすべて停止するよう変更しました。
+      - ACF登録解除関数（criAtomEx_UnregisterAcf）を実行すると、再生中の音声を
+        すべて停止し、プレイヤに設定しているパラメータを一部リセットするよう
+        変更しました。
+        登録解除後の再生では必要に応じて、パラメータの再設定を行ってください。
+      - ワーク領域を独自に確保してライブラリを初期化している状態で、ASRの初期化
+        時に指定した最大バス数を超えたACFを登録した場合に、登録処理が失敗するよ
+        うに変更しました。
+        （これまでは登録処理は成功するが、バス設定適用が失敗するようになって
+        いました。）
+      - criAtomEx_CalculateWorkSizeForRegisterAcfFile関数でACFファイルの読み込み
+        を行うため、利用にはユーザアロケータの登録が必須となりました。
+  (b) ツールとライブラリ間の通信インターフェースへの機能追加に伴い、接続に
+      関する後方互換性が無くなります。
+      本SDK内のAtomCraftを使用してインゲーム及びプロファイラーを使用するには
+      CRI Atom Library Ver.2.16.18以上のライブラリが必要となります。
+  (c) 以下の警告（ピッチ上限違反）が発生した際、コールバックの最終引数
+      に問題が発生したCriAtomPlayerHnのアドレスを格納するよう動作を
+      変更しました。
+      - W2010110801
+      - W2015113001
+  (d) 以下の条件を満たした状態で、criAtomExSoundObject_AddPlayer関数を実行
+      した際に再生中の音声が停止しないよう仕様を変更しました。
+      - 指定したサウンドオブジェクトとAtomExプレーヤが既に関連付けられている
+
+(3) 機能追加
+  (a) キュー内のどのトラックが再生されたかを取得する機能を追加しました。
+      - criAtomExPlayback_GetPlaybackTrackInfo
+  (b) オーディオエンドポイントを列挙する機能を追加しました。
+      - criAtom_EnumAudioEndpoints_WASAPI
+  (c) CRIATOM_SOUND_RENDERER_HW1〜CRIATOM_SOUND_RENDERER_HW4に対し、
+      ID指定でサウンドデバイスを明示的に割り当てられるようになりました。
+      - criAtom_SetDeviceId_WASAPI
+      （サウンドデバイスのIDはIMMDevice::GetIdで取得する必要があります。）
+
+(4) 過去リリース履歴への更新
+  (a) CRI Atom Ver.2.14.29に仕様変更の(c)を追記しました。
+
+[2017-12-19 CRI Atom Ver.2.15.18]------------------------------------------
+(1) 不具合修正
+  (a) モニターライブラリ使用時に以下の条件を満たすとエラーコールバックが
+      発生する不具合を修正しました。
+      - CriAtomExConfigのバス数(num_buses)が8未満の状態でライブラリ初期化を
+        行う
+  (b) 以下の条件に一致する場合に、設定が行われていないバスへのルーティングが
+      行われてしまう不具合を修正しました。
+      - キューに設定されている（もしくはプレーヤに設定した）ASRラックIDが
+        存在しない状況で再生する。
+      - ラックID=0で適用中のDSPバス設定には存在しないバスへのセンドが設定さ
+        れている。
+      - その存在しないバスの名前がACF内のバス名リストの2~8番目になっている。
+  (c) 下記関数にて指定した値がプレーヤに適用されない不具合を修正しました。
+      - criAtomExPlayer_SetVoicePoolIdentifier 関数（ボイスプール識別子）
+      - criAtomExPlayer_SetHcaMxMixerId 関数（HCA-MXデコード先ミキサID）
+  (d) 関数の連続呼び出し等で同一フレーム内にStart関数とPause解除を行った場
+      合に、REACT制御用のカテゴリ内発音数が不正になり、駆動したREACTが戻ら
+      なくなる不具合を修正しました。
+  (e) プレビューライブラリ、モニターライブラリ使用時に以下の条件を
+      全て満たすと、再生時に無音となる不具合を修正しました。
+      - 再生元のタイプがキュー再生以外
+      - バスのルーティング設定をソースに設定していない
+  (g) Exプレーヤの一部パラメータの適用において、criAtomExPlayer_Start関数
+      実行時に設定されていたパラメータではなく、発音時のパラメータを適用して
+      しまう不具合を修正しました。
+      対象のパラメータは以下の通りです。
+      - ASRラックID
+      - ボイスプール識別子
+      - HCA-MXデコード先ミキサID
+  (h) アクショントラックを内包するキュー再生にて、アクションによる
+      キュー再生が発生した場合に、発音時のExプレーヤのパラメータを
+      適用してしまう不具合を修正しました。
+  (i) ASRモジュール初期化前に 
+      criAtomEx_CalculateWorkSizeForDspBusSettingFromAcfData 
+      関数を呼び出すと、エラーコールバックが発生し、正常にワークサイズを
+      計算できない不具合を修正しました。
+  (j) インゲームプレビュー時にエフェクトプラグインを含んだバスを使用していると、
+      エラーE2017091300が発生しプレビューに失敗する不具合を修正しました。
+  (k) プレビューライブラリ、モニタライブラリにおいて、以下の条件に一致する
+    キュー再生時にMasterOutに不正な出力が行われてしまう不具合を修正しました。
+    - キューのセンド先バスが適用中のDSPバス設定内に存在しない。
+    - キューのMasterOutバスへの出力設定が1.0以外。
+    - キュー再生中にパラメータの更新適用を行う。
+
+[2017-10-06 CRI Atom Ver.2.15.14]------------------------------------------
+(1) 不具合修正
+  (a) キューに設定されている最初のビート同期情報よりも前の位置でも同期位置
+      を検出してしまう不具合を修正しました。
+  (b) 再生中のキュー内のアクショントラックのターゲットになっているACBハン
+      ドルを開放してしまうとアクション実行時に不正アクセスが発生する不具合
+      を修正しました。
+  (c) ポリフォニックタイプとトラック遷移タイプのキュー再生において、セレク
+      タラベルのグローバル参照機能が動作していない不具合を修正しました。
+  (d) セレクタラベルを使用した発音制御において、プレーヤーに対するセレクタ設
+      定が行われているにも関わらず、グローバルラベルへの参照が行われてしまう
+      不具合を修正しました。
+      ※Ver.2.14.14以降のバージョンで発生していました。
+  (e) グローバルラベル参照機能がトラック遷移タイプキューの再生に対して動作し
+      ていない不具合を修正しました。
+      ※Ver.2.14.14以降のバージョンで発生していました。
+  (f) プレビュー環境下において、VSTプラグインを含むDSPバス設定をデタッチ
+      してからアタッチし直すとエフェクトにパラメータが反映されない不具合を
+      修正しました。
+  (g) 実機上でユーザ定義エフェクトを含むACFを登録した際に、ユーザ定義の
+      エフェクトインターフェースを取得できない不具合を修正しました。
+  (h) WASAPIを使用し、かつ以下の条件に該当する際にアクセス例外が発生する
+      不具合を修正しました。
+      - ASRが5.1ch、かつデバイス出力chが7.1ch
+
+(2) 仕様変更
+  (a) エフェクトインターフェースの登録解除を行う関数の引数をインターフェース
+      へのポインタに変更しました。
+
+(3) 機能追加
+  (a) ビート同期情報が設定されているキューの再生時に同期位置検出タイミング
+      に呼び出されるコールバック関数を登録する機能を追加しました。
+      - criAtomExBeatSync_SetCallback
+  (b) 再生トラック情報を通知するコールバック関数を登録する機能を追加しました。
+      - criAtomExPlayer_SetPlaybackTrackInfoNotificationCallback
+  (c) CriAudioEffectモジュール形式で実装されたエフェクトの
+      インターフェースの登録/登録解除を行う関数を追加しました。
+        - criAtomExAsr_RegisterEffectInterface
+        - criAtomExAsr_UnregisterEffectInterface
+  (d) ユーザが登録可能なエフェクト数を定数マクロで追記しました。
+      - CRIATOMEXASR_MAX_NUM_USER_EFFECT_INTERFACES
+
+[2017-09-07 CRI Atom Ver.2.14.35.03]------------------------------------------
+(1) 不具合修正
+    -  ポリフォニックタイプとトラック遷移タイプのキュー再生において、セレク
+      タラベルのグローバル参照機能が動作していない不具合を修正しました。
+    -  セレクタラベルを使用した発音制御において、プレーヤーに対するセレクタ設
+      定が行われているにも関わらず、グローバルラベルへの参照が行われてしまう
+      不具合を修正しました。
+      ※Ver.2.14.14以降のバージョンで発生していました。
+    -  グローバルラベル参照機能がトラック遷移タイプキューの再生に対して動作し
+      ていない不具合を修正しました。
+      ※Ver.2.14.14以降のバージョンで発生していました。
+    -  再生中のキュー内のアクショントラックのターゲットになっているACBハン
+      ドルを開放してしまうとアクション実行時に不正アクセスが発生する不具合
+      を修正しました。
+    -  CriAtomExPlayerHnにCriAtomEx3dSourceHnがセットされている状態で、
+      criAtomExPlayer_Destroy関数にて対象のCriAtomExPlayerHnを破棄せずに
+      criAtomEx_Finalize関数またはそれに準ずる機種固有関数を呼ぶと、
+      内部で無限ループが発生してAtomExが正常に終了されない不具合を修正
+      しました。
+      【補足】
+      criAtomEx_Finalize関数に準ずる機種固有関数とは、
+      criAtomEx_Finalize_***関数（***は機種固有名）といったものです。
+    -  CriAtomExPlayback_GetTimeSyncedWithAudio が、非再生時に負値ではなく 
+      0 を返していた不具合を修正しました。
+    -  フェーダーをアタッチしたプレーヤーに対して停止処理を行った場合に、
+      フェードアウトが行われない不具合を修正しました。
+      ※Ver.2.14.04以降のバージョンで発生していました。
+    -  3Dポジショニングを使用したキューリンク再生を行った際に、
+      CriAtomExPlayerHnより先にCriAtomEx3dSourceHnを破棄した場合にエラーが
+      発生しない不具合を修正しました。
+    -  パンスピーカタイプを7.1chに設定する等、7,8chを使用し、
+      かつI3DL2リバーブ等のサラウンド入出力を前提としているASRバスエフェクト
+      を使用すると、7,8ch目の出力にノイズが発生する不具合を修正しました。
+    -  ASRバスエフェクトのバンドパスフィルタを含む、エフェクト名導入前のACFを
+      読み込んだ際に、スナップショット適用中のパラメタが不定値になる不具合を
+      修正しました。
+(2) 機能追加
+    -  Atomプレーヤに対してボリュームやピッチの変更が行われたタイミングで
+      コールバックを返す機能を追加しました。
+      - criAtomPlayer_SetParameterChangeCallback
+    -  ASRラックIDを指定して適用中のDSPバススナップショット名を取得する
+      関数 criAtomExAsrRack_GetAppliedDspBusSnapshotName を追加しました。
+
+[2017-08-07 CRI Atom Ver.2.14.29]------------------------------------------
+(1) 不具合修正
+  - 以下の条件を満たした場合に、DSPバス設定のアタッチ時に不正アクセスが発
+      生する不具合を修正しました。
+      - ACF内のDSPバス設定が１つだけである。
+      - DSPバス設定内のバスが１つだけである。
+      - DSPバス設定のスナップショットがある。
+  - HCA-MXを使用しない（CriAtomExHcaMxConfig::max_voicesを0に設定）
+      にもかかわらず、CriAtomExHcaMxConfig::server_frequencyの値が
+      正しいかどうかをチェックされてしまう不具合を修正しました。
+  - Exプレーヤに3D音源ハンドルが既に設定されており、ピッチ変更が発生している
+      状態で3D音源ハンドルリストを設定すると、ピッチ変更途中のまま音声が再生
+      されてしまう不具合を修正しました。
+  - TrackMuteアクションが含まれるキューを再生すると、アクション制御用の内
+      部リソースがリークしてしまう不具合を修正しました。
+  - タイムストレッチをワーク渡しによってボイスプールにアタッチすると、
+      タイムストレッチの生成に失敗し、タイムストレッチが効かなくなる不具合を
+      修正しました。
+  - ビート同期再生機能の使用時、キューを停止すると不正アクセスが発生するケースが
+    あったのを修正しました。
+  - ブロック再生中の音声に対するパラメーター適用が、無効になるケースがあったのを
+    修正しました。
+  - criAtomExPlayer_Start関数実行直後に以下のパラメータに関する設定関数を
+      実行した場合、再生した音声が再生開始後に指定したパラメータで出力され
+      てしまう不具合を修正しました。
+      - ボイスプール識別子（criAtomExPlayer_SetVoicePoolIdentifier関数）
+      - サウンドレンダラタイプ（criAtomExPlayer_SetSoundRendererType関数）
+  - criAtomExPlayback_GetTimeSyncedWithAudio から得られる音声に同期した再生時刻
+      が、サーバ処理が長時間実行されなかった場合に実際の音声からずれてしまう
+      不具合を修正しました。
+  - ランダム・ランダムノーリピートタイプキューの再生で最終トラックの再生
+      頻度が高くなる可能性のある不具合を修正しました。
+      ※本不具合に該当する場合、AtomCraft Ver.2.30.00以降でACBデータを再出力
+        してください。
+  - キューに設定した距離減衰AISACにデフォルトコントロール値が設定されてい
+      る場合に、プレーヤーに対するパラメーター更新処理を行わないと距離減衰
+      が有効にならない不具合を修正しました。
+  - ディレイ系エフェクト（ディレイ、エコー、マルチタップディレイ）を
+      ASRバス上に連続して配置（チェイン）し、バスセンドレベルを0以外の値
+      から0にすると原音がスルーされて再生されてしまう不具合を修正しました。
+  - キューシートキューリミットが設定されているキューの再生時にハングするケースが
+    あったのを修正しました。
+  - リバーブのプリディレイ時間が短い場合に、後部残響音にノイズが
+      付加されてしまう不具合を修正しました。
+  - ASRコンフィグのnum_busesが0の際でもASRが作成され、音声データの
+      取得(criAsr_GetData)時に例外が発生する不具合を修正しまし
+  - criAtomExHcaMx_SetBusSendLevel関数を実行すると、エラーコール
+      バックが発生する不具合を修正しました。
+  - キューを対象としたアクションによるパラメータ更新がプレーヤのパラメータ
+      に適用されていた不具合を修正しました。
+  - ビート同期情報を使用したキューのトランジション再生で、同期中に同期元
+      のキューが再生終了になると、同期中のキューが同期待ちの状態のままにな
+      ってしまう不具合を修正しました。
+  - ブロックシーケンスキューをキューリンクとして使用した構造のキューの停止
+      処理時にハングする不具合を修正しました。
+  - ストリーミング中にD-BASを破棄すると、次回再生時にアクセス違反が
+      発生する不具合を修正しました。
+  - EGリリースが設定されたプレイヤーにて、一部のキューのフェードボリュームが1.0に
+    なる不具合を修正しました。
+  - カテゴリに対して設定された多重再生禁止時間処理が正しく動作しない不具
+      合を修正しました。
+  - キュー再生時にハングするケースがあったのを修正しました。
+  - マルチAWB機能を使用した際、メモリ破壊を起こすケースがあったのを修正しました。
+  - キュー内にデフォルトコントロール値が設定されているAISACがある場合に、
+      アクション経由でのAISACコントロール値変更が有効にならない不具合を修正
+      しました。
+  - 3Dポジショニング再生時の距離減衰が無効になるケースがあったのを修正しました。
+  - REACTのトリガとなっているキュー再生時に、再生するトラックが存在しない
+      場合でもREACTのトリガを行っていた不具合を修正しました。
+  - 停止中のブロックシーケンスに対してカレントブロックインデックスの取得
+      を行った際に不正アクセスが発生する不具合を修正しました。
+  - criAtomExPlayer_SetPitch関数でピッチを下げる操作を行った後、再度
+      criAtomExPlayer_SetPitch関数でピッチを元の値に戻しても、ピッチが
+      変更されない不具合を修正しました。
+  - プリフェッチ時間以下の長さの波形をゼロレイテンシ再生した際、
+      エラーやアクセス違反が発生する不具合を修正しました。
+  - デバッグ版ライブラリを使用している場合に、criAtomExVoicePool_Free
+      関数を実行したタイミングでアサートが発生してしまうことがある不具合
+      を修正しました。
+  - プレイリスト再生モードのキューに設定したパラメータが、不正なタイミングで
+    クリアされる不具合を修正しました。
+  - ストリーム再生のHCA-MXデータに対し、criAtomExPlayer_SetStartTime
+      関数で再生位置を変更し、criAtomExPlayer_Prepare関数で再生準備を
+      行った場合に、再生開始準備が整う前にステータスがPLAYING状態に遷移
+      する不具合を修正しました。
+  - 同一キュー内に再生開始位置を合わせた複数のストリーム再生用HCA-MX
+      データを配置したキューについて、シーク再生を行うと再生時刻および
+      再生位置の同期が崩れる場合がある不具合を修正しました。
+  - 特定の状況において、ボイスが誤って停止される不具合を修正しました。
+  - カテゴリ内での発音中のキュー数カウント処理において、キューリミットに
+      よって停止したキューが発音中としてカウントされたままになってしまう不
+      具合を修正しました。
+  - ASRの初期化コンフィグにoutput_sampling_rateに0が指定されると、
+      0除算のエラーでクラッシュしてしまうケースがあったのを修正しました。
+  - WASAPI出力時、再生デバイスが異常な状態（認識されるが動作しない
+      状態）になった場合に、ライブラリ初期化でアクセス違反が発生する
+      不具合を修正しました。
+  - 「E2010052905」エラーが発生した際に内部でリソースリークが発生し、
+      内部状態が不正になる不具合を修正しました。
+  - CriAtomDbasConfig構造体のnum_securement_buffers値をストリーミング
+      モジュール内部で加味していない処理があり、ストリーミングバッファ
+      が一瞬だけ枯渇して音途切れが発生する可能性がある不具合を修正しま
+      した。
+  - サブシーケンストラックのみに設定されているバスセンド値が再生に反映さ
+      れない不具合を修正しました。
+  - ゼロレイテンシーストリームデータを含むキューに対し、セレクタによる
+      トラック遷移操作を行うと、再生がおかしくなる（ショートループや
+      アクセス違反が発生する）不具合を修正しました。
+  - トラック遷移タイプキューの再生時に、一度再生したトラックへの遷移が行
+      われない不具合を修正しました。
+  - アクションによるパンスプレッド変更が有効になっていない不具合を修正しま
+      した。
+  - ボイスリミット到達時、停止されるボイスにエンベロープのリリース
+      タイムが設定されていると、即座に停止しない不具合を修正しました。
+  - エンベロープのアタック区間中に停止処理が行われると、ボリュームが
+      サスティンレベルまで跳ね上がる不具合を修正しました。
+  - バンドバスフィルター設定値を初期値に設定した場合でもフィルター処理が
+      有効になってしまう不具合を修正しました。
+  - ブロックシーケンスデータ内にトラック遷移タイプのキューをキューリンクと
+      して登録したデータが正しく再生されない不具合を修正。
+  - トラック遷移タイプのキューに1Shot波形を使用した場合に再生が停止しない
+      不具合を修正。
+  - キュー単位のビート同期遷移によるクロスフェード中に、新たな遷移先を指定
+      すると新たに再生を開始するキューがクロスフェードによってフェードアウト
+      中のキューに対して同期してしまう不具合を修正しました。
+  - ライブラリ初期化前にcriAtomEx_SetRandomSeed関数を実行すると、
+      アクセス違反が発生する不具合を修正しました。
+  - ブロック再生でトラックのモノモードを使用すると、モノモード設定トラック
+      以外で再生している音声もモノモードの影響を受けてしまう不具合を修正しま
+      した。
+  - 多重再生禁止時間よりもコンボ間隔が短いキューを再生したさいに、コンボ値
+      が進んでしまう不具合を修正しました。
+  - ブロックの分割数値よりもmsec単位のブロック長値が小さいデータを再生する
+      とハングする不具合を修正しました。
+  - 遷移先ブロック指定機能を使用したブロック遷移で遷移先が無い場合に不正
+      アクセスが発生する不具合を修正しました。
+
+(2) 仕様変更
+  - criAtomEx_GetAcfVersion関数の第３引数の型をvoid型ポインタからCriBool
+      型ポインタに変更しました。
+  - 音声出力にWASAPIを使用する場合について、アプリケーション実行中
+      に既定の再生デバイスが変更された際、変更を検知して音声の出力先
+      を自動的に切り替えるよう動作を変更しました。
+      本修正により、アプリケーション起動中にユーザがデバイスを抜き差し
+      した場合でも、ライブラリの再初期化を行う必要がなくなりました。
+  - リバーブのプリディレイ時間の下限を10[ms]にしました。
+  - WASAPIを使用する際、デバイスのサンプリングレートと異なる
+      サンプリングレートを指定した場合でも、ユーザが指定した
+      サンプリングレートで動作する様変更しました。
+      【補足】
+      変更前のライブラリでは、ボイス（及びASR）のサンプリングレートが
+      デバイスのサンプリングレートと一致して動作（ユーザが指定しても無視）して
+      いたため、デバイスのサンプリングレートに依存して負荷が上下していました。
+      本変更により、デバイス転送まではサンプリングレート（及び、PCMサンプル数）
+      を低くして信号処理を行うことができます。
+  - 停止関数呼び出し等による停止中のキューについて、カテゴリキューリミッ
+      ト処理の対象から除外するように仕様を変更しました。
+  - 停止関数呼び出し等による停止途中のボイスについて、ボイスリミット
+      処理の対象から除外するように仕様を変更しました。
+  - 停止関数呼び出し等による停止中のキューについて、キューリミット処理の
+      対象から除外するように仕様を変更しました。
+  - プリペア再生で再生開始準備中のキューについて、プリペア時に行われてい
+      たキューリミット処理をプリペア解除時に行うように仕様を変更しました。
+
+(3) 機能追加
+  - 3Dポジショニング機能にて、複数の3D音源ハンドルの位置やコーン等を考慮した
+      再生を行う「マルチポジショニング再生」を実装しました。
+  - カテゴリを指定して発音中のキューを停止する機能を追加しました。
+      - criAtomExCategory_StopById
+      - criAtomExCategory_StopByName
+  - 音声に同期した再生時刻(マイクロ秒単位)を取得する関数を追加しました。
+      - criAtomExPlayback_GetTimeSyncedWithAudioMicro
+  - Interior Panの適用領域を設定する関数を追加しました。
+  - プレーヤーにセレクタラベルが設定されていない場合に参照されるグローバ
+      ルラベル設定機能を追加しました。
+      - criAtomExAcf_SetGlobalLabelToSelectorByIndex
+      - criAtomExAcf_SetGlobalLabelToSelectorByName
+  - 適用中のDSPバススナップショット名を取得する外部公開関数
+      criAtomEx_GetAppliedDspBusSnapshotName を追加しました。
+  - Interior Panの適用領域を設定する関数を追加しました。
+        - criAtomEx3dSource_SetInteriorPanField
+      - criAtomEx3dSource_ChangeDefaultInteriorPanField
+  - エフェクト名を引数に取るDspのパラメタ設定・取得を行う関数を追加しました。
+      - criAtomExAsr_SetEffectParameter
+      - criAtomExAsrRack_SetEffectParameter
+      - criAtomExAsr_GetEffectParameter
+      - criAtomExAsrRack_GetEffectParameter
+  - エフェクトのパラメタ更新を行う関数を追加しました。
+      - criAtomExAsr_UpdateEffectParameters
+      - criAtomExAsrRack_UpdateEffectParameters
+  - ACFからDSP名を取得する関数を追加しました。
+      - criAtomExAcf_GetDspFxName
+  - メモリ再生に使用したデータがライブラリ内で参照されているかどうか
+      をチェックする関数を追加しました。
+      - criAtomEx_IsDataPlaying
+      criAtomExPlayer_SetData関数で設定したデータを解放する際には、
+      プレーヤ停止後、criAtomEx_IsDataPlaying関数がCRI_FALSEを返すまで
+      待つ必要があります。
+  - criAtomExDebug_GetResourcesInfo 関数を追加しました。
+  - 再生停止処理時にループエンドで停止する機能に対応しました。
+  - マルチチャンネルサウンドを実際のスピーカーのチャンネル（角度）からではなく
+      バーチャルスピーカーのチャンネル（角度）から再生する機能を追加しました。
+      - criAtomEx_SetVirtualSpeakerAngleArray
+      - criAtomEx_ControlVirtualSpeakerSetting
+  - バス名を指定してバス操作を行う関数群を、CriAtomExAsr API として追加しました
+  - DSPバスの音量を取得するAPIを追加しました。
+      - criAtomExAsr_GetBusVolume
+      - criAtomExAsrRack_GetBusVolume
+  - 最大ピッチを指定する関数を追加しました。
+      - criAtomExPlayer_SetMaxPitch
+  - ライブラリ初期化時にACFをレジストする機能を追加しました。
+      本機能の追加に伴いCriAtomExConfig構造体に以下のメンバを追加しました。
+      - const CriAtomExAcfRegistrationInfo *acf_info;
+  - CriAtomEx3dSource に距離AISACコントロールID、角度AISACコントロールID
+      を設定する機能を実装しました。
+        - criAtomEx3dSource_SetDistanceAisacControlId
+        - criAtomEx3dSource_SetListenerBasedAngleAisacControlId
+        - criAtomEx3dSource_SetSourceBasedAngleAisacControlId
+  - DSPバスエフェクトに32バンドEQを追加しました。
+
+
+[2016-03-31 CRI Atom (ADX LE) Ver.2.10.00]-------------------------------
+(1) 仕様変更
+  - criAtomExAsr_GetBusAnalyzerInfo関数でレベル情報を取得した際、
+    CriAtomExAsrBusAnalyzerInfo::num_channelsよりも大きいチャンネル
+    のレベルが0になるよう動作を変更しました。
+    以前のバージョンでは、CriAtomExAsrBusAnalyzerInfo::num_channels
+    よりも大きいチャンネルにも、非0のレベル値が書き込まれていました。
+  - REACTのトリガーキューの停止完了を待ってからREACTの戻り処理を開始してい
+    たのを、トリガーキューの停止処理開始時にREACTの戻り処理を開始するように
+    仕様を変更しました。
+    （トリガーキューのリリースとREACTの戻りとでクロスフェードのようなことが
+    行えるように仕様を変更しました。）
+  - D-BASが１ストリーマあたりに割り当てる最低保証バッファ数のデフォ
+    ルト値を２から４に変更しました。この変更により、プラットフォーム
+    によってはデフォルト設定での最低限必要なストリーミングバッファの
+    サイズが最大２倍に増加します。
+    * どれだけD-BASのサイズが増加するかは、記録メディアのアクセス性能
+      に依存します。具体的なワークサイズについては、各プラットフォー
+      ムのマニュアルを参照してください。
+  - システム初期化時に作成していたデフォルトカテゴリ機能を廃止しました。
+  - ボイスイベントコールバックにボイス停止イベント
+    （CRIATOMEX_VOICE_EVENT_REMOVEイベント）発生時、再生が完了したか、
+    途中停止されたかを判別できるよう動作を変更しました。
+    具体的には、ボイスイベントコールバック発生時に第2引数removedの
+    atom_playerのステータスをチェックすることで、ボイスの再生が完了
+    したか、途中で停止されたかを判別することが可能です。
+    （atom_playerのステータスがCRIATOMPLAYER_STATUS_PLAYENDの場合は
+    再生完了、その他の場合は途中で停止されています。）
+  - 以下のAPIをCRI Atom Exライブラリの初期化後に呼び出した場合、エラー
+    コールバックが発生し、エラー値を返すように変更しました。
+        - criAtomEx_CalculateWorkSizeForDspBusSettingFromAcfData()
+        - criAtomExAcf_GetNumDspSettingsFromAcfData()
+        - criAtomExAcf_GetDspSettingNameByIndexFromAcfData()
+        - criAtomExAcf_GetNumCategoriesFromAcfData()
+        - criAtomExAcf_GetNumCategoriesPerPlaybackFromAcfData()
+  - ACBファイルロード時にストリーム用AWBファイル指定が行われていない場合の
+    警告を出力しないように変更しました。
+  - パンタイプが3Dポジショニングのときに3D音源設定がなくても、センドレベル
+    設定がある場合は再生できるよう変更しました。
+  - 以下のAPIをCRI Atom Exライブラリの初期化前に呼び出した場合、エラー
+    コールバックが発生し、エラー値を返すように変更しました。
+        - criAtomEx_CalculateWorkSizeForDspBusSettingFromAcfData()
+        - criAtomExAcf_GetNumDspSettingsFromAcfData()
+        - criAtomExAcf_GetDspSettingNameByIndexFromAcfData()
+        - criAtomExAcf_GetNumCategoriesFromAcfData()
+        - criAtomExAcf_GetNumCategoriesPerPlaybackFromAcfData()
+  - criAtomExPlayer_SetDataRequestCallback関数を使用した連結再生に
+    HCA-MXデータを使用した場合でも、複数の音声を続けて再生するよう
+    動作を変更しました。
+    HCA-MXは仕組み上音声の前後に必ず一定の無音が入ります。
+    そのため、上記操作を行った場合、音声が指定された順には再生され
+    ますが、シームレスにはつながりません。
+    （音声と音声の間に一定区間の無音が必ず入ります。）
+  - 以下の関数名を変更しました。（旧関数名での使用も可能です）
+        - criAtomExPlayer_SetAisacById
+        ->criAtomExPlayer_SetAisacControlById
+        - criAtomExPlayer_SetAisacByName
+        ->criAtomExPlayer_SetAisacControlByName
+        - criAtomExPlayer_GetAisacById
+        ->criAtomExPlayer_GetAisacControlById
+        - criAtomExPlayer_GetAisacByName
+        ->criAtomExPlayer_GetAisacControlByName
+        - criAtomExPlayback_GetAisacById
+        ->criAtomExPlayback_GetAisacControlById
+        - criAtomExPlayback_GetAisacByName
+        ->criAtomExPlayback_GetAisacControlByName
+        - criAtomExCategory_SetAisacById
+        ->criAtomExCategory_SetAisacControlById
+        - criAtomExCategory_SetAisacByName
+        ->criAtomExCategory_SetAisacControlByName
+  - 3Dソースとリスナー設定が行われていないプレーヤで3Dポジション再生指定の
+    データを再生した場合に、エラーを出力し発音をキャンセルするように仕様を
+    変更しました。（これまではPan3Dとして発音を行っていました。）
+  - CriAtomExAsrConfig 構造体にnum_buses を追加しました。
+    デフォルト設定は8個ですが、それより多く使用する場合はこの数値を
+    増加してください。
+  - ボイスイベントコールバックの引数について、発音要求の詳細情報
+    （第3引数のrequest）にもatom_playerがセットされるよう動作を変更
+    しました。
+    ボイスイベントコールバック時点では、atom_playerに再生すべき音声
+    データがまだセットされていません。
+    そのため、再生する音声データの情報等については、atom_playerに
+    問い合わせず、CriAtomExVoiceInfoDetail構造体のメンバ値を参照して
+    ください。
+
+(2) 機能追加
+  - WASAPIを用いた音声再生に対応しました。詳細はマニュアルか
+    cri_le_atom_wasapi.h を参照してください。
+  - D-BASが１ストリーマあたりに割り当てる最低保証バッファ数を設定する
+    パラメータをCriAtomDbasConfig構造体に追加しました。
+        - num_securement_buffers
+  - 全てのAtomExプレーヤに対して停止要求を行う関数を追加しました。
+        - criAtomExPlayer_StopAllPlayers
+        - criAtomExPlayer_StopAllPlayersWithoutReleaseTime
+  - 音声に同期した再生時刻の取得関数を追加しました。
+        - criAtomExPlayback_GetTimeSyncedWithAudio
+  - 上記関数による再生時刻取得を有効にするためのフラグを
+    CriAtomExPlayerConfig構造体に追加しました。
+        - enable_audio_synced_timer
+  - AtomExプレーヤハンドルを列挙する関数を追加しました。
+        - criAtomExAcb_EnumerateHandles
+  - REACTで曲線形状の変化補間が使用できるように機能を追加しました。
+  - 曲線形状のエンベロープが設定された音声データを再生できるように
+    なりました。
+  - シーケンスの再生位置を取得する機能を追加しました。
+        - criAtomExPlayback_GetSequencePosition
+  - カテゴリ単位でカテゴリを参照しているキューの再生開始後、任意時間同一
+    カテゴリ参照キューの再生を禁止する機能を実装しました。
+    禁止時間の設定はAtomCraftでカテゴリに対して行ってください。
+  - キューの再生開始後、任意時間同一キューの再生を禁止する機能を実装しま
+    した。禁止時間の設定はAtomCraftで行ってください。
+  - トラック遷移再生でのトラック毎の遷移先別遷移タイプ設定機能に対応しま
+    した。
+  - AISACのPan Spreadグラフに対応しました。
+  - 7.1ch環境向けに出力スピーカーの角度を変更するAPIを追加しました。
+        - criAtomEx_SetSpeakerAngleArray
+  - ストリーミングデータの枯渇による音途切れが発生した際、エラーコール
+    バック関数に警告（W2015080610）が返されるようになりました。
+  - CriAtomExAsrConfig に max_racks を追加しました。
+    ASRラックの最大数の指定に使用します。
+  - CriAtomExAsrConfig に context を追加しました。
+    プラットフォーム固有の設定に使用します。
+  - ブロックシーケンス再生のデータによる遷移先ブロック指定機能に対応しま
+    した。
+  - ACBハンドルに対してストリーム再生用のAWBファイルをアタッチする機能を追
+    加しました。
+        - criAtomExAcb_AttachAwbFile
+        - criAtomExAcb_DetachAwbFile
+        - criAtomExAcb_CalculateWorkSizeForAttachAwbFile
+        - criAtomExAcb_GetNumAwbFileSlots
+        - criAtomExAcb_GetAwbFileSlotName
+    本機能を使用する場合、AtomCraft上で予め複数のAWBファイルに対応したACB
+    を作成する必要があります。
+  - パンニング時の出力スピーカータイプ設定のデフォルト値を変更する機能を追
+    加しました。
+        - criAtomExPlayer_ChangeDefaultPanSpeakerType
+  - criAtomExPlayer_SetVoiceControlMethod関数で上書きしたボイス制御方
+    式をデータ設定依存に戻せるように、CriAtomExVoiceControlMethod列挙
+    型にデータ設定依存を表す値（CRIATOMEX_PREFER_DATA）を追加しました。
+    criAtomExPlayer_SetVoiceControlMethod関数でボイス制御方式を
+    CRIATOMEX_PREFER_LASTやCRIATOMEX_PREFER_FIRSTに変更した後、データ
+    依存の状態に戻したい場合には、criAtomExPlayer_SetVoiceControlMethod
+    関数にCRIATOMEX_PREFER_DATAを指定して実行してください。
+  - 再生IDを指定してボイス停止時にコールバックを発生させる機能を追加しま
+    した。
+        - コールバック設定関数の設定
+      criAtomEx_SetMonitoringVoiceStopCallback
+        - 監視再生IDの指定
+      criAtomEx_SetMonitoringVoiceStopPlaybackId
+  - コンプレッサDSPに圧縮する帯域を調整するためのパラメータ
+    (EQタイプ、周波数、Q)を追加しました。
+    CriAtomExAsrCompressorExParameter構造体を追加しました。
+  - ACF情報取得構造体CriAtomExAcfInfoに以下のメンバを追加しました。
+        - max_buses_of_dsp_bus_settings
+        - num_buses
+  - ACF内のバス数を取得する以下の関数を追加しました。
+        - criAtomExAcf_GetNumBusesFromAcfData()
+        - criAtomExAcf_GetNumBuses()
+        - criAtomExAcf_GetMaxBusesOfDspBusSettingsFromAcfData()
+        - criAtomExAcf_GetMaxBusesOfDspBusSettings()
+  - バス名を指定してACF内のバス名文字列を取得する機能を追加しました。
+        - criAtomExAcf_FindBusName()
+  - トラックトランジションタイプキュー再生時のトランジション通知を行うため
+    のコールバック機能を追加しました。
+        - criAtomEx_SetTrackTransitionBySelectorCallback
+  - プレーヤで最後に再生した音声のIDを取得する機能を追加しました。
+        - criAtomExPlayer_GetLastPlaybackId
+  - プレーヤに設定されているAISACコントロール情報を削除する関数を追加しま
+    した。
+        - criAtomExPlayer_ClearAisacControls
+  - プレーヤに設定されているセレクタ、ラベル情報を削除する関数を追加しまし
+    た。
+        - criAtomExPlayer_ClearSelectorLabels
+  - キュー情報取得構造体に以下のメンバを追加しました。
+        - ignore_player_parameter
+  - ACBハンドルを列挙する関数を追加しました。
+        - criAtomExAcb_EnumerateHandles
+  - CriAtomExAcfDspSettingInfo構造体にsnapshot_work_sizeメンバを追加しま
+    した。本メンバはVer.1.12.00以降のACFをレジストした場合に、情報取得が
+    行えます。
+
+(3) 最適化
+  - ボイスリミットグループ上限到達時の発音遅延を改善しました。
+    ボイスリミットグループの発音数が上限に達した状態で新規に同一グループ
+    の発音を行う際に空きボイスがあれば、グループ内のボイスを停止後、
+    空きボイスを使って発音を行うよう処理を変更しました。
+    従来の上限時発音は、奪いとったボイスを一旦停止し、リスタートを
+    行っていました。これが発音遅延の原因となっていました。
+    この遅延は空きボイスがある状態でも発生していました。
+    ボイスプール内の全てのボイスを使用中の場合、本バージョンでも新規
+    発音時には遅延が発生します。
+
+(4) 不具合修正
+  - 音声再生中にピッチを大幅に上げた場合（1Vで700セント以上げた場合）に、
+    音途切れが発生する不具合を修正しました。
+  - プレイリストモード再生時にアクショントラックが初回しか再生されない不具
+    合を修正しました。
+  - キューリンクを使用した階層構造データで上位階層のMuteが正常動作しない
+    不具合を修正しました。
+  - ACFが登録されていない状態でACBファイルをロードし、
+    criAtomEx_UnregisterAcf関数を実行すると、誤ったエラー情報（ACFが
+    登録されているかのようなエラー）が返される不具合を修正しました。
+  - マルチAWB機能を使用したACBによるストリーム再生で、常に1つ目のAWBを使用
+    して再生が行われてしまう不具合を修正しました。
+  - アクショントラックが含まれるキューをシーク再生すると、シークによるアク
+    ション読み飛ばし時に不正なワーニングが発生する不具合を修正しました。
+  - criAtomEx_SetMonitoringVoiceStopCallback関数で設定したコールバック関数
+    がカテゴリキューリミットによる停止要因で呼び出された場合に、停止要因と
+    してCRIATOM_VOICE_STOP_REASON_CUE_LIMITが渡されてしまう不具合を修正し
+    ました。
+  - ACFデータ内に存在するラベル情報へのアクセスに失敗する可能性のある不具
+    合を修正しました。
+  - 分割遷移設定されたブロックシーケンス再生で、遷移時に多重に遷移先ブロッ
+    クを再生してしまう可能性のある不具合を修正しました。
+  - 複数のカテゴリを参照するキューに「REACT用シーケンスエンド」マーカーを
+    設定すると、カテゴリの参照順によってREACTが駆動したままになってしまう
+    不具合を修正しました。
+  - 音声再生中に以下の関数を実行した場合に、ごくまれに音途切れが発生
+    する不具合を修正しました。
+      - criAtomEx_ExecuteAudioProcess
+      - criAtomExAcb_LoadAcbFile
+      - criAtomExAcb_LoadAcbFileById
+      - criAtomExAcb_GetVersionFromFile
+  - 音声データのループ区間の長さや、再生時のピッチが特定の値になった
+    場合に、ループ位置で音途切れの危険性が高くなるケースがあったため、
+    バッファサイズを調整しました。
+  - 再生中のトラック遷移タイプキューに対してパラメータをアクションを使用し
+    て変更すると、設定値の２倍値になってしまう不具合を修正しました。
+  - フェードアウト時間が 0 のカテゴリをポーズした直後の、
+    criAtomExCategory_IsPausedById、criAtomExCategory_IsPausedByName関数
+    の戻り値が CRI_FALSE になってしまう可能性がある不具合を修正しました。
+  - 複数のカテゴリに属するキューに対して、カテゴリのポーズが適用
+    されない場合があった問題を修正しました。
+  - カテゴリに属するキューに対して、カテゴリをポーズ状態にして再生を開始
+    した際に、シーケンスの時刻が進んでしまう不具合を修正しました。
+  - criAtomExPlayer_SetPanType関数にCRIATOMEX_PAN_TYPE_AUTOを指定すると、
+    エラーコールバックが発生する不具合を修正しました。
+  - エンベロープ適用時にポーズを掛けるとサスティンレベルが
+    効かなくなる不具合を修正しました。
+  - ストリーミング再生において、ストリーミングバッファブロック単位で
+    分割した際にループ先頭、およびループ終端のデータが極端に少なくな
+    るデータにおいて、ループタイミングでストリーミング再生が途切れて
+    しまう不具合を修正しました。この修正により、デフォルト設定での最
+    低限必要なストリーミングバッファのサイズが最大で２倍に増加する場
+    合があります。D-BAS作成時のパラメータ設定により、ストリーミング
+    バッファサイズを以前のサイズに戻す事が可能です。
+  - ピッチを2400セントより高く設定すると不正な音が出力されることがある
+    不具合を修正しました。
+  - 波形埋め込みのループ付き音声データをストリーミング再生した際に、
+    データによってはループタイミングで次のデータの読み込みが間に合わ
+    ず、一瞬だけ音が途切れる不具合を修正しました。
+    本不具合は、エンコード済み音声データをサウンドバッファに直接書き
+    込むプラットフォームで発生していました。ADXコーデック、HCAコーデッ
+    クといった、デコード結果のLPCMデータをサウンドバッファに出力する
+    タイプのコーデックを使用した場合、本不具合は発生しません。
+    なお、本修正により、ファイルアクセスが極端に速いプラットフォーム
+    では、シームレス連結再生時に次のファイルを受け付けられる猶予時間
+    がわずかに（33ミリ秒程）短くなる可能性があります。
+  - フェーダをアタッチしたプレーヤに対しcriAtomExPlayer_Stop関数を
+    実行すると、再生中にステータスが一瞬CRIATOMPLAYER_STATUS_PREPに
+    戻る不具合を修正しました。
+  - criAtomEx_PauseTimer(CRI_TRUE);を実行すると、直前に行ったボリューム
+    指定等が反映されない不具合を修正しました。
+  - モニタライブラリを使用したときに、下記2つのAPIを使用してACBファイル
+    を読み込んだ際に、プロファイラ用に送られるログである「生成されたACB
+    のハンドル情報」が二度続けて送られてしまう不具合を修正しました。
+      - criAtomExAcb_LoadAcbFile
+      - criAtomExAcb_LoadAcbFileById
+  - フェーダーを付加したプレーヤでファイル指定再生を行った場合に、その後の
+    ポーズ制御が正常に動作しない不具合を修正しました。
+  - 音声データの終端付近（デコード処理が完了する瞬間）でピッチ変更を
+    行うと、音声データの終端にノイズが入る不具合を修正しました。
+  - criAtomExPlayer_SetStartTime関数でシーク位置を設定したプレーヤに
+    対し、criAtomExPlayer_Prepare関数実行後、再生準備が完了するまでの
+    間に停止処理を行った場合、その後シーク設定なしで再生する音声が
+    データ終端に到達する前にPLAYEND状態になる不具合を修正しました。
+  - コンプレッサ、リミッタに対してスナップショット適用を行った場合、
+    圧縮状態がリセットされてしまう不具合を修正しました。
+  - ラウドネスメーターをリセットしてから再度取得を開始するまでの間、
+    「Count」がリセット済みの値として取得できない不具合を修正しました。
+  - 対応するセレクタ情報がACF内に存在しないセレクタタイプのスイッチキュー
+    を再生するとハングする不具合を修正しました。
+  - ピッチシフタ使用時、不正な音声出力が行われる場合がある不具合を
+    修正しました。
+  - トラックトランジション再生時に未初期化変数にアクセスし、正常に動
+    作しない可能性がある不具合を修正しました。
+  - エラー状態になったAtomExプレーヤに対しcriAtomExPlayer_Stop関数を
+    実行しても、次回音声再生時にステータスが再度エラー状態になって
+    しまう不具合を修正しました。
+  - 音源のサンプリングレートよりも高いピッチが音声データに設定されて
+    いると、再生開始時に音声が途切れる可能性がある不具合を修正しまし
+    た。
+  - 再生中のACBハンドルに対しcriAtomExAcb_Release関数を実行した際、
+    非常に長時間（30秒程度）処理がブロックされ、エラーコールバックが
+    返される不具合を修正しました。
+  - ASRラックをモノラル設定で作成し、フランジャーもしくはコーラスを
+    使用するとクラッシュする不具合を修正しました。
+  - キューに設定したRack IdがASR上に存在しない場合に、バスのセンド先が不
+    定になる不具合を修正しました。
+  - DSPバス番号を指定するAPI呼び出しで、最大DSPバス数以上のバス番号を
+    指定した場合にエラーコールバックを発生させるよう修正しました。
+  - ユーザマルチスレッドモードかつサーバ処理周波数が100Hz以上の設定で
+    ライブラリを初期化すると、音声再生が途切れる不具合を修正しました。
+  - 再生タイミングランダムが設定されているデータの初回再生時にランダム値が
+    適用されていない不具合を修正しました。
+  - 以下のAPI呼び出しに不正な引数を指定した場合にデータアクセス違反
+    が発生する不具合を修正しました。修正後は、不正な引数を指定して呼
+    び出すとエラーコールバックが発生し、エラー値を返します。
+      - criAtomExAcf_GetNumDspSettingsFromAcfData()
+      - criAtomExAcf_GetDspSettingNameByIndexFromAcfData()
+      - criAtomExAcf_GetNumCategoriesFromAcfData()
+      - criAtomExAcf_GetNumCategoriesPerPlaybackFromAcfData()
+  - エコー、ディレイに流す音声のチャンネル数が初期化コンフィグより
+    多い場合にアクセス違反が発生する不具合を修正しました。
+  - 古いツールで出力したACFファイルを使い、ASRラックに対しDSPバス設定を
+    適用すると、ハングアップすることがある不具合を修正しました。
+  - ボイスプライオリティが複数の場所で設定されている場合に、加算されるのが
+    正しい挙動ですが、加算ではなく上書きされていた問題を修正しました。
+  - criAtomExPlayer_SetBusSendLevelOffset関数でバスセンドオフセット値を設
+    定すると、設定値が絶対値として適用される不具合を修正しました。
+  - 以下のAPIの実行に失敗すると、サーバースレッドがデッドロックする
+    不具合を修正しました。
+      - criAtomEx_AttachDspBusSetting
+  - キューリンクを含むキューを再生した場合に、
+    criAtomExPlayback_GetNumPlayedSamples関数で再生サンプル数を取得
+    できない不具合を修正しました。
+  - インゲームプレビュー時にAtomCraftとのプレビュー接続が確立した状態での、
+    AtomCraft上で行ったDSPバス設定項目を変更適用処理時にハングする不具合
+    を修正しました。
+  - ASR初期化時にnum_busesメンバで指定した値が有効にならない不具合を修正
+    しました。
+  - ACBのロードに必要なワークサイズにAWBファイルのパス保存領域を加味
+    しておらず、パス長によってはワークサイズが足りなくなり、ACBのロー
+    ドに失敗する不具合を修正しました。
+    この変更により、ACBのロードに必要なワークサイズはAWBファイルのパ
+    ス長分だけ増加します。
+  - criAtomExPlayer_SetSendLevel関数でセンドレベルを変更できない
+    不具合を修正しました。
+  - CriAtomExPlayerに対して対象のAISACコントロール値が設定されていない場合に
+    criAtomExPlayer_GetAisacById関数、criAtomExPlayer_GetAisacByName関数が
+    0.0f を返していた問題を修正しました。正しくは -1.0f を返します。
+  - マルチトラックデータに対してシーケンススタートランダムを適用した際に、
+    トラック毎に異なるスタート位置が算出される可能性のある不具合を修正し
+    ました。
+  - criAtomExPlayer_SetStartTime関数で再生開始位置を変更した場合に、
+    criAtomExPlayback_GetNumPlayedSamples関数が誤った値を返す不具合
+    を修正しました。
+  - criAtomEx_PauseTimer関数でフェーダーを一時停止できない不具合を
+    修正しました。
+
+[2014-11-14 CRI Atom (ADX LE) Ver.2.06.00]----------------------------------
+(1) 仕様変更
+  (a) ヘッダファイル名を変更しました。
+      旧：cri_adx2le_pc.h
+      新：cri_adx2le.h
+  (b) 次のヘッダファイルを追加しました。
+      - cri_atom_ex_monitor.h
+  (c) 以下の関数がREACT及びAISACの影響を受けていない値を返すように仕様を
+      変更しました。
+      - criAtomExCategory_GetVolumeById
+      - criAtomExCategory_GetVolumeByName
+  (d) 最大バーチャルボイス数（CriAtomExConfig::max_virtual_voices）を
+      超える数のボイスを作成できなくなりました。
+      ボイスプールで作成するボイスの総数が最大バーチャルボイス数を超え
+      る場合、CriAtomExConfig::max_virtual_voices を大きな値に変更する
+      必要があります。
+(2) 機能追加
+  (a) インゲームプレビュー機能に対応しました。
+  (b) CRI Atom Craft Ver.2 の出力データに対応しました。
+      アクション機能、ビート同期、セレクタなどの利用が可能になりました。
+(3) 不具合修正
+  (a) Blockデータ再生時に criAtomExPlayback_SetNextBlockIndex 関数で遷移ブロ
+      ックを指定しても遷移しないことがある不具合を修正しました。
+  (b) ランダムノーリピートタイプのキューの内容が１トラックしかない場合に、
+      ２回目以降の再生が行われない不具合を修正しました。
+  その他、細かな不具合を修正しました。
+
+[2013-12-25 CRI Atom (ADX LE) Ver.2.01.04]----------------------------------
+  CRI Atom ライブラリ Windows版の最初のリリースです。
+
+以上
+/*--< end of file >---------------------------------------------------------*/

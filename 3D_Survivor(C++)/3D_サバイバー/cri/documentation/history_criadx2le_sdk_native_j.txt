@@ -1,0 +1,96 @@
+/****************************************************************************
+ *
+ * CRI Middleware SDK
+ *
+ * Copyright (c) CRI Middleware Co., Ltd.
+ *
+ * Title   : CRI ADX LE SDK
+ * Module  : 変更履歴
+ * File    : history_criadx2le_sdk_native_j.txt
+ * Date    : 2025-10-31
+ * Version : 2.30.01
+ *
+ ****************************************************************************/
+ 
+１．本 SDK について
+はじめに、本 SDK のルートディレクトリに配置している readme_criadxle_sdk_native_ja.html ファイルの内容を確認してください。
+
+２．ディレクトリ構成
+　本 SDK のディレクトリ構成は、以下のようになっています。
+
+   cri
+   |
+   +- common                    : ライセンス関連ファイル
+   |
+   +- pc
+   |   +- docs                  : プラグイン 変更履歴
+   |   +- include               : ヘッダーファイル (Windows用)
+   |   +- libs                  : ライブラリ 本体 (Windows用)
+   |   +- sample                : サンプルプログラム／AtomCraftプロジェクト
+   |
+   +- mac
+   |   +- include               : ヘッダーファイル (MacOS用)
+   |   +- libs                  : ライブラリ 本体 (MacOS用)
+   |
+   +- ios
+   |   +- include               : ヘッダーファイル (iOS用)
+   |   +- libs                  : ライブラリ 本体 (iOS用)
+   |
+   +- android
+   |   +- include               : ヘッダーファイル (Android用)
+   |   +- libs                  : ライブラリ 本体 (Android用)
+   |
+   +---documentation：SDK リリースノート／変更履歴
+
+３．変更履歴
+[2025-10-06 CRI ADX LE SDK Ver.2.30.00]------------------------------------------
+(1) ライブラリ
+  (a) CRI Atom                : Ver.2.30.178
+
+[2024-07-18 CRI ADX LE SDK Ver.2.29.01]------------------------------------------
+(1) ライブラリ
+  (a) CRI Atom                : Ver.2.29.332
+
+[2024-04-08 CRI ADX LE SDK Ver.2.29.00]------------------------------------------
+(1) ライブラリ
+  (a) CRI Atom                : Ver.2.29.293
+
+[2024-11-20 CRI ADX LE SDK Ver.2.28.01]------------------------------------------
+(1) ライブラリ
+  (a) CRI Atom                : Ver.2.28.258
+
+[2024-10-08 CRI ADX LE SDK Ver.2.28.00]------------------------------------------
+(1) ライブラリ
+  (a) CRI Atom                : Ver.2.28.237
+
+[2024-06-26 CRI ADX LE SDK Ver.2.27.02]------------------------------------------
+(1) ライブラリ
+  (a) CRI Atom                : Ver.2.27.378
+
+[2024-04-19 CRI ADX LE SDK for Native Ver.2.27.01 ] ----------------------------------
+(1) ライブラリ
+  (a) CRI Atom                : Ver.2.27.353
+
+[2024-02-28 CRI ADX LE SDK for Native Ver.2.27.00 ] ----------------------------------
+(1) ライブラリ
+  (a) CRI Atom                : Ver.2.27.320
+
+[2023-07-13 CRI ADX LE SDK for Native Ver.2.25.02 ] ----------------------------------
+(1) ライブラリ
+  (a) CRI Atom                : Ver.2.26.354
+
+[2023-07-13 CRI ADX LE SDK for Native Ver.2.25.00 ] ----------------------------------
+(1) ライブラリ
+  (a) CRI Atom                : Ver.2.26.305
+
+(2) 内容変更
+  iOS、Android、MacOS版のライブラリを追加しました。
+
+[2021-02-08 CRI ADX LE SDK for Native Ver.2.21.00 ] ----------------------------------
+(1) ライブラリ
+  (a) CRI Atom                : Ver.2.21.141
+
+[2021-02-08 CRI ADX LE SDK for Native Ver.2.20.07 ] ----------------------------------
+CRI ADX LE SDK for Native を新規リリース。 
+
+以上
