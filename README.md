@@ -1,0 +1,2 @@
+# Game_list_shibamura
+DirectXを用いた3Dアクションゲーム。GPUインスタンシングによる描画最適化を重点的に実装。
