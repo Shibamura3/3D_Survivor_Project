@@ -130,7 +130,6 @@ bool ShaderField_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext
 	}
 
 	// ピクセルシェーダ用定数バッファの作成
-	//D3D11_BUFFER_DESC buffer_desc{};
 	buffer_desc.ByteWidth = sizeof(XMFLOAT4); // バッファのサイズ
 
 	//本来は容量を再定義する

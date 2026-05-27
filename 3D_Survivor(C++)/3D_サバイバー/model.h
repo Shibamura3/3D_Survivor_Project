@@ -30,7 +30,6 @@ MODEL* ModelLoad(const char* FileName, const DirectX::XMFLOAT3& scale, bool bBle
 void ModelRelease(MODEL* model);
 
 void ModelDraw(MODEL* model, const DirectX::XMMATRIX& mtxWorld); // モデルのポインターを渡す→ModelLoadを呼び出すと手に入る
-void ModelDepthDraw(MODEL* model, const DirectX::XMMATRIX& mtxWorld); 
 void ModelUnlitDraw(MODEL* model, const DirectX::XMMATRIX& mtxWorld);
 // 複数のインスタンスを一度に描画する
 void ModelDrawInstanced(MODEL* model, const DirectX::XMMATRIX* mtxWorlds, int instanceCount);

@@ -19,19 +19,11 @@ void KeyLogger_Initialize(){
 
 void KeyLogger_Update(){
 	const Keyboard_State* pState = Keyboard_GetState();
-	//pn 現在　pp 1つ前 pt トリガー検知 pr リリース
 	LPBYTE pn = (LPBYTE)pState; // unsigned char pointer としてごまかし
 	LPBYTE pp = (LPBYTE)&g_PrevState;
 	LPBYTE pt = (LPBYTE)&g_TriggerState;
-	LPBYTE pr = (LPBYTE)&g_Releasestate; //嘘をついて1バイトのポインター変数にアドレスを入れる
+	LPBYTE pr = (LPBYTE)&g_Releasestate;
 	
-	//１バイトごとの情報を見ることができる
-	//1bitごとに入力されてるされてないが入っている
-	// トリガー　　 リリース
-	// 0 1 -> 1		0 1 -> 0
-	// 1 0 -> 0		1 0 -> 1
-	// 1 1 -> 0		1 1 -> 0
-	// 0 0 -> 0		0 0 -> 0
 	for (int i = 0; i < sizeof(Keyboard_State);i++) {
 		pt[i] = (pp[i] ^ pn[i]) & pn[i];// XOR ^ AND &　
 		pr[i] = (pp[i] ^ pn[i]) & pp[i];

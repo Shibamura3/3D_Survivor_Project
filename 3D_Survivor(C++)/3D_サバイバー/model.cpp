@@ -3,7 +3,7 @@
 #include "direct3d.h"
 #include "texture.h"
 #include "shader3d.h"
-#include "shader_depth.h"
+//#include "shader_depth.h"
 #include "shader3d_unlit.h"
 #include "shader3d_instance.h"
 #include "model.h"
@@ -140,21 +140,15 @@ MODEL* ModelLoad(const char* FileName, float scale, bool bBlender)
 
 		ID3D11ShaderResourceView* texture;
 		ID3D11Resource* resource;
-		/*
-		TexMetadata metadata;
-		ScratchImage image;
-		LoadFromWICMemory(aitexture->pcData, aitexture->mWidth, WIC_FLAGS_NONE, &metadata, image);
-		CreateShaderResourceView(DirectXGetDevice(), image.GetImages(), image.GetImageCount(), metadata, &texture);
-		*/
 
 		CreateWICTextureFromMemory( // 内包されたテクスチャの場合のみ
-			Direct3D_GetDevice(),				//_In_ ID3D11Device * d3dDevice,
-			Direct3D_GetContext(),				//_In_opt_ ID3D11DeviceContext * d3dContext,
-			(const uint8_t*)aitexture->pcData,  //_In_reads_bytes_(wicDataSize) const uint8_t * wicData,
-			(size_t)aitexture->mWidth,			//_In_ size_t wicDataSize,
-			&resource,							//_Outptr_opt_ ID3D11Resource * *texture,
-			&texture							//_Outptr_opt_ ID3D11ShaderResourceView * *textureView,
-		);										//_In_ size_t maxsize = 0) noexcept;
+			Direct3D_GetDevice(),				
+			Direct3D_GetContext(),				
+			(const uint8_t*)aitexture->pcData,  
+			(size_t)aitexture->mWidth,			
+			&resource,							
+			&texture							
+		);										
 
 		assert(texture);
 
@@ -217,7 +211,7 @@ MODEL* ModelLoad(const char* FileName, float scale, bool bBlender)
 
 		assert(texture);
 
-		resource->Release(); // !!!
+		resource->Release(); 
 
 	}
 
@@ -334,21 +328,15 @@ MODEL* ModelLoad(const char* FileName, const DirectX::XMFLOAT3& scale, bool bBle
 
 		ID3D11ShaderResourceView* texture;
 		ID3D11Resource* resource;
-		/*
-		TexMetadata metadata;
-		ScratchImage image;
-		LoadFromWICMemory(aitexture->pcData, aitexture->mWidth, WIC_FLAGS_NONE, &metadata, image);
-		CreateShaderResourceView(DirectXGetDevice(), image.GetImages(), image.GetImageCount(), metadata, &texture);
-		*/
 
 		CreateWICTextureFromMemory( // 内包されたテクスチャの場合のみ
-			Direct3D_GetDevice(),				//_In_ ID3D11Device * d3dDevice,
-			Direct3D_GetContext(),				//_In_opt_ ID3D11DeviceContext * d3dContext,
-			(const uint8_t*)aitexture->pcData,  //_In_reads_bytes_(wicDataSize) const uint8_t * wicData,
-			(size_t)aitexture->mWidth,			//_In_ size_t wicDataSize,
-			&resource,							//_Outptr_opt_ ID3D11Resource * *texture,
-			&texture							//_Outptr_opt_ ID3D11ShaderResourceView * *textureView,
-		);										//_In_ size_t maxsize = 0) noexcept;
+			Direct3D_GetDevice(),				
+			Direct3D_GetContext(),				
+			(const uint8_t*)aitexture->pcData,  
+			(size_t)aitexture->mWidth,			
+			&resource,							
+			&texture							
+		);										
 
 		assert(texture);
 
@@ -411,7 +399,7 @@ MODEL* ModelLoad(const char* FileName, const DirectX::XMFLOAT3& scale, bool bBle
 
 		assert(texture);
 
-		resource->Release(); // !!!
+		resource->Release();
 
 	}
 
@@ -483,28 +471,7 @@ void ModelDraw(MODEL* model, const DirectX::XMMATRIX& mtxWorld){
 	}
 }
 
-void ModelDepthDraw(MODEL* model, const DirectX::XMMATRIX& mtxWorld) {
-	// シェーダーを描画パイプラインに設定
-	ShaderDepth_Begin();
-	// プリミティブトポロジ設定
-	Direct3D_GetContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	// 頂点シェーダにワールド座標変換行列に設定
-	ShaderDepth_SetWorldMatrix(mtxWorld);
 
-	for (unsigned int m = 0; m < model->AiScene->mNumMeshes; m++) // モデルのマテリアル分繰り返す
-	{
-		// 頂点バッファを描画パイプラインに設定
-		UINT stride = sizeof(Vertex3d);
-		UINT offset = 0;
-		Direct3D_GetContext()->IASetVertexBuffers(0, 1, &model->VertexBuffer[m], &stride, &offset);
-
-		// インデックスバッファを描画パイプラインに設定
-		Direct3D_GetContext()->IASetIndexBuffer(model->IndexBuffer[m], DXGI_FORMAT_R32_UINT, 0);
-
-		// ポリゴン描画命令発行
-		Direct3D_GetContext()->DrawIndexed(model->AiScene->mMeshes[m]->mNumFaces * 3, 0, 0); // model->AiScene->mMeshes[m]->mNumFacesが三角形のはずなので * 3　で調点数を求める
-	}
-}
 
 void ModelUnlitDraw(MODEL* model, const DirectX::XMMATRIX& mtxWorld) {
 	// シェーダーを描画パイプラインに設定
@@ -620,9 +587,3 @@ AABB Model_GetAABB(MODEL* model, const DirectX::XMFLOAT3& position){
 	};
 
 }
-
-
-
-
-
-

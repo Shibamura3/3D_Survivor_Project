@@ -21,9 +21,7 @@ static ID3D11InputLayout* g_pInputLayout = nullptr;
 static ID3D11Buffer* g_pVSConstantBuffer0 = nullptr;
 static ID3D11Buffer* g_pVSConstantBuffer1 = nullptr;
 static ID3D11PixelShader* g_pPixelShader = nullptr;
-//static ID3D11SamplerState* g_pSamplerState = nullptr;
 
-// 注意！初期化で外部から設定されるもの。Release不要。
 static ID3D11Device* g_pDevice = nullptr;
 static ID3D11DeviceContext* g_pContext = nullptr;
 
@@ -72,12 +70,11 @@ bool Shader_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 
 	// 頂点レイアウトの定義
-	//polygon.cppと同じように合わせる
 	D3D11_INPUT_ELEMENT_DESC layout[] = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,       0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,          0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	};//				0を送る		情報のビット数　32はビット
+	};
 
 	UINT num_elements = ARRAYSIZE(layout); // 配列の要素数を取得
 
@@ -126,40 +123,6 @@ bool Shader_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		hal::dout << "Shader_Initialize() : ピクセルシェーダーの作成に失敗しました" << std::endl;
 		return false;
 	}
-
-/*
-//	//サンプラーステートの設定
-//	D3D11_SAMPLER_DESC sampler_desc{};
-//
-//	//フィルタリング
-//	/*重要*/
-//	//sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-//	sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
-//
-//	
-//	//UV参照外の取り扱い(UVアドレッシングモード)
-//	// CLAMP 一番下の画像を引き延ばす
-//	// WRAP UV参照の繰り返し
-//	// MIRROR 上下左右反転
-//	// BORDER UV参照外を指定した色で塗りつぶす
-//	// Addressはそれぞれ別のものを選択できる
-////	/*重要*/sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
-////	/*重要*/sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
-//	/*重要*/sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP; // 2舞の繰り返し
-//	/*重要*/sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP; //
-//	sampler_desc.BorderColor[0] = 0.0f;
-//	sampler_desc.BorderColor[1] = 0.0f;
-//	sampler_desc.BorderColor[2] = 0.0f;
-//	sampler_desc.BorderColor[3] = 0.0f;
-//
-//	/*重要 今回は使ってなし*/sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-//	sampler_desc.MipLODBias = 0;
-//	sampler_desc.MaxAnisotropy = 8;
-//	sampler_desc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-//	sampler_desc.MinLOD = 0;
-//	sampler_desc.MaxLOD = D3D11_FLOAT32_MAX;
-//
-//	/*重要*/g_pDevice->CreateSamplerState(&sampler_desc, &g_pSamplerState);
 
 	return true;
 }
@@ -214,9 +177,6 @@ void Shader_Begin()
 	g_pContext->VSSetConstantBuffers(1, 1, &g_pVSConstantBuffer1);
 
 	// サンプラーステートを描画パイプラインに設定
-	//定数バッファーを使って絵をかいてね
-	//pピクセルsシェーダにsetする
-	//g_pContext->PSSetSamplers(0, 1, &g_pSamplerState);
 	Sampler_SetFilterLinear();
 
 }

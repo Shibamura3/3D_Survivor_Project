@@ -38,9 +38,6 @@ void Map_LoadCSV(const std::string& path) {
 	}
 	g_MapObjectsVector.clear();
 
-	// 地面（KindId:0）はとりあえず最初に入れておく
-	//g_MapObjectsVector.push_back({ 0, {0,0,0}, {{-50,-2,-50},{50,-0.01f,50}} });
-
 	std::string line;
 	std::getline(file, line); // ヘッダー(kind,x,y,z)を読み飛ばす
 

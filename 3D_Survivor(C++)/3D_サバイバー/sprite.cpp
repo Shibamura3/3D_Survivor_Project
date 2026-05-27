@@ -8,7 +8,6 @@
 ==============================================================================*/
 #include <d3d11.h>
 #include <DirectXMath.h>
-//#include "DirectXTex.h"
 using namespace DirectX;
 #include "direct3d.h"
 #include "shader.h"
@@ -16,10 +15,6 @@ using namespace DirectX;
 #include "sprite.h"
 #include "texture.h"
 
-
-
-
-//ある理由から頂点の数ぴったりにする
 static constexpr int NUM_VERTEX = 4; // 頂点数
 
 static ID3D11Buffer* g_pVertexBuffer = nullptr; // 頂点バッファ
@@ -34,7 +29,7 @@ static ID3D11DeviceContext* g_pContext = nullptr;
 struct Vertex
 {
 	XMFLOAT3 position; // 頂点座標
-	XMFLOAT4 color;    // 色　XMFLOAT4　floatを４つ入れる構造体
+	XMFLOAT4 color;    // 色
 	XMFLOAT2 uv; // テクスチャ座標　UV値
 };
 
@@ -111,7 +106,6 @@ void Sprite_Draw(int texid, float dx, float dy, const XMFLOAT4 color){
 	// 頂点バッファのロックを解除
 	g_pContext->Unmap(g_pVertexBuffer, 0);
 	//ワールド変換行列を設定
-	//回転に対応していないから回転させてはいけない
 	Shader_SetWorldMatrix(XMMatrixIdentity());//単位行列を乗算
 
 	// 頂点バッファを描画パイプラインに設定

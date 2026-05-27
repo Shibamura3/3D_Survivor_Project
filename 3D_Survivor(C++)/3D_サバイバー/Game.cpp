@@ -1,9 +1,9 @@
 /*
-*
-*	ゲーム本体：game.cpp
-*
-*	2025/06/27		hibiki sakuma
-*
+
+	ゲーム本体：game.cpp
+
+	2025/06/27		hibiki sakuma
+
 */
 
 #include "Game.h"

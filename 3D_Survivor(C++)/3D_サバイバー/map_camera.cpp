@@ -41,7 +41,6 @@ const DirectX::XMFLOAT4X4& MapCamera_GetViewMatrix(){
 const DirectX::XMFLOAT4X4& MapCamera_GetPerspectiveMatrix(){
 	XMFLOAT4X4 mtxProje;
 
-	//XMMATRIX proj = XMMatrixOrthographicOffCenterLH(-4.0f, 4.0f, -4.0f, 4.0f, 0.1f, 1000.0f);
 	XMMATRIX proj = XMMatrixOrthographicOffCenterLH(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 10000.0f);
 
 	XMStoreFloat4x4(&mtxProje, proj);

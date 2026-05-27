@@ -11,7 +11,7 @@
 using namespace DirectX;
 #include "direct3d.h"
 #include "shader3d.h"
-#include "shader_depth.h"
+//#include "shader_depth.h"
 #include "debug_ostream.h"
 #include "texture.h"
 #include "resource_manager.h"
@@ -145,26 +145,6 @@ void Cube_Draw(int texId, const DirectX::XMMATRIX& mtmWorld){
 	// 頂点シェーダにワールド座標変換行列に設定
 	Shader3d_SetWorldMatrix(mtmWorld);
 
-	// ポリゴン描画命令発行
-	g_pContext->DrawIndexed(NUM_INDEX, 0, 0);
-}
-
-void Cube_DepthDraw(int texId, const DirectX::XMMATRIX& mtmWorld){
-	// シェーダーを描画パイプラインに設定
-	ShaderDepth_Begin();
-	
-	// 頂点バッファを描画パイプラインに設定
-	UINT stride = sizeof(Vertex3d);
-	UINT offset = 0;
-	g_pContext->IASetVertexBuffers(0, 1, &g_pVertexBuffer, &stride, &offset);
-
-	// インデックスバッファを描画パイプラインに設定
-	g_pContext->IASetIndexBuffer(g_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0); // unsined short = R16 unsined int = R32
-
-	// プリミティブトポロジ設定
-	g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	// 頂点シェーダにワールド座標変換行列に設定
-	ShaderDepth_SetWorldMatrix(mtmWorld);
 	// ポリゴン描画命令発行
 	g_pContext->DrawIndexed(NUM_INDEX, 0, 0);
 }

@@ -19,7 +19,6 @@
 #include "direct3d.h"
 #include "shader.h"
 #include "shader3d.h"
-#include "shader_depth.h"
 #include "shader3d_unlit.h"
 #include "shader3d_instance.h"
 #include "sampler.h"
@@ -34,7 +33,6 @@
 #include "Audio.h"
 #include "key_logger.h" //キーボード入力
 #include "resource_manager.h"
-//キーパッド入力
 #include <Xinput.h>
 #include "pad_logger.h"
 #include "mouse.h"
@@ -66,13 +64,12 @@ int APIENTRY WinMain(_In_ HINSTANCE hinstance, _In_opt_ HINSTANCE hPrevInstance,
 	KeyLogger_Initialize();
 	PadLogger_Initalize();
 	Mouse_Initialize(hWnd);
-	InitAudio(); // Audio_Initialize
+	InitAudio(); 
 
 	Direct3D_Initialize(hWnd);
 	Shader_Initialize(Direct3D_GetDevice(), Direct3D_GetContext());
 	Shader3d_Initialize(Direct3D_GetDevice(), Direct3D_GetContext());
 	Shader3dUnlit_Initialize();
-	ShaderDepth_Initialize();
 	Shader3d_Instance_Initialize(Direct3D_GetDevice(), Direct3D_GetContext());
 	Sampler_Initialize(Direct3D_GetDevice(), Direct3D_GetContext());
 	Texture_Initialize(Direct3D_GetDevice(), Direct3D_GetContext());
@@ -81,16 +78,11 @@ int APIENTRY WinMain(_In_ HINSTANCE hinstance, _In_opt_ HINSTANCE hPrevInstance,
 	SpriteAnim_Initialize();
 	Fade_Initialize();
 	Resouce_ManagerInitialize();
-	//ウィンドウ上にマウスを表示しなくなる
-	//Mouse_SetVisible(false);
-	//相対座標モード
-	//Mouse_SetMode(MOUSE_POSITION_MODE_RELATIVE);
 
 	Scene_Initialize(); // ゲームのシーン全体の処理が入っている
 	Light_Initialize(Direct3D_GetDevice(), Direct3D_GetContext());
 	Cube_Initialize(Direct3D_GetDevice(), Direct3D_GetContext());
 #if defined(DEBUG) || defined(_DEBUG) //リリースの時は無視される
-	//Direct3D_Initialize(hWnd);以降にかく
 	//フォントの初期化
 	hal::DebugText dt(Direct3D_GetDevice(),
 		Direct3D_GetContext(),
@@ -145,22 +137,12 @@ int APIENTRY WinMain(_In_ HINSTANCE hinstance, _In_opt_ HINSTANCE hPrevInstance,
 
 			}
 
-			// 実行フレームの計測 1/60ごとに実行
-			//elapsed_time += SystemTimer_GetElapsedTime();
-			
-			//elapsed_time = SystemTimer_GetElapsedTime();
-			//elapsed_time = std::clamp(elapsed_time, 0.0, 0.1);
-
 			elapsed_time += SystemTimer_GetElapsedTime();
 			if (elapsed_time >= 1.0 / 15.0/*処理落ちフレーム数*/) {
 				elapsed_time = 1.0 / 15.0; // 時間を固定する
 			}
 
-			//if (elapsed_time >= (1.0 / 60.0)) {
 			{
-				//if(true){
-				//exec_last_time = current_time; // 処理した時刻を保存
-
 				// ゲームの更新
 				KeyLogger_Update();
 				PadLogger_Update();
@@ -211,12 +193,11 @@ int APIENTRY WinMain(_In_ HINSTANCE hinstance, _In_opt_ HINSTANCE hPrevInstance,
 	Texture_Finalize();
 	Sampler_Finalize();
 	Shader3d_Instance_Finalize();
-	ShaderDepth_Finalize();
 	Shader3dUnlit_Finalize();
 	Shader3d_Finalize();
 	Shader_Finalize();
 	Direct3D_Finalize();
-	UninitAudio(); // Audio__Finalize
+	UninitAudio(); 
 
 	CoUninitialize();
 

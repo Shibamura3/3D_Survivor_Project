@@ -33,28 +33,21 @@ void Sampler_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext){
 	sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
 
 	//UV参照外の取り扱い(UVアドレッシングモード)
-	// CLAMP 一番下の画像を引き延ばす
-	// WRAP UV参照の繰り返し
-	// MIRROR 上下左右反転
-	// BORDER UV参照外を指定した色で塗りつぶす
-	// Addressはそれぞれ別のものを選択できる
-//	/*重要*/sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
-//	/*重要*/sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
-	/*重要*/sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP; // 2舞の繰り返し
-	/*重要*/sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP; //
+	sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP; 
+	sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP; 
 	sampler_desc.BorderColor[0] = 0.0f;
 	sampler_desc.BorderColor[1] = 0.0f;
 	sampler_desc.BorderColor[2] = 0.0f;
 	sampler_desc.BorderColor[3] = 0.0f;
 
-	/*重要 今回は使ってなし*/sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
 	sampler_desc.MipLODBias = 0;
 	sampler_desc.MaxAnisotropy = 16; // 周囲のｎピクセル
 	sampler_desc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
 	sampler_desc.MinLOD = 0;
 	sampler_desc.MaxLOD = D3D11_FLOAT32_MAX;
 
-	/*重要*/g_pDevice->CreateSamplerState(&sampler_desc, &g_pSamplerPoint);
+	g_pDevice->CreateSamplerState(&sampler_desc, &g_pSamplerPoint);
 
 	sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 	g_pDevice->CreateSamplerState(&sampler_desc, &g_pSamplerLiner);

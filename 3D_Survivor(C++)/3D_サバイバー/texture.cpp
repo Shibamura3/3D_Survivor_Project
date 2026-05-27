@@ -8,7 +8,7 @@
 #include "WICTextureLoader11.h"
 using namespace DirectX;
 
-static constexpr int TEXTURE_MAX = 1012;
+static constexpr int TEXTURE_MAX = 1024;
 
 struct Texture {
 	std::wstring fliename;

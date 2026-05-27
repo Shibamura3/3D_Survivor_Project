@@ -84,8 +84,6 @@ bool ShaderBillboard_Initialize(){
 
 	//本来は容量を再定義する
 	Direct3D_GetDevice()->CreateBuffer(&buffer_desc, nullptr, &g_pVSConstantBuffer0);
-	//Direct3D_GetDevice()->CreateBuffer(&buffer_desc, nullptr, &g_pVSConstantBuffer1);
-	//Direct3D_GetDevice()->CreateBuffer(&buffer_desc, nullptr, &g_pVSConstantBuffer2);
 
 	buffer_desc.ByteWidth = sizeof(UVParameter); // バッファのサイズ
 	Direct3D_GetDevice()->CreateBuffer(&buffer_desc, nullptr, &g_pVSConstantBuffer3);
@@ -117,7 +115,6 @@ bool ShaderBillboard_Initialize(){
 	}
 
 	// ピクセルシェーダ用定数バッファの作成
-	//D3D11_BUFFER_DESC buffer_desc{};
 	buffer_desc.ByteWidth = sizeof(XMFLOAT4); // バッファのサイズ
 
 	//本来は容量を再定義する

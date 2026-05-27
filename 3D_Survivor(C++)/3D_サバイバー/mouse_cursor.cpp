@@ -15,13 +15,14 @@ using namespace DirectX;
 
 // 定数宣言
 static constexpr int CURSOR_SIZE = 64;
+const float CURSOR_SPEED = 1000.0f; // 1秒間に動くピクセル数
 
 // 変数宣言
 static XMFLOAT2 g_Position{};
 static bool g_IsClick = false;
 
 void MouseCursor_Initialize(){
-
+	g_Position = { Direct3D_GetBackBufferWidth() * 0.5f, Direct3D_GetBackBufferHeight() * 0.5f }; // 画面中央を初期位置
 }
 
 void MouseCursor_Finalize(){
@@ -36,8 +37,6 @@ void MouseCursor_UpdateWithMouse(int x, int y) {
 
 // パッドモードでの更新：現在の座標から移動させる
 void MouseCursor_UpdateWithStick(float stickX, float stickY, double elapsed_time) {
-	// 1秒間に動くピクセル数（好みで調整してください）
-	const float CURSOR_SPEED = 1000.0f;
 
 	g_Position.x += stickX * CURSOR_SPEED * (float)elapsed_time;
 	// SDLのスティックYは上がマイナスなので、ここではそのまま加算（上がマイナス＝画面上方向）

@@ -27,29 +27,6 @@ void LightCamera_SetFront(const DirectX::XMFLOAT3& front){
 	g_Front = front;
 }
 
-//const DirectX::XMFLOAT4X4& LightCamera_GetViewMatrix(){
-//	XMFLOAT4X4 mtxView;
-//
-//	XMMATRIX view = XMMatrixLookToLH(XMLoadFloat3(&g_Position), XMVECTOR{ 0.0f, -1.0f,0.0f }, XMLoadFloat3(&g_Front));
-//
-//	XMStoreFloat4x4(&mtxView, view);
-//
-//	return mtxView;
-//}
-
-//const DirectX::XMFLOAT4X4& LightCamera_GetPerspectiveMatrix(){
-//	XMFLOAT4X4 mtxpers;
-//
-//	float value = 40.0f;
-//
-//	XMMATRIX pers = XMMatrixOrthographicOffCenterLH(-value, value, -value, value, 0.1f, 10000.0f);
-//
-//	XMStoreFloat4x4(&mtxpers, pers);
-//
-//	//return mtxpers;
-//	
-//}
-
 const DirectX::XMMATRIX LightCamera_GetViewMatrix() {
 	return XMMatrixLookToLH(XMLoadFloat3(&g_Position), XMVECTOR{ 0.0f, -1.0f,0.0f }, XMLoadFloat3(&g_Front));
 }
