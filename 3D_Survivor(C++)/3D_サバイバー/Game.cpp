@@ -349,8 +349,8 @@ void Game_UpDate(double elapsed_time){
 		}
 	}
 
-	SpriteAnim_Update(elapsed_time); // 
-	Bullet_HitEffect_Updata(); // 
+	SpriteAnim_Update(elapsed_time); 
+	Bullet_HitEffect_Update(); 
 	Trajectory3d_Update(elapsed_time);
 
 	// ÀÑ‰ğœŠÖ˜A

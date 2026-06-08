@@ -15,8 +15,6 @@ void LightCamera_SetPosition(const DirectX::XMFLOAT3& position);
 void LightCamera_SetFront(const DirectX::XMFLOAT3& front); 
 
 // カメラ行列をシェーダーに入れる用
-//const DirectX::XMFLOAT4X4& LightCamera_GetViewMatrix();
-//const DirectX::XMFLOAT4X4& LightCamera_GetPerspectiveMatrix();
 const DirectX::XMMATRIX LightCamera_GetViewMatrix();
 const DirectX::XMMATRIX LightCamera_GetPerspectiveMatrix();
 

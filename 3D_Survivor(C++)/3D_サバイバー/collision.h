@@ -46,9 +46,9 @@ struct AABB { // 三次元の箱
 	DirectX::XMFLOAT3 GetCenter() const {
 		DirectX::XMFLOAT3 center;
 		DirectX::XMFLOAT3 half = GetHalf();
-		center.x = min.x + half.x * 0.5f; // ベクトルの長さ÷２
-		center.y = min.y + half.y * 0.5f;
-		center.z = min.z + half.z * 0.5f;
+		center.x = min.x + half.x; 
+		center.y = min.y + half.y;
+		center.z = min.z + half.z;
 
 		return center;
 	}

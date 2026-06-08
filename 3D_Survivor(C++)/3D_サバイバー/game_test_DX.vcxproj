@@ -192,7 +192,7 @@
     <ClCompile Include="shader3d_unlit.cpp" />
     <ClCompile Include="shaderfield.cpp" />
     <ClCompile Include="shader_depth.cpp" />
-    <ClCompile Include="sheder_billboard.cpp" />
+    <ClCompile Include="shader_billboard.cpp" />
     <ClCompile Include="skydome.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="sprite_animu.cpp" />
@@ -248,7 +248,7 @@
     <ClInclude Include="shader3d_unlit.h" />
     <ClInclude Include="shaderfield.h" />
     <ClInclude Include="shader_depth.h" />
-    <ClInclude Include="sheder_billboard.h" />
+    <ClInclude Include="shader_billboard.h" />
     <ClInclude Include="skydome.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="sprite_animu.h" />

@@ -7,7 +7,7 @@
 #include "trajectory3d.h"
 #include "resource_manager.h"
 #include "billboard.h"
-#include "sheder_billboard.h"
+#include "shader_billboard.h"
 #include "direct3d.h"
 // デバック用
 #include <sstream>

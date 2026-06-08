@@ -9,7 +9,7 @@
 #include <DirectXMath.h>
 using namespace DirectX;
 #include "direct3d.h"
-#include "sheder_billboard.h"
+#include "shader_billboard.h"
 #include "texture.h"
 #include "player_camera.h"
 

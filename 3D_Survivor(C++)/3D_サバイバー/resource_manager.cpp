@@ -13,7 +13,7 @@ static int Resouce_Tex[Tex_ID_MAX]{};
 static int Resouce_Audio[Audio_ID_MAX]{};
 static MODEL* Resouce_Model[Model_ID_MAX]{};
 
-void Resouce_ManagerInitialize(){
+void Resouce_Manager_Initialize(){
 
 	// âÊëúÇÃì«Ç›çûÇ›
 	Resouce_Tex[Mousu_Cursor_Red] = Texture_Load(L"resuce/img/Mouse/MouseCursor.png");
@@ -62,7 +62,7 @@ void Resouce_ManagerInitialize(){
 	Resouce_Audio[Bullet_SE] = LoadAudio("resuce/audio/bullet.wav");
 }
 
-void Resouce_ManagerFinalize(){
+void Resouce_Manager_Finalize(){
 	Texture_AllRelease();
 
 	for (int i = 0; i < Audio_ID_MAX; i++) {

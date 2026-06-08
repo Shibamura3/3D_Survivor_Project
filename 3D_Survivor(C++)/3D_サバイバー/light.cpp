@@ -39,8 +39,6 @@ struct PointLightList {
 	float dummy;
 };
 
-// スポットライト
-
 // グローバル変数
 static PointLightList g_PointLights{};
 
@@ -62,7 +60,7 @@ void Light_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext){
 	buffer_desc.ByteWidth = sizeof(SpecularLight); // バッファのサイズ
 	g_pDevice->CreateBuffer(&buffer_desc, nullptr, &g_pPSConstantBuffer3); // specular
 
-	buffer_desc.ByteWidth = sizeof(PointLight); // バッファのサイズ
+	buffer_desc.ByteWidth = sizeof(PointLightList); // バッファのサイズ
 	g_pDevice->CreateBuffer(&buffer_desc, nullptr, &g_pPSConstantBuffer4); // point
 
 	

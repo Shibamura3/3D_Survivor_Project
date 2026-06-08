@@ -109,11 +109,6 @@ void Result_Initialize(){
 }
 
 void Result_Finalize(){
-	//Texture_AllRelease();
-	// サウンドストップはココに入れる
-	//UnloadAudio(g_Check_SE);
-	//UnloadAudio(g_Miss_SE);
-	//UnloadAudio(g_Title_BGM);
 	MouseCursor_Finalize();
 	g_Font.reset();
 	g_FontBatch.reset();
@@ -230,8 +225,10 @@ void Result_Draw(){
 	if (!g_IsNaming) {
 		float alpha = g_Button_Title ? 0.5f : 1.0f;
 		Sprite_Draw(Resouce_Manager_GetTexId(Title_Button),
-			Direct3D_GetBackBufferWidth() * 0.5f - SELECT_SIZE_X * 0.5f,
-			Direct3D_GetBackBufferHeight() * 0.75f,
+			//Direct3D_GetBackBufferWidth() * 0.5f - SELECT_SIZE_X * 0.5f,
+			//Direct3D_GetBackBufferHeight() * 0.75 - SELECT_SIZE_Y * 0.5f,
+			g_ButtonPos.x + SELECT_SIZE_X * 0.5f,
+			g_ButtonPos.y,
 			SELECT_SIZE_X, SELECT_SIZE_Y, { 1, 1, 1, alpha });
 	}
 

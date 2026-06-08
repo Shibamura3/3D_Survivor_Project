@@ -77,7 +77,7 @@ int APIENTRY WinMain(_In_ HINSTANCE hinstance, _In_opt_ HINSTANCE hPrevInstance,
 	Sprite_Initialize(Direct3D_GetDevice(), Direct3D_GetContext());
 	SpriteAnim_Initialize();
 	Fade_Initialize();
-	Resouce_ManagerInitialize();
+	Resouce_Manager_Initialize();
 
 	Scene_Initialize(); // ゲームのシーン全体の処理が入っている
 	Light_Initialize(Direct3D_GetDevice(), Direct3D_GetContext());
@@ -180,7 +180,7 @@ int APIENTRY WinMain(_In_ HINSTANCE hinstance, _In_opt_ HINSTANCE hPrevInstance,
 	Collision_DebudFinalize();
 #endif
 
-	Resouce_ManagerInitialize();
+	Resouce_Manager_Finalize();
 	Mouse_Finalize(); 
 	MeshField_Finalize();
 	Light_Finalize();

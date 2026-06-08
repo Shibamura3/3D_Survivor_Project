@@ -11,7 +11,7 @@
 // C++のポリモーフィズムでエフェクトを一括管理できる
 void Bullet_HitEffect_Initialize();
 void Bullet_HitEffect_Finalize();
-void Bullet_HitEffect_Updata();
+void Bullet_HitEffect_Update();
 void Bullet_HitEffect_Draw();
 
 void Bullet_HitEffect_Create(const DirectX::XMFLOAT3& position);

@@ -431,23 +431,27 @@ bool Collision_SweptCapsuleVsAABB(const Capsule& oldCap, const Capsule& newCap, 
 			if (XMVectorGetX(XMVector3LengthSq(d)) < 1e-6f)
 				return;
 
-			float t;
-			XMFLOAT3 n;
-			if (Collision_RaycastAABB(s0, s1, expanded, t, n)) {
-				d = XMLoadFloat3(&newCap.start) - XMLoadFloat3(&oldCap.start);
-				XMVECTOR nVec = XMLoadFloat3(&n);
-				// 法線を必ず進行方向と逆に
-				if (XMVectorGetX(XMVector3Dot(d, nVec)) > 0.0f) {
-					nVec = -nVec;
-					XMStoreFloat3(&n, nVec);
-				}
+			float t = 1.0f;
+			XMFLOAT3 n{};
 
-				if (t < outT) {
-					outT = t;
-					outNormal = n;
-					hit = true;
-				}
+			if (!Collision_RaycastAABB(s0, s1, expanded, t, n)) {
+				return;
 			}
+
+			d = XMLoadFloat3(&newCap.start) - XMLoadFloat3(&oldCap.start);
+			XMVECTOR nVec = XMLoadFloat3(&n);
+			// 法線を必ず進行方向と逆に
+			if (XMVectorGetX(XMVector3Dot(d, nVec)) > 0.0f) {
+				nVec = -nVec;
+				XMStoreFloat3(&n, nVec);
+			}
+
+			if (t < outT) {
+				outT = t;
+				outNormal = n;
+				hit = true;
+			}
+			
 			if (t <= 1e-4f) return;
 		};
 

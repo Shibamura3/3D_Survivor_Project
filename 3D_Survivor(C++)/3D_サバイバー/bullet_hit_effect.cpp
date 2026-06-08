@@ -8,7 +8,7 @@
 #include "resource_manager.h"
 #include "sprite_animu.h"
 #include "billboard.h"
-#include "sheder_billboard.h"
+#include "shader_billboard.h"
 using namespace DirectX;
 
 // ƒOƒ[ƒoƒ‹•Ï”
@@ -55,7 +55,7 @@ void Bullet_HitEffect_Finalize(){
 	}
 }
 
-void Bullet_HitEffect_Updata(){
+void Bullet_HitEffect_Update(){
 	for (int i = 0; i < g_EffectCount; i++) {
 		g_pEffects[i]->Updata();
 	}

@@ -68,8 +68,8 @@ enum Model_ID
 	Model_ID_MAX
 };
 
-void Resouce_ManagerInitialize();
-void Resouce_ManagerFinalize();
+void Resouce_Manager_Initialize();
+void Resouce_Manager_Finalize();
 
 int Resouce_Manager_GetTexId(Tex_ID id);
 int Resouce_Manager_GetAudioId(Audio_ID id);

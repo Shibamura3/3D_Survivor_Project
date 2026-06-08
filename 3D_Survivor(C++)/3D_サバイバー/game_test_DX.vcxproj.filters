@@ -112,7 +112,7 @@
     <ClCompile Include="billboard.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="sheder_billboard.cpp">
+    <ClCompile Include="shader_billboard.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="bullet_hit_effect.cpp">
@@ -276,7 +276,7 @@
     <ClInclude Include="billboard.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="sheder_billboard.h">
+    <ClInclude Include="shader_billboard.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="bullet_hit_effect.h">
