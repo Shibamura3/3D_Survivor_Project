@@ -11,8 +11,7 @@
 
 void Skydome_Initialize();
 void Skydome_Finalize();
-//void Skydome_Update(double elapsed_time); // ‰_‚ğ“®‚©‚·ê‡‚Í‚Q–‡—pˆÓ‚µ‚Ä‰_‚¾‚¯‚ğ‰ñ‚·
-void Skydone_SetPosition(const DirectX::XMFLOAT3& position);
+void Skydonm_SetPosition(const DirectX::XMFLOAT3& position);
 void Skydome_Draw();
 
 #endif // !SKYDOME_H

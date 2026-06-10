@@ -11,7 +11,7 @@ using namespace DirectX;
 static constexpr int TEXTURE_MAX = 1024;
 
 struct Texture {
-	std::wstring fliename;
+	std::wstring filename;
 	unsigned int width;
 	unsigned int height;
 	ID3D11Resource* pTexture = nullptr;
@@ -46,7 +46,7 @@ void Texture_Finalize(void){
 int Texture_Load(const wchar_t* pFilename){
 	//‚·‚Å‚É“Ç‚İ‚ñ‚¾ƒtƒ@ƒCƒ‹‚Í“Ç‚İ‚Ü‚È‚¢
 	for (int i = 0;i < TEXTURE_MAX;i++) {
-		if (g_Textures[i].fliename == pFilename) {
+		if (g_Textures[i].filename == pFilename) {
 			return i;
 		}
 
@@ -73,7 +73,7 @@ int Texture_Load(const wchar_t* pFilename){
 			return -1;
 		}
 
-		g_Textures[i].fliename = pFilename;
+		g_Textures[i].filename = pFilename;
 		
 		return i;
 	}
@@ -83,7 +83,7 @@ int Texture_Load(const wchar_t* pFilename){
 
 void Texture_AllRelease(){
 	for (Texture& t : g_Textures) {
-		t.fliename.clear();
+		t.filename.clear();
 		SAFE_RELEASE(t.pTexture);
 		SAFE_RELEASE(t.pTextureView);
 	}

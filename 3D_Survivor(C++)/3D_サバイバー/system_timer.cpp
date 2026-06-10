@@ -128,7 +128,7 @@ double SystemTimer_GetElapsedTime(void)
 }
 
 // システムタイマーが止まっているか？
-bool SystemTimer_IsStoped(void)
+bool SystemTimer_IsStopped(void)
 {
     return g_bTimerStopped;
 }

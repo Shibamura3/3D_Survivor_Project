@@ -10,8 +10,8 @@
 
 enum Tex_ID
 {
-	Mousu_Cursor_Red,
-	Mousu_Cursor_Blue,
+	Mouse_Cursor_Red,
+	Mouse_Cursor_Blue,
 	Title_Back,
 	Title_Logo,
 	Result_Back,

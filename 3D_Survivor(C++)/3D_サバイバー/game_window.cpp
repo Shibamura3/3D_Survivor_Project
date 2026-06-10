@@ -17,7 +17,7 @@ static constexpr char TITLE[] = "3D-Survivar";//タイトルバーのテキスト
 
 //メインウィンドウのサイズ計算　16:9
 static constexpr int SCREEN_WIDTH = 16 * 100;
-static constexpr int SCREEN_HIGHT = 9 * 100;
+static constexpr int SCREEN_HEIGHT = 9 * 100;
 
 //ウィンドウプロシージャのプロトタイプ宣言
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -43,7 +43,7 @@ HWND GameWindow_Create(HINSTANCE hinstance)
 
 
 	// メインウィンドウの作成
-	RECT window_rect{ 0, 0, SCREEN_WIDTH, SCREEN_HIGHT };
+	RECT window_rect{ 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 	DWORD style = WS_OVERLAPPEDWINDOW & ~(WS_THICKFRAME | WS_MAXIMIZEBOX);
 
 	AdjustWindowRect(&window_rect, style, FALSE);

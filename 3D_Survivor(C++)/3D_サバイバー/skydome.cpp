@@ -18,7 +18,8 @@ void Skydome_Initialize(){
 void Skydome_Finalize(){
 }
 
-void Skydone_SetPosition(const DirectX::XMFLOAT3& position){
+
+void Skydonm_SetPosition(const DirectX::XMFLOAT3& position){
 	g_position = position;
 }
 

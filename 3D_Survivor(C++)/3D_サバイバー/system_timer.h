@@ -39,7 +39,7 @@ double SystemTimer_GetAbsoluteTime(void);
 double SystemTimer_GetElapsedTime(void);
 
 // システムタイマーが止まっているか？
-bool SystemTimer_IsStoped(void);
+bool SystemTimer_IsStopped(void);
 
 // 現在のスレッドを1つのプロセッサ（現在のスレッド）に制限
 void LimitThreadAffinityToCurrentProc(void);

@@ -50,9 +50,9 @@ void MouseCursor_UpdateWithStick(float stickX, float stickY, double elapsed_time
 
 void MouseCursor_Draw(){
 	if (!g_IsClick) {
-		Sprite_Draw(Resouce_Manager_GetTexId(Mousu_Cursor_Blue), g_Position.x - CURSOR_SIZE * 0.25f, g_Position.y - CURSOR_SIZE * 0.25f, CURSOR_SIZE, CURSOR_SIZE);
+		Sprite_Draw(Resouce_Manager_GetTexId(Mouse_Cursor_Blue), g_Position.x - CURSOR_SIZE * 0.25f, g_Position.y - CURSOR_SIZE * 0.25f, CURSOR_SIZE, CURSOR_SIZE);
 	} else {
-		Sprite_Draw(Resouce_Manager_GetTexId(Mousu_Cursor_Red), g_Position.x - CURSOR_SIZE * 0.25f, g_Position.y - CURSOR_SIZE * 0.25f, CURSOR_SIZE, CURSOR_SIZE);
+		Sprite_Draw(Resouce_Manager_GetTexId(Mouse_Cursor_Red), g_Position.x - CURSOR_SIZE * 0.25f, g_Position.y - CURSOR_SIZE * 0.25f, CURSOR_SIZE, CURSOR_SIZE);
 	}
 
 #if defined(DEBUG) || defined(_DEBUG) 

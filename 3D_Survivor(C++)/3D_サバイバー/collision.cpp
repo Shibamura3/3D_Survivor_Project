@@ -42,14 +42,14 @@ bool Collision_IsOverlapCircle(const Circle a, const Circle b) {
 }
 
 bool Collision_IsOverlapBox(const Box a, const Box b){
-	float a_t = a.center_position.y - a.hafe_height;
-	float a_b = a.center_position.y + a.hafe_height;
-	float a_l = a.center_position.x - a.hafe_width;
-	float a_r = a.center_position.x + a.hafe_width;
-	float b_t = b.center_position.y - b.hafe_height;
-	float b_b = b.center_position.y + b.hafe_height;
-	float b_l = b.center_position.x - b.hafe_width;
-	float b_r = b.center_position.x + b.hafe_width;
+	float a_t = a.center_position.y - a.half_height;
+	float a_b = a.center_position.y + a.half_height;
+	float a_l = a.center_position.x - a.half_width;
+	float a_r = a.center_position.x + a.half_width;
+	float b_t = b.center_position.y - b.half_height;
+	float b_b = b.center_position.y + b.half_height;
+	float b_l = b.center_position.x - b.half_width;
+	float b_r = b.center_position.x + b.half_width;
 
 	return a_l<b_r && a_r>b_l && a_t<b_b && a_b>b_t;
 }
@@ -588,11 +588,11 @@ void Collision_DebugDraw(const Box& box, const XMFLOAT4 color){
 	Vertex* v = (Vertex*)msr.pData;
 
 	//í∏ì_èÓïÒÇÃèëÇ´çûÇ›
-	v[0].position = { box.center_position.x - box.hafe_width,box.center_position.y - box.hafe_height,0.0f };
-	v[1].position = { box.center_position.x + box.hafe_width,box.center_position.y - box.hafe_height,0.0f };
-	v[2].position = { box.center_position.x + box.hafe_width,box.center_position.y + box.hafe_height,0.0f };
-	v[3].position = { box.center_position.x - box.hafe_width,box.center_position.y + box.hafe_height,0.0f };
-	v[4].position = { box.center_position.x - box.hafe_width,box.center_position.y - box.hafe_height,0.0f };
+	v[0].position = { box.center_position.x - box.half_width,box.center_position.y - box.half_height,0.0f };
+	v[1].position = { box.center_position.x + box.half_width,box.center_position.y - box.half_height,0.0f };
+	v[2].position = { box.center_position.x + box.half_width,box.center_position.y + box.half_height,0.0f };
+	v[3].position = { box.center_position.x - box.half_width,box.center_position.y + box.half_height,0.0f };
+	v[4].position = { box.center_position.x - box.half_width,box.center_position.y - box.half_height,0.0f };
 
 	for (int i = 0;i < 5;i++) {
 		v[i].color = color;

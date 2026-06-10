@@ -29,8 +29,8 @@ struct Circle { // 円の定義
 struct Box { // 四角の定義
 	//画像は左上座標と幅高さなので改変が必要かも
 	DirectX::XMFLOAT2 center_position;
-	float hafe_width;
-	float hafe_height;
+	float half_width;
+	float half_height;
 };
 
 struct Hit { // 当たった面の法線を取得

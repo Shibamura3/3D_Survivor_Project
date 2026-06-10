@@ -16,8 +16,8 @@ static MODEL* Resouce_Model[Model_ID_MAX]{};
 void Resouce_Manager_Initialize(){
 
 	// âÊëúÇÃì«Ç›çûÇ›
-	Resouce_Tex[Mousu_Cursor_Red] = Texture_Load(L"resuce/img/Mouse/MouseCursor.png");
-	Resouce_Tex[Mousu_Cursor_Blue] = Texture_Load(L"resuce/img/Mouse/MouseClick.png"); 
+	Resouce_Tex[Mouse_Cursor_Red] = Texture_Load(L"resuce/img/Mouse/MouseCursor.png");
+	Resouce_Tex[Mouse_Cursor_Blue] = Texture_Load(L"resuce/img/Mouse/MouseClick.png"); 
 	Resouce_Tex[Title_Back] = Texture_Load(L"resuce/img/TITLE/Title_back.png");
 	Resouce_Tex[Title_Logo] = Texture_Load(L"resuce/img/TITLE/TitleLogo.png");
 	Resouce_Tex[Result_Back] = Texture_Load(L"resuce/img/RESULT/Result_back.png");
