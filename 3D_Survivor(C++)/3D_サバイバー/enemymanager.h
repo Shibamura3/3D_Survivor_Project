@@ -12,7 +12,7 @@
 #include "enemy_t1.h"
 #include "enemy_t2.h" 
 #include "enemy_t3.h" 
-// 前方宣言（ヘッダーを軽くするため）
+
 class Enemy;
 
 class EnemyManager {
@@ -30,7 +30,7 @@ public:
     static Enemy* GetEnemy(int index);
 
 private:
-    // 内部的な計算（外部には隠す）
+    // 内部的な計算
     static DirectX::XMFLOAT3 CalculateSpawnPosition();
 };
 

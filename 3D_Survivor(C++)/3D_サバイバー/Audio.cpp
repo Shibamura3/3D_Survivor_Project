@@ -173,8 +173,8 @@ void StopAudio(int Index)
 {
 	if (Index < 0 || Index >= AUDIO_MAX || g_Audio[Index].SourceVoice == nullptr)
 		return;
-
-	g_Audio[Index].SourceVoice->Stop();
-	g_Audio[Index].SourceVoice->FlushSourceBuffers(); // 溜まっているバッファも空にする
+	if (g_Audio[Index].SourceVoice != NULL) {
+		g_Audio[Index].SourceVoice->Stop();
+		g_Audio[Index].SourceVoice->FlushSourceBuffers(); // 溜まっているバッファも空にする
+	}
 }
-

@@ -1,9 +1,7 @@
 /*
-
 	ゲーム本体：game.cpp
 
 	2025/06/27		hibiki sakuma
-
 */
 
 #include "Game.h"
@@ -55,6 +53,13 @@ static constexpr int MIN_MAP_SIZE = 256;
 static constexpr float LOGO_SIZE = 516.0f;
 static constexpr float BTN_WIDTH = 400.0f;
 static constexpr float BTN_HEIGHT = 80.0f;
+// ダメージ値
+static constexpr int PLAYER_BULLET_DAMAGE = 10;
+static constexpr int ENEMY_BULLET_DAMAGE = 25;
+static constexpr int ENEMY_CONTACT_DAMAGE = 50;
+static constexpr int FORCE_KILL_DAMAGE = 999;
+// 位置補正
+static constexpr float HIT_EFFECT_Y_OFFSET = 0.5f;
 
 // 変数宣言
 static double g_AccumulatedTime = 0.0;
@@ -76,6 +81,7 @@ static XMFLOAT2 g_TitleButton_Position{};
 namespace
 {
 	void UpdatePauseInput();
+	void UpdatePauseMenu(double elapsed_time);
 	bool UpdateLevelUpSelection(double elapsed_time);
 
 	void UpdateWorld(double elapsed_time);
@@ -105,7 +111,7 @@ namespace
 			return PadLogger_IsTrigger(0, SDL_CONTROLLER_BUTTON_START);
 		}
 
-		return KeyLogger_IsTrigger(KK_ESCAPE);
+		return KeyLogger_IsTrigger(KK_TAB);
 	}
 	void UpdatePauseInput() {
 		bool pauseTriggered = false;
@@ -113,13 +119,14 @@ namespace
 		if (PadLogger_IsConnected()) {
 			pauseTriggered = PadLogger_IsTrigger(0, SDL_CONTROLLER_BUTTON_START);
 		} else {
-			pauseTriggered = KeyLogger_IsTrigger(KK_ESCAPE);
+			pauseTriggered = KeyLogger_IsTrigger(KK_TAB);
 		}
 
 		if (pauseTriggered){
 			g_IsPause = !g_IsPause;
 
 			if (g_IsPause) {
+				g_Pause_Button_ToTitle = false;
 				Mouse_SetMode(MOUSE_POSITION_MODE_ABSOLUTE);
 				Mouse_SetVisible(true);
 			} else if (!g_pPlayer->IsLevelUpPending()) {
@@ -129,6 +136,39 @@ namespace
 
 		}
 	}
+
+	void UpdatePauseMenu(double elapsed_time)
+	{
+		bool isDecideTriggered = false;
+
+		if (PadLogger_IsConnected()) {
+			XMFLOAT2 stick = PadLogger_GetLeftThumbStick(0);
+			MouseCursor_UpdateWithStick(stick.x, stick.y, elapsed_time);
+			isDecideTriggered = PadLogger_IsTrigger(0, SDL_CONTROLLER_BUTTON_A);
+		}
+		else {
+			Mouse_State ms{};
+			Mouse_GetState(&ms);
+			MouseCursor_UpdateWithMouse(ms.x, ms.y);
+			isDecideTriggered = ms.leftButton;
+		}
+
+		g_Pause_Button_ToTitle =
+			Collision_IsOverlapBox(GetButtonBox(g_TitleButton_Position), MouseCursor_GetCollision());
+
+		MouseCursor_IsHit(g_Pause_Button_ToTitle);
+
+		if (isDecideTriggered && g_Pause_Button_ToTitle) {
+			g_Pause_Button_ToTitle = true;
+			Fade_Start(1.0, true);
+			PlayAudio(Resouce_Manager_GetAudioId(Check_SE));
+		}
+
+		if (Fade_GetState() == FADE_STATE_FINISHED_OUT && g_Pause_Button_ToTitle) {
+			Scene_Change(SCENE_TITLE);
+		}
+	}
+
 
 	// レベルアップ関係
 	bool IsDecideTriggered() {
@@ -149,7 +189,7 @@ namespace
 
 		// レベルアップ中はマウスを自由移動モードにする
 		Mouse_SetMode(MOUSE_POSITION_MODE_ABSOLUTE);
-		Mouse_SetVisible(true);
+		Mouse_SetVisible(false);
 
 		Mouse_State ms{};
 		bool anyHit = false;
@@ -236,15 +276,12 @@ namespace
 	}
 
 	void UpdatePlayerBulletsVsEnemies() {
-		// 弾の当たり判定 
 		for (int i = 0; i < Bullet_GetBulletCount(); i++) {
-			// 非アクティブの弾は無視
 			if (!Bullet_IsActive(i)) continue;
 
 			BulletRay ray = Bullet_GetRay(i);
 			bool hit_something = false;
 
-			// マップとの判定
 			float nearestT_map = 1.0f;
 			for (int j = 0; j < Map_GetObjectsCount(); j++) {
 				AABB object = Map_GetObject(j)->Aabb_collision;
@@ -258,10 +295,9 @@ namespace
 				}
 			}
 			if (hit_something) {
-				// マップヒット時のエフェクト生成と弾の消去
 				XMFLOAT3 hitPos = {
 					ray.start.x + (ray.end.x - ray.start.x) * nearestT_map,
-					ray.start.y + (ray.end.y - ray.start.y) * nearestT_map - 0.5f, // 調整
+					ray.start.y + (ray.end.y - ray.start.y) * nearestT_map - HIT_EFFECT_Y_OFFSET,
 					ray.start.z + (ray.end.z - ray.start.z) * nearestT_map
 				};
 				Bullet_HitEffect_Create(hitPos);
@@ -270,11 +306,9 @@ namespace
 				continue; // この弾は消えたので次の弾（i+1）へ
 			}
 
-			// 敵との判定（マップに当たっていない場合のみ実行される）
 			float nearestT_enemy = 1.0f;
 			int hitEnemyIdx = -1;
 			for (int j = 0; j < EnemyManager::GetMaxCount(); j++) {
-				// EnemyManagerから敵のポインタを取得
 				Enemy* e = EnemyManager::GetEnemy(j);
 				if (!e || !e->IsActive()) continue;
 				Sphere enemy = e->GetCollision();
@@ -287,46 +321,50 @@ namespace
 					}
 				}
 			}
+
 			if (hitEnemyIdx != -1) {
-				// 敵ヒット時のエフェクト生成とダメージ、弾の消去
 				XMFLOAT3 hitPos = {
 					ray.start.x + (ray.end.x - ray.start.x) * nearestT_enemy,
-					ray.start.y + (ray.end.y - ray.start.y) * nearestT_enemy - 0.5f,
+					ray.start.y + (ray.end.y - ray.start.y) * nearestT_enemy - HIT_EFFECT_Y_OFFSET,
 					ray.start.z + (ray.end.z - ray.start.z) * nearestT_enemy
 				};
 				Bullet_HitEffect_Create(hitPos);
-				EnemyManager::GetEnemy(hitEnemyIdx)->Damage(10);
 				Bullet_Deactivate(i);
-				g_pPlayer->AddExp(1);
 				PlayAudio(Resouce_Manager_GetAudioId(Bullet_Hit_SE));
-				g_DefeatedEnemy++; // 倒した敵の数を計測
 
-				AchievementManager::Instance().OnNotify("ENEMY_KILLED", 1);
+				Enemy* enemy = EnemyManager::GetEnemy(hitEnemyIdx);
+				int prevHP = enemy->GetHP();
+				enemy->Damage(PLAYER_BULLET_DAMAGE);
+
+				if (prevHP > 0 && enemy->GetHP() <= 0) {
+					g_DefeatedEnemy++;
+					g_pPlayer->AddExp(1);
+					AchievementManager::Instance().OnNotify("ENEMY_KILLED", 1);
+				}
+
 				continue; // この弾は消えたので次の弾（i+1）へ
 			}
 		}
 	}
 	void UpdateEnemyBulletsVsPlayer() {
-		// 敵の弾とプレイヤーとの当たり判定
 		for (int i = 0; i < Bullet_Enemy_GetBulletCount(); i++) {
 			if (!Bullet_Enemy_IsActive(i)) continue;
 
 			// 簡易的に点と球（プレイヤー）の判定、またはレイキャスト
 			if (Collision_IsHitCapsuleVsSphere(g_pPlayer->GetCapsule(), Bullet_Enemy_GetSphere(i).center_position, Bullet_Enemy_GetSphere(i).radius).isHit) {
-				g_pPlayer->Damage(25);    // プレイヤーにダメージ
+				g_pPlayer->Damage(ENEMY_BULLET_DAMAGE);    // プレイヤーにダメージ
 				Bullet_Enemy_Deactivate(i);  // 弾を消す
 			}
 		}
 	}
 	void UpdatePlayerVsEnemies() {
-		// 敵とプレイヤーとの当たり判定 
 		for (int j = 0; j < EnemyManager::GetMaxCount(); j++) { // マップの当たり判定を総当たり
 			Enemy* e = EnemyManager::GetEnemy(j);
 			if (!e || !e->IsActive()) continue;
 			Sphere enemy = e->GetCollision();
 			if (Collision_IsOverlapSphere(enemy, g_pPlayer->GetPosition())) {
-				e->Damage(999); // 超過ダメージで確実に消す
-				g_pPlayer->Damage(50);
+				e->Damage(FORCE_KILL_DAMAGE);
+				g_pPlayer->Damage(ENEMY_CONTACT_DAMAGE);
 			}
 		}
 	}
@@ -376,7 +414,6 @@ namespace
 		// テクスチャ―サンプラーの設定
 		Sampler_SetFilterAnisotropic();
 
-		// マップ用ライト
 		// 並行光を黒にして環境光のみにするか、並行光を下向きにするか、ライトはゲームのままか
 		Light_SetAmbient({ 1.0f,1.0f,1.0f });
 		Light_SetDirectionalWorld({ 0.0f,0.0f,0.0f,1.0f }, { 0.0f,0.0f,0.0f,0.0f });
@@ -389,7 +426,6 @@ namespace
 		Map_Draw();
 	}
 
-	// ボタン設定
 	Box GetButtonBox(DirectX::XMFLOAT2 position) {
 		return { {position.x + BTN_WIDTH * 0.5f, position.y + BTN_HEIGHT * 0.5f}, BTN_WIDTH * 0.5f, BTN_HEIGHT * 0.5f };
 	}
@@ -418,6 +454,7 @@ void Game_Initialize() {
 	// 変数初期化
 	g_IsDebag = false; // 普段はfalse
 	g_IsEnd = false;
+	g_IsPause = false;
 	g_DefeatedEnemy = 0;
 	g_gameTimer = 0.0;
 	g_totalSurvivedSeconds = 0.0;
@@ -465,16 +502,15 @@ void Game_UpDate(double elapsed_time){
 
 	UpdatePauseInput();
 
-	if (g_IsPause)
-	{
+	if (g_IsPause){
+		UpdatePauseMenu(elapsed_time);
 		Fade_Update(elapsed_time);
 		HandleResultTransition();
 		return;
 	}
 
 	// レベルアップ3択中は通常ゲーム進行を止める
-	if (UpdateLevelUpSelection(elapsed_time))
-	{
+	if (UpdateLevelUpSelection(elapsed_time)){
 		Fade_Update(elapsed_time);
 		HandleResultTransition();
 		return;

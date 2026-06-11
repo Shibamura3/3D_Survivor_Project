@@ -44,6 +44,23 @@ private:
     // --- ÉäÉ\Å[ÉX ---
     Model_ID m_modelId{};
 
+private: // ì‡ïîä÷êî
+    void BeginFrame();
+    void HandleJumpInput();
+    void ApplyGravity(double elapsed_time);
+
+    DirectX::XMVECTOR CalculateMoveDirection() const;
+    void UpdateFacing(const DirectX::XMVECTOR& direction, double elapsed_time);
+    void ApplyMoveAcceleration(const DirectX::XMVECTOR& direction, double elapsed_time);
+
+    void ResolveMovementAndCollision(double elapsed_time);
+    void ResolvePenetration(DirectX::XMVECTOR& position, DirectX::XMVECTOR& velocity);
+    void ResolveSweptCollision(DirectX::XMVECTOR& position, DirectX::XMVECTOR& velocity, double elapsed_time);
+
+    void ApplyFriction(double elapsed_time);
+    void UpdateShooting(double elapsed_time);
+    void HandleOutOfBounds();
+
 public:
     Player();
     ~Player();

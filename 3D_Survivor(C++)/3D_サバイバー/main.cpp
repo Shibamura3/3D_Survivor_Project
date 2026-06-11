@@ -180,13 +180,12 @@ int APIENTRY WinMain(_In_ HINSTANCE hinstance, _In_opt_ HINSTANCE hPrevInstance,
 	Collision_DebudFinalize();
 #endif
 
-	Resouce_Manager_Finalize();
 	Mouse_Finalize(); 
 	MeshField_Finalize();
 	Light_Finalize();
 	Cube_Finalize();
 	Scene_Finalize();
-
+	Resouce_Manager_Finalize();
 	Fade_Finalize();
 	SpriteAnim_Finalize();
 	Sprite_Finalize();

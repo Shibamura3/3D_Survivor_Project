@@ -410,7 +410,7 @@ Hit Collision_IsHitCapsuleVsSphere(const Capsule& cap, const DirectX::XMFLOAT3& 
 AABB ExpandAABB(const AABB& aabb, float r){
 	return {
 		{ aabb.min.x - r , aabb.min.y - r , aabb.min.z - r },
-		{ aabb.max.x + r , aabb.max.y  , aabb.max.z + r }
+		{ aabb.max.x + r , aabb.max.y + r    , aabb.max.z + r }
 	};
 }
 
