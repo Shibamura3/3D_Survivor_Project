@@ -9,8 +9,8 @@
 #include "Result.h"
 #include "title_scene.h"
 #include "achieve.h"
-//static Scene g_Scene_now = SCENE_TITLE; // デバックする場合は該当シーンに書き換える
-static Scene g_Scene_now = SCENE_GAME; // デバックする場合は該当シーンに書き換える
+static Scene g_Scene_now = SCENE_TITLE; // デバックする場合は該当シーンに書き換える
+//static Scene g_Scene_now = SCENE_GAME; // デバックする場合は該当シーンに書き換える
 static Scene g_Scene_next = g_Scene_now;
 
 void Scene_Initialize(){
