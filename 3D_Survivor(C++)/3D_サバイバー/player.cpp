@@ -19,13 +19,12 @@
 using namespace DirectX;
 
 // 定数宣言
-
 constexpr float PLAYER_RADIUS = 0.5f;
 static constexpr float PLAYER_HEIGHT = 2.0f;
-static constexpr float PLAYER_JUMP = 20.0f;
+static constexpr float PLAYER_JUMP = 25.0f;
 
 static constexpr float SKIN = 0.002f;
-static constexpr float GROUND_Y = 0.7f;
+static constexpr float GROUND_Y = 0.95f;
 static constexpr int   MAX_SWEEP = 3;
 
 // レベルアップ関係
@@ -34,9 +33,13 @@ static constexpr float MOVE_SPEED_MAG_UP = 0.2f;
 static constexpr float SHOT_INTERVAL_SCALE = 0.8f;
 
 // 地面スナップ用
-static constexpr float GROUND_SNAP_EPSILON = 0.1f;
+static constexpr float GROUND_SNAP_EPSILON = 0.0f;
 static constexpr float CAPSULE_FOOT_ADJUST = 0.3f;
 static constexpr float PLAYER_GROUND_OFFSET = PLAYER_HEIGHT * 0.5f - CAPSULE_FOOT_ADJUST;
+
+// 地面判定用
+static constexpr float FLOOR_NORMAL_Y = 0.95f;
+static constexpr float GROUND_PROBE_DISTANCE = 0.08f;
 
 // わずかに浮かせて刺さりを防ぐ
 static constexpr float GROUND_CONTACT_BIAS = 0.01f;
@@ -49,8 +52,8 @@ static constexpr float PLAYER_ACCELERATION = 500.0f;
 static constexpr float GROUND_FRICTION = 6.0f;
 static constexpr float AIR_FRICTION = 4.0f;
 static constexpr float GRAVITY = -98.0f;
-static constexpr float MAX_MOVE_SPEED_GROUND = 8.0f;
-static constexpr float MAX_MOVE_SPEED_AIR = 6.0f;
+static constexpr float BASE_MAX_MOVE_SPEED_GROUND = 8.0f;
+static constexpr float BASE_MAX_MOVE_SPEED_AIR = 6.0f;
 
 // 場外ペナルティ
 static constexpr float FALL_OUT_Y = -1.0f;
@@ -126,8 +129,8 @@ void Player::Draw() {
     float angle = -atan2f(m_front.z, m_front.x) + XMConvertToRadians(270);
     XMMATRIX world = XMMatrixRotationY(angle) * XMMatrixTranslation(m_position.x, m_position.y, m_position.z);
 
-    // ResourceManager からモデルを取得して描画
     ModelDraw(Resouce_Manager_GetModelId(m_modelId), world);
+
 }
 
 // 内部関数
@@ -211,16 +214,6 @@ void Player::UpdateFacing(const XMVECTOR& direction, double elapsed_time) {
 }
 
 void Player::ApplyMoveAcceleration(const XMVECTOR& direction, double elapsed_time) {
-    //if (XMVectorGetX(XMVector3LengthSq(direction)) <= 0.0f)
-    //    return;
-    //
-    //XMVECTOR velocity = XMLoadFloat3(&m_velocity);
-    //XMVECTOR front = XMLoadFloat3(&m_front);
-    //
-    //velocity += front * (float)(PLAYER_ACCELERATION * elapsed_time * m_moveSpeedMag);
-    //
-    //XMStoreFloat3(&m_velocity, velocity);
-
     if (XMVectorGetX(XMVector3LengthSq(direction)) <= 0.0f)
         return;
 
@@ -235,13 +228,18 @@ void Player::ApplyMoveAcceleration(const XMVECTOR& direction, double elapsed_tim
     float vz = XMVectorGetZ(velocity);
 
     float horizontalSpeedSq = vx * vx + vz * vz;
-    float maxSpeed = m_isGround ? MAX_MOVE_SPEED_GROUND : MAX_MOVE_SPEED_AIR;
+
+    float maxSpeed = m_isGround
+        ? BASE_MAX_MOVE_SPEED_GROUND * m_moveSpeedMag
+        : BASE_MAX_MOVE_SPEED_AIR * m_moveSpeedMag;
 
     if (horizontalSpeedSq > maxSpeed * maxSpeed) {
-        float horizontalSpeed = sqrtf(horizontalSpeedSq);
-        float scale = maxSpeed / horizontalSpeed;
+        float speed = sqrtf(horizontalSpeedSq);
+        float scale = maxSpeed / speed;
+
         vx *= scale;
         vz *= scale;
+
     }
 
     velocity = XMVectorSet(vx, vy, vz, 0.0f);
@@ -255,6 +253,7 @@ void Player::ResolveMovementAndCollision(double elapsed_time) {
 
     ResolvePenetration(position, velocity);
     ResolveSweptCollision(position, velocity, elapsed_time);
+    ResolveGroundContact(position, velocity);
 
     XMStoreFloat3(&m_position, position);
     XMStoreFloat3(&m_velocity, velocity);
@@ -275,16 +274,16 @@ void Player::ResolvePenetration(XMVECTOR& position, XMVECTOR& velocity) {
             if (hit.normal.y > GROUND_Y && XMVectorGetY(velocity) <= -LANDING_Y_EPSILON) {
                 float currentX = XMVectorGetX(position);
                 float currentZ = XMVectorGetZ(position);
-
+            
                 float snappedY = box.max.y + PLAYER_GROUND_OFFSET + SKIN;
-
+            
                 position = XMVectorSet(currentX, snappedY, currentZ, 0.0f);
-
+            
                 m_isGround = true;
                 m_isJump = false;
-
+            
                 velocity = XMVectorSetY(velocity, 0.0f);
-
+            
                 anyHit = true;
                 continue;
             }
@@ -312,9 +311,7 @@ void Player::ResolveSweptCollision(XMVECTOR& position, XMVECTOR& velocity, doubl
 
         float hitT = 1.0f;
         XMFLOAT3 hitNormal{};
-        AABB hitBox{};
         bool hitAny = false;
-        float remainingY = XMVectorGetY(remaining);
 
         for (int i = 0; i < Map_GetObjectsCount(); i++) {
             AABB box = Map_GetObject(i)->Aabb_collision;
@@ -323,18 +320,17 @@ void Player::ResolveSweptCollision(XMVECTOR& position, XMVECTOR& velocity, doubl
             XMFLOAT3 n;
             if (Collision_SweptCapsuleVsAABB(oldCap, newCap, box, t, n)) {
 
-                // 地面上を水平移動しているだけなら床ヒットを無視
-                if (n.y > GROUND_Y && remainingY >= -LANDING_Y_EPSILON) {
+                if (n.y >= FLOOR_NORMAL_Y) {
                     continue;
                 }
 
-                if (t >= 0 && t < hitT) {
+                if (t >= 0.0f && t < hitT) {
                     hitT = t;
                     hitNormal = n;
-                    hitBox = box;
                     hitAny = true;
                 }
             }
+
         }
 
         if (!hitAny) {
@@ -344,46 +340,76 @@ void Player::ResolveSweptCollision(XMVECTOR& position, XMVECTOR& velocity, doubl
 
         XMVECTOR n = XMLoadFloat3(&hitNormal);
 
-        // 本当に落下して着地した時だけ床スナップ
-        if (hitNormal.y > GROUND_Y && remainingY < -LANDING_Y_EPSILON) {
-            float moveT = std::max(0.0f, hitT - GROUND_SNAP_EPSILON);
-            XMVECTOR approached = oldPos + remaining * moveT;
-
-            float snappedY = hitBox.max.y + PLAYER_GROUND_OFFSET + GROUND_CONTACT_BIAS;
-
-            position = XMVectorSet(
-                XMVectorGetX(approached),
-                snappedY,
-                XMVectorGetZ(approached),
-                0.0f
-            );
-
-            m_isGround = true;
-            m_isJump = false;
-
-            // 残り移動量をXZだけ残す
-            float remainRate = 1.0f - hitT;
-            remaining = XMVectorSet(
-                XMVectorGetX(remaining) * remainRate,
-                0.0f,
-                XMVectorGetZ(remaining) * remainRate,
-                0.0f
-            );
-
-            velocity = XMVectorSetY(velocity, 0.0f);
-            continue;
-        }
-
-        // 壁は通常スライド
         position = oldPos + remaining * hitT + n * SKIN;
+
+        float remainRate = 1.0f - hitT;
+        remaining *= remainRate;
 
         float vn = XMVectorGetX(XMVector3Dot(remaining, n));
         if (vn < 0.0f) {
             remaining -= n * vn;
         }
     }
-
     velocity = remaining / (float)elapsed_time;
+}
+
+void Player::ResolveGroundContact(DirectX::XMVECTOR& position, DirectX::XMVECTOR& velocity) {
+
+    // 落下中または静止中のみ接地判定
+    if (XMVectorGetY(velocity) > 0.0f) {
+        return;
+    }
+
+    float px = XMVectorGetX(position);
+    float py = XMVectorGetY(position);
+    float pz = XMVectorGetZ(position);
+
+    // カプセルの足先
+    float footY = py - PLAYER_GROUND_OFFSET;
+
+    bool foundGround = false;
+    float bestGroundY = -FLT_MAX;
+
+    for (int i = 0; i < Map_GetObjectsCount(); i++) {
+        AABB box = Map_GetObject(i)->Aabb_collision;
+
+        // XZに半径分の余裕を持って床上にいるか確認
+        bool insideXZ =
+            px >= box.min.x - PLAYER_RADIUS &&
+            px <= box.max.x + PLAYER_RADIUS &&
+            pz >= box.min.z - PLAYER_RADIUS &&
+            pz <= box.max.z + PLAYER_RADIUS;
+
+        if (!insideXZ) {
+            continue;
+        }
+
+        float distToTop = footY - box.max.y;
+
+        // 床のすぐ近くにいるときだけ接地させる
+        if (distToTop >= -SKIN && distToTop <= GROUND_PROBE_DISTANCE) {
+            if (box.max.y > bestGroundY) {
+                bestGroundY = box.max.y;
+                foundGround = true;
+            }
+        }
+    }
+
+    if (foundGround) {
+        float snappedY = bestGroundY + PLAYER_GROUND_OFFSET + GROUND_CONTACT_BIAS;
+
+        position = XMVectorSet(
+            XMVectorGetX(position),
+            snappedY,
+            XMVectorGetZ(position),
+            0.0f
+        );
+
+        velocity = XMVectorSetY(velocity, 0.0f);
+        m_isGround = true;
+        m_isJump = false;
+    }
+
 }
 
 

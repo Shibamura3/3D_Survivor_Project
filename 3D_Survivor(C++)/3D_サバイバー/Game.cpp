@@ -63,7 +63,6 @@ static constexpr float HIT_EFFECT_Y_OFFSET = 0.5f;
 
 // 変数宣言
 static double g_AccumulatedTime = 0.0;
-static bool g_IsDebag = false; // デバックカメラへの切り替え
 static bool g_IsEnd = false; // ゲーム終了検知
 static bool g_IsPause = false; // ポーズ中かどうか
 static int g_DefeatedEnemy = 0; // 倒した敵の数を保存
@@ -452,7 +451,6 @@ void Game_Initialize() {
 	MouseCursor_Initialize();
 
 	// 変数初期化
-	g_IsDebag = false; // 普段はfalse
 	g_IsEnd = false;
 	g_IsPause = false;
 	g_DefeatedEnemy = 0;
@@ -532,11 +530,11 @@ void Game_Draw() {
 	Direct3D_SetBackBuffer();
 	Direct3D_ClearBackBuffer();
 
-	XMFLOAT4X4 mtxView = g_IsDebag ? Camera_GetViewMatrix() : Player_Camera_GetViewMatrix();
+	XMFLOAT4X4 mtxView = Player_Camera_GetViewMatrix();
 	XMMATRIX view = XMLoadFloat4x4(&mtxView);
-	XMMATRIX proj = g_IsDebag ? XMLoadFloat4x4(&Camera_GetPerspectiveMatrix()) : XMLoadFloat4x4(&Player_Camera_GetPerspectiveMatrix());
+	XMMATRIX proj = XMLoadFloat4x4(&Player_Camera_GetPerspectiveMatrix());
 	// スペキュラ用
-	XMFLOAT3 camera_pos = g_IsDebag ? Camera_GetPosition() : Player_Camera_GetPosition();
+	XMFLOAT3 camera_pos = Player_Camera_GetPosition();
 	
 	// カメラに関する行列をシェーダーに設定する
 	Camera_SetMatrix(view, proj);
@@ -575,15 +573,11 @@ void Game_Draw() {
 	Collision_DebugDraw_Execute();
 #endif
 	// アルファテスト
-	//Direct3D_SetAlphaBlendAdd();
 	Direct3D_SetDepthWriteDisable();
-	//Direct3D_SetDepthEnable(false);
-	// 
 	// 弾のエフェクトの描画
 	Bullet_HitEffect_Draw();
 	Trajectory3d_Draw();
 	Direct3D_SetDepthEnable(true);
-	//Direct3D_SetAlphaBlendTransparent();
 
 	// ココから2DのUI表示 //
 	Direct3D_SetDepthEnable(false);
@@ -596,9 +590,6 @@ void Game_Draw() {
 	Direct3D_SetOffscreenTexture(0);
 	Sprite_Draw((float)Direct3D_GetBackBufferWidth() * 0.8f, (float)Direct3D_GetBackBufferHeight() * 0.04f, MIN_MAP_SIZE, MIN_MAP_SIZE);
 	
-	// アチーブのポップアップ
-	AchievementManager::Instance().DrawNotification();
-
 	// レベルアップ時の表示
 	if (g_pPlayer->IsLevelUpPending()) {
 		// 半透明の黒いパネルを出す

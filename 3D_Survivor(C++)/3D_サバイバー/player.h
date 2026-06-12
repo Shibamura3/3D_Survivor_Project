@@ -45,20 +45,31 @@ private:
     Model_ID m_modelId{};
 
 private: // 内部関数
+    // フレーム初期化
     void BeginFrame();
+    // ジャンプ入力
     void HandleJumpInput();
+    // 重力適用
     void ApplyGravity(double elapsed_time);
-
+    // 移動計算
     DirectX::XMVECTOR CalculateMoveDirection() const;
+    // 向き補正（スムーズ回転）
     void UpdateFacing(const DirectX::XMVECTOR& direction, double elapsed_time);
+    // 加速処理
     void ApplyMoveAcceleration(const DirectX::XMVECTOR& direction, double elapsed_time);
-
+    // 移動＋衝突のまとめ
     void ResolveMovementAndCollision(double elapsed_time);
+    // めり込み補正
     void ResolvePenetration(DirectX::XMVECTOR& position, DirectX::XMVECTOR& velocity);
+    // スイープ処理
     void ResolveSweptCollision(DirectX::XMVECTOR& position, DirectX::XMVECTOR& velocity, double elapsed_time);
-
+    // 接地処理
+    void ResolveGroundContact(DirectX::XMVECTOR& position, DirectX::XMVECTOR& velocity);
+    // 摩擦処理
     void ApplyFriction(double elapsed_time);
+    // 射撃処理
     void UpdateShooting(double elapsed_time);
+    // 場外処理
     void HandleOutOfBounds();
 
 public:
@@ -72,8 +83,9 @@ public:
 
     // ゲッター類
     // 当たり判定
-    Capsule GetCapsule() const; 
-    Capsule GetCapsuleAt(const DirectX::XMVECTOR& position) const;
+    Capsule GetCapsule() const;  // 衝突用
+    Capsule GetCapsuleAt(const DirectX::XMVECTOR& position) const; // スイープ用
+
     // 座標
     const DirectX::XMFLOAT3& GetPosition() const { return m_position; }
     const DirectX::XMFLOAT3& GetFront() const { return m_front; }
