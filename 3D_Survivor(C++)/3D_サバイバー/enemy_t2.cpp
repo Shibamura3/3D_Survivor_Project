@@ -9,6 +9,7 @@
 #include "player.h"
 #include "cube.h"
 #include "shader3d.h"
+#include "resource_manager.h"
 #include <cmath>
 using namespace DirectX;
 MODEL* Enemy_T2::s_pModel = nullptr;
@@ -16,11 +17,10 @@ MODEL* Enemy_T2::s_pModel = nullptr;
 static constexpr float ENEMY_SPEED = 3.0f;
 
 void Enemy_T2::LoadModel() {
-	if (!s_pModel) s_pModel = ModelLoad("resuce/3Dmodel/enemy/enemy_ghost.fbx", 0.5f);
+	if (!s_pModel) s_pModel = Resouce_Manager_GetModelId(EnemyModel_T2);
 }
 
 void Enemy_T2::UnloadModel() {
-	ModelRelease(s_pModel);
 	s_pModel = nullptr;
 }
 

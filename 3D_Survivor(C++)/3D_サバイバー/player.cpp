@@ -106,6 +106,8 @@ void Player::Finalize() {
    
 }
 
+// プレイヤー更新
+// 入力 → 物理 → 衝突 → 摩擦 の順に処理
 void Player::Update(double elapsed_time) {
 
     BeginFrame();

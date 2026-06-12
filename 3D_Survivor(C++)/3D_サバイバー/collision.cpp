@@ -525,7 +525,7 @@ void Collision_DebudInitialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 	g_pDevice->CreateBuffer(&bd, NULL, &g_pVertexBuffer);
 
-	g_WhiteTexID = Texture_Load(L"resuce/img/w.png");
+	g_WhiteTexID = Texture_Load(L"resource/img/w.png");
 }
 
 void Collision_DebudFinalize(){
@@ -674,7 +674,7 @@ void Collision_Debud3DInitialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 
 	//g_pDevice->CreateBuffer(&bd, NULL, &g_pVertexBuffer);
 
-	g_WhiteTexID = Texture_Load(L"resuce/img/w.png");
+	g_WhiteTexID = Texture_Load(L"resource/img/w.png");
 }
 
 void Collision_Debud3DFinalize() {
@@ -705,133 +705,8 @@ void Collision_DebugDraw(const AABB& aabb, const XMFLOAT4 color)
 		g_DebugVertexCount++; // 1個入れるごとにカウントアップ
 	}
 
-	//XMFLOAT3 corner[8];
-	//AABB_GetVertices(aabb, corner);
-	//
-	//DebugVertex vtx[24];
-	//for (int i = 0; i < 24; i++) // ココで貯めて
-	//{
-	//	vtx[i].position = corner[AABB_LINE_INDEX[i]];
-	//	vtx[i].color = color;
-	//}
-	//
-	//D3D11_MAPPED_SUBRESOURCE ms;
-	//auto ctx = Direct3D_GetContext();
-	//ctx->Map(g_DebugVB, 0, D3D11_MAP_WRITE_DISCARD, 0, &ms);
-	//memcpy(ms.pData, vtx, sizeof(vtx));
-	//ctx->Unmap(g_DebugVB, 0);
-	//
-	//UINT stride = sizeof(DebugVertex);
-	//UINT offset = 0;
-	//ctx->IASetVertexBuffers(0, 1, &g_DebugVB, &stride, &offset);
-	//ctx->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
-	//
-	//// Unlitシェーダを使用
-	//Shader3dUnlit_Begin();
-	//Shader3dUnlit_SetWorldMatrix(XMMatrixIdentity());
-	//Shader3dUnlit_SetColor(color);
-	//
-	//ctx->Draw(24, 0); // 貯めたのを一気によぶ
 }
 
-// 各軸の円の描画
-/*
-void MakeCircleXY( // XY平面上の円
-	const Sphere& s,
-	DebugVertex* vtx,
-	int segments,
-	const XMFLOAT4& color
-)
-{
-	float step = XM_2PI / segments;
-
-	for (int i = 0; i < segments; i++)
-	{
-		float a0 = step * i;
-		float a1 = step * (i + 1);
-
-		vtx[i * 2 + 0].position =
-		{
-			s.center_position.x + cosf(a0) * s.radius,
-			s.center_position.y + sinf(a0) * s.radius,
-			s.center_position.z
-		};
-		vtx[i * 2 + 0].color = color;
-
-		vtx[i * 2 + 1].position =
-		{
-			s.center_position.x + cosf(a1) * s.radius,
-			s.center_position.y + sinf(a1) * s.radius,
-			s.center_position.z
-		};
-		vtx[i * 2 + 1].color = color;
-	}
-}
-
-void MakeCircleXZ( // XZ平面上の円
-	const Sphere& s,
-	DebugVertex* vtx,
-	int segments,
-	const XMFLOAT4& color
-)
-{
-	float step = XM_2PI / segments;
-
-	for (int i = 0; i < segments; i++)
-	{
-		float a0 = step * i;
-		float a1 = step * (i + 1);
-
-		vtx[i * 2 + 0].position =
-		{
-			s.center_position.x + cosf(a0) * s.radius,
-			s.center_position.y ,
-			s.center_position.z + sinf(a0) * s.radius
-		};
-		vtx[i * 2 + 0].color = color;
-
-		vtx[i * 2 + 1].position =
-		{
-			s.center_position.x + cosf(a1) * s.radius,
-			s.center_position.y ,
-			s.center_position.z + sinf(a1) * s.radius
-		};
-		vtx[i * 2 + 1].color = color;
-	}
-}
-
-void MakeCircleYZ( // YZ平面上の円
-	const Sphere& s,
-	DebugVertex* vtx,
-	int segments,
-	const XMFLOAT4& color
-)
-{
-	float step = XM_2PI / segments;
-
-	for (int i = 0; i < segments; i++)
-	{
-		float a0 = step * i;
-		float a1 = step * (i + 1);
-
-		vtx[i * 2 + 0].position =
-		{
-			s.center_position.x ,
-			s.center_position.y + cosf(a0) * s.radius,
-			s.center_position.z + sinf(a0) * s.radius
-		};
-		vtx[i * 2 + 0].color = color;
-
-		vtx[i * 2 + 1].position =
-		{
-			s.center_position.x ,
-			s.center_position.y + cosf(a1) * s.radius,
-			s.center_position.z + sinf(a1) * s.radius
-		};
-		vtx[i * 2 + 1].color = color;
-	}
-}
-*/
 void MakeCircleXY(const Sphere& s, int segments, const XMFLOAT4& color){
 	float step = XM_2PI / segments;
 	for (int i = 0; i < segments; i++)
@@ -913,35 +788,6 @@ void Collision_DebugDraw(const Sphere& s, const DirectX::XMFLOAT4 color){
 	MakeCircleXY(s, SEG, color);
 	MakeCircleXZ(s, SEG, color); // これらも同様に修正が必要
 	MakeCircleYZ(s, SEG, color);
-	
-	//constexpr int SEG = 32;
-	//DebugVertex vtx[SEG * 2 * 3];
-	//int offset = 0;
-	//
-	//MakeCircleXY(s, &vtx[offset], SEG, color);
-	//offset += SEG * 2;
-	//
-	//MakeCircleXZ(s, &vtx[offset], SEG, color);
-	//offset += SEG * 2;
-	//
-	//MakeCircleYZ(s, &vtx[offset], SEG, color);
-	//
-	//// バッファ書き込み
-	//D3D11_MAPPED_SUBRESOURCE ms;
-	//auto ctx = Direct3D_GetContext();
-	//ctx->Map(g_DebugVB, 0, D3D11_MAP_WRITE_DISCARD, 0, &ms);
-	//memcpy(ms.pData, vtx, sizeof(vtx));
-	//ctx->Unmap(g_DebugVB, 0);
-	//UINT stride = sizeof(DebugVertex);
-	//UINT ofs = 0;
-	//ctx->IASetVertexBuffers(0, 1, &g_DebugVB, &stride, &ofs);
-	//ctx->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
-	//
-	//Shader3dUnlit_Begin();
-	//Shader3dUnlit_SetWorldMatrix(XMMatrixIdentity());
-	//Shader3dUnlit_SetColor(color);
-	//
-	//ctx->Draw(_countof(vtx), 0);
 }
 
 void Collision_DebugDraw(const Capsule& c, const DirectX::XMFLOAT4 color){
@@ -958,40 +804,6 @@ void Collision_DebugDraw(const Capsule& c, const DirectX::XMFLOAT4 color){
 	DrawDebugLine({ c.start.x, c.start.y, c.start.z + c.radius }, { c.end.x, c.end.y, c.end.z + c.radius }, color);
 	DrawDebugLine({ c.start.x, c.start.y, c.start.z - c.radius }, { c.end.x, c.end.y, c.end.z - c.radius }, color);
 	
-	//// ① 上下の球
-	//Sphere s0;
-	//s0.center_position = c.start;
-	//s0.radius = c.radius;
-	//
-	//Sphere s1;
-	//s1.center_position = c.end;
-	//s1.radius = c.radius;
-	//
-	//Collision_DebugDraw(s0, color);
-	//Collision_DebugDraw(s1, color);
-	//
-	//// ② 円柱部分（4本で十分）
-	//DrawDebugLine(
-	//	{ c.start.x + c.radius, c.start.y, c.start.z },
-	//	{ c.end.x + c.radius, c.end.y,   c.end.z },
-	//	color
-	//);
-	//DrawDebugLine(
-	//	{ c.start.x - c.radius, c.start.y, c.start.z },
-	//	{ c.end.x - c.radius, c.end.y,   c.end.z },
-	//	color
-	//);
-	//DrawDebugLine(
-	//	{ c.start.x, c.start.y, c.start.z + c.radius },
-	//	{ c.end.x,   c.end.y,   c.end.z + c.radius },
-	//	color
-	//);
-	//DrawDebugLine(
-	//	{ c.start.x, c.start.y, c.start.z - c.radius },
-	//	{ c.end.x,   c.end.y,   c.end.z - c.radius },
-	//	color
-	//);
-
 }
 
 void DrawDebugLine(const XMFLOAT3& a, const XMFLOAT3& b, const XMFLOAT4& color){
@@ -1001,43 +813,13 @@ void DrawDebugLine(const XMFLOAT3& a, const XMFLOAT3& b, const XMFLOAT4& color){
 	// バケツに頂点情報を入れるだけ
 	g_DebugVertexArray[g_DebugVertexCount++] = { a, color };
 	g_DebugVertexArray[g_DebugVertexCount++] = { b, color };
-	
-	//DebugVertex vtx[2];
-	//vtx[0] = { a, color };
-	//vtx[1] = { b, color };
-	//
-	//D3D11_MAPPED_SUBRESOURCE ms;
-	//auto ctx = Direct3D_GetContext();
-	//ctx->Map(g_DebugVB, 0, D3D11_MAP_WRITE_DISCARD, 0, &ms);
-	//memcpy(ms.pData, vtx, sizeof(vtx));
-	//ctx->Unmap(g_DebugVB, 0);
-	//
-	//UINT stride = sizeof(DebugVertex);
-	//UINT offset = 0;
-	//ctx->IASetVertexBuffers(0, 1, &g_DebugVB, &stride, &offset);
-	//ctx->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
-	//
-	//Shader3dUnlit_Begin();
-	//Shader3dUnlit_SetWorldMatrix(DirectX::XMMatrixIdentity());
-	//Shader3dUnlit_SetColor(color);
-	//
-	//ctx->Draw(2, 0);
 }
 
 void Collision_DebugDraw_Execute() {
 	if (g_DebugVertexCount == 0) return; // 描画するものがなければ何もしない
 	Direct3D_SetDepthEnable(false);
 
-	// ★安全チェック：カウントが最大数を超えていたら、最大数で丸める
 	int drawCount = (g_DebugVertexCount > DEBUG_VERTEX_MAX) ? DEBUG_VERTEX_MAX : g_DebugVertexCount;
-
-	// バケツの中身を丸ごと GPU に送る（1回だけ！）
-	//D3D11_MAPPED_SUBRESOURCE ms;
-	//auto ctx = Direct3D_GetContext();
-	//if (SUCCEEDED(ctx->Map(g_DebugVB, 0, D3D11_MAP_WRITE_DISCARD, 0, &ms))) {
-	//	memcpy(ms.pData, g_DebugVertexArray, sizeof(DebugVertex) * drawCount);
-	//	ctx->Unmap(g_DebugVB, 0);
-	//}
 
 	D3D11_MAPPED_SUBRESOURCE ms;
 	Direct3D_GetContext()->Map(g_DebugVB, 0, D3D11_MAP_WRITE_DISCARD, 0, &ms);

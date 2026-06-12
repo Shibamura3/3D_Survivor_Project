@@ -27,7 +27,7 @@ static AABB ex;
 // 現在の固定配列を vector に変更
 static std::vector<MapObject> g_MapObjectsVector;
 static time_t g_LastFileTime = 0; // 最後に読み込んだ時のファイル更新時刻
-const std::string CSV_PATH = "resuce/data/map_data.csv";
+const std::string CSV_PATH = "resource/data/map_data.csv";
 
 // CSVを読み込む関数
 void Map_LoadCSV(const std::string& path) {

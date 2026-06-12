@@ -11,7 +11,6 @@
 using namespace DirectX;
 #include "direct3d.h"
 #include "shader3d.h"
-//#include "shader_depth.h"
 #include "debug_ostream.h"
 #include "texture.h"
 #include "resource_manager.h"

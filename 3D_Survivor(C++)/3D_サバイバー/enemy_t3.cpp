@@ -9,6 +9,7 @@
 #include "player.h"
 #include "bullet_enemy.h"
 #include "shader3d.h"
+#include "resource_manager.h"
 #include <cmath>
 using namespace DirectX;
 MODEL* Enemy_T3::s_pModel = nullptr;
@@ -18,11 +19,10 @@ static constexpr double SHOOT_INTERVAL = 5.0;
 static constexpr float SHOOT_RANGE_SQ = 225.0f; // 15*15
 
 void Enemy_T3::LoadModel() {
-	if (!s_pModel) s_pModel = ModelLoad("resuce/3Dmodel/enemy/enemy_stopshoot.fbx", 0.5f);
+	if (!s_pModel) s_pModel = Resouce_Manager_GetModelId(EnemyModel_T3);
 }
 
 void Enemy_T3::UnloadModel() {
-	ModelRelease(s_pModel);
 	s_pModel = nullptr;
 }
 

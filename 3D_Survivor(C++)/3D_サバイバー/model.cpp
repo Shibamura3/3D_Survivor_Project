@@ -131,7 +131,7 @@ MODEL* ModelLoad(const char* FileName, float scale, bool bBlender)
 
 	}
 
-	g_TexId_White = Texture_Load(L"resuce/img/w.png"); // 念の為、白いテクスチャを貼る
+	g_TexId_White = Texture_Load(L"resource/img/w.png"); // 念の為、白いテクスチャを貼る
 
 	// FBXにテクスチャが内包している場合
 	for (unsigned int i = 0; i < model->AiScene->mNumTextures; i++)
@@ -319,7 +319,7 @@ MODEL* ModelLoad(const char* FileName, const DirectX::XMFLOAT3& scale, bool bBle
 
 	}
 
-	g_TexId_White = Texture_Load(L"resuce/img/w.png"); // 念の為、白いテクスチャを貼る
+	g_TexId_White = Texture_Load(L"resource/img/w.png"); // 念の為、白いテクスチャを貼る
 
 	// FBXにテクスチャが内包している場合
 	for (unsigned int i = 0; i < model->AiScene->mNumTextures; i++)

@@ -10,6 +10,7 @@
 #include "cube.h"
 #include "map.h"
 #include "shader3d.h"
+#include "resource_manager.h"
 #include <cmath>
 using namespace DirectX;
 MODEL* Enemy_T1::s_pModel = nullptr;
@@ -27,11 +28,10 @@ Capsule Enemy_T1::GetCapsule() const{
 }
 
 void Enemy_T1::LoadModel() {
-	if (!s_pModel) s_pModel = ModelLoad("resuce/3Dmodel/enemy/enemy_fly.fbx", 0.5f);
+	if (!s_pModel) s_pModel = Resouce_Manager_GetModelId(EnemyModel_T1);
 }
 
 void Enemy_T1::UnloadModel() {
-	ModelRelease(s_pModel);
 	s_pModel = nullptr;
 }
 

@@ -63,6 +63,9 @@ enum Model_ID
 	Sky,
 	Stone,
 	Wood,
+	EnemyModel_T1,
+	EnemyModel_T2,
+	EnemyModel_T3,
 
 	// ’Ç‰Á
 	Model_ID_MAX

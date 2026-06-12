@@ -76,7 +76,7 @@ void Result_Initialize(){
 
 	// フォント初期化
 	g_FontBatch = std::make_unique<DirectX::SpriteBatch>(Direct3D_GetContext());
-	g_Font = std::make_unique<DirectX::SpriteFont>(Direct3D_GetDevice(), L"resuce/data/font/myfont.spritefont");
+	g_Font = std::make_unique<DirectX::SpriteFont>(Direct3D_GetDevice(), L"resource/data/font/myfont.spritefont");
 
 	// ボタンの座標の設定
 	// タイトルボタン
@@ -258,7 +258,7 @@ Box Result_GetCollision()
 
 void LoadRanking() {
 	g_RankingList.clear();
-	std::ifstream ifs("resuce/data/ranking.dat", std::ios::binary);
+	std::ifstream ifs("resource/data/ranking.dat", std::ios::binary);
 	if (ifs) {
 		GameResultData data;
 		while (ifs.read((char*)&data, sizeof(GameResultData))) {
@@ -268,7 +268,7 @@ void LoadRanking() {
 }
 
 void SaveRanking() {
-	std::ofstream ofs("resuce/data/ranking.dat", std::ios::binary);
+	std::ofstream ofs("resource/data/ranking.dat", std::ios::binary);
 	for (const auto& data : g_RankingList) {
 		ofs.write((char*)&data, sizeof(GameResultData));
 	}

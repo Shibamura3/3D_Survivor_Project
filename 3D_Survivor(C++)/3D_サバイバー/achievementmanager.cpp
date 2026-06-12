@@ -42,7 +42,7 @@ std::wstring Utf8ToWstring(const std::string& src) {
 
 void AchievementManager::Save(){
     // 実行ファイルと同じ階層に "achievements.dat" を作成
-    std::ofstream ofs("resuce/data/achievements.dat");
+    std::ofstream ofs("resource/data/achievements.dat");
     if (!ofs) return; // ファイルが開けない
 
     for (const auto& ach : m_achievements) {
@@ -53,7 +53,7 @@ void AchievementManager::Save(){
 }
 
 void AchievementManager::Load(){
-    std::ifstream ifs("resuce/data/achievements.dat");
+    std::ifstream ifs("resource/data/achievements.dat");
     if (!ifs) return; // ファイルが開けない
 
     std::string line;
@@ -74,7 +74,7 @@ void AchievementManager::Load(){
 }
 
 void AchievementManager::LoadMasterData(){
-    std::ifstream ifs("resuce/data/achievement_master.csv");
+    std::ifstream ifs("resource/data/achievement_master.csv");
     if (!ifs) return;
 
     std::string line;
@@ -137,37 +137,6 @@ void AchievementManager::Update(double elapsed_time) {
     if (notify.displayTimer <= 0.0f) {
         m_notifications.erase(m_notifications.begin());
     }
-}
-
-void AchievementManager::DrawNotification(){
-    /*
-    if (m_notifications.empty()) return;
-
-    // 現在表示すべき通知
-    const auto& notify = m_notifications.front();
-
-    // 描画位置の計算（右下に配置）
-    float x = (float)Direct3D_GetBackBufferWidth() * 0.8f;
-    float y = (float)Direct3D_GetBackBufferHeight() * 0.8f;
-
-    // 2. 文字を描画（SpriteFontを使用）
-    // achieve.cpp で成功した「分離して描画」の形をとります
-    if (g_Font && g_FontBatch) {
-        g_FontBatch->Begin();
-
-        // 縁取り（黒）
-        XMVECTOR black = DirectX::Colors::Black;
-        g_Font->DrawString(g_FontBatch.get(), L"【実績解除！】", XMFLOAT2(x + 1, y + 1), black);
-        g_Font->DrawString(g_FontBatch.get(), notify.title.c_str(), XMFLOAT2(x + 1, y + 41), black);
-
-        // 本文
-        g_Font->DrawString(g_FontBatch.get(), L"【実績解除！】", XMFLOAT2(x, y), DirectX::Colors::Gold);
-        g_Font->DrawString(g_FontBatch.get(), notify.title.c_str(), XMFLOAT2(x, y + 40), DirectX::Colors::White);
-
-        g_FontBatch->End();
-    }
-
-    */
 }
 
 void AchievementManager::DrawNewlyUnlocked(float startX, float startY){

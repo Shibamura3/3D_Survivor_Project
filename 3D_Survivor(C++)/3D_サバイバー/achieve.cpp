@@ -53,22 +53,19 @@ void Achieve_Initialize(){
 	Mouse_SetMode(MOUSE_POSITION_MODE_ABSOLUTE);
 
 	//音源の読み込み
-	g_Check_SE = LoadAudio("resuce/audio/SE_check.wav");
-	g_BGM = LoadAudio("resuce/audio/bgm.wav");
+	g_Check_SE = LoadAudio("resource/audio/SE_check.wav");
+	g_BGM = LoadAudio("resource/audio/bgm.wav");
 
 	// カーソルボタンの接触判定
 	g_Button_Title = false;
 
 	// ボタンの座標の設定
-	// タイトルボタン
 	g_ButtonPos = { Direct3D_GetBackBufferWidth() * 0.5f - SELECT_SIZE_X, Direct3D_GetBackBufferHeight() * 0.75f };
 
 	// フォント関連の初期化
-	// SpriteBatchの生成
 	g_FontBatch = std::make_unique<DirectX::SpriteBatch>(Direct3D_GetContext());
 	// フォントファイルの読み込み
-	// ※パスは自分のプロジェクト構成に合わせて調整してください
-	g_Font = std::make_unique<DirectX::SpriteFont>(Direct3D_GetDevice(), L"resuce/data/font/myfont.spritefont");
+	g_Font = std::make_unique<DirectX::SpriteFont>(Direct3D_GetDevice(), L"resource/data/font/myfont.spritefont");
 	// 知らない文字を？で代用
 	if (g_Font) {
 		g_Font->SetDefaultCharacter(L'?');
@@ -82,10 +79,8 @@ void Achieve_Initialize(){
 }
 
 void Achieve_Finalize(){
-	//Texture_AllRelease();
 	// サウンドストップはココに入れる
 	UnloadAudio(g_Check_SE);
-	//UnloadAudio(g_Miss_SE);
 	UnloadAudio(g_BGM);
 	MouseCursor_Finalize();
 
@@ -137,27 +132,20 @@ void Achieve_Update(double elapsed_time){
 
 		// Aボタンを決定にする
 		isDecideTriggered = PadLogger_IsTrigger(0, SDL_CONTROLLER_BUTTON_A);
-	}
-	else {
+	} else {
 		// マウス：OSの座標でカーソル移動
-		//Mouse_State ms{};
-		//Mouse_GetState(&ms);
 		MouseCursor_UpdateWithMouse(ms.x, ms.y);
 
-		// 左クリックを決定にする
 		isDecideTriggered = ms.leftButton;
 	}
 
-	// ボタンとカーソルの接触判定
 	g_Button_Title = Collision_IsOverlapBox(Achieve_GetCollision(), MouseCursor_GetCollision());
 
-	// カーソルがボタンに乗ったかどうかの通知
 	MouseCursor_IsHit(g_Button_Title);
 
 	// 決定操作が行われた場合
 	if (isDecideTriggered && (g_Button_Title)) {
 		Fade_Start(1.0, true);
-		//PlayAudio(g_Check_SE);
 	}
 
 	if (Fade_GetState() == FADE_STATE_FINISHED_OUT) { // フェードが終わったらシーンチェンジ
@@ -209,8 +197,7 @@ void Achieve_Draw(){
 	// 選択対象
 	if (!g_Button_Title) {
 		Sprite_Draw(Resouce_Manager_GetTexId(Title_Button), Direct3D_GetBackBufferWidth() * 0.5f - SELECT_SIZE_X * 0.5f, Direct3D_GetBackBufferHeight() * 0.75f, SELECT_SIZE_X, SELECT_SIZE_Y);  // 選択された時は正常に表示
-	}
-	else {
+	} else {
 		Sprite_Draw(Resouce_Manager_GetTexId(Title_Button), Direct3D_GetBackBufferWidth() * 0.5f - SELECT_SIZE_X * 0.5f, Direct3D_GetBackBufferHeight() * 0.75f, SELECT_SIZE_X, SELECT_SIZE_Y, { 1.0f,1.0f,1.0f,0.5f });
 	} // 選択されていないときは半透明に
 	

@@ -162,6 +162,8 @@ void EnemyManager::Initialize() {
 }
 
 void EnemyManager::Finalize() {
+    // モデルリリースはresource_managerで一括で行う
+    // EnemyManagerでは使用した変数のみをNULL
     Enemy_T1::UnloadModel();
     Enemy_T2::UnloadModel();
     Enemy_T3::UnloadModel();
