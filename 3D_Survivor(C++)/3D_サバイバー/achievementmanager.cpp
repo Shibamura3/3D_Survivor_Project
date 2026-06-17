@@ -4,17 +4,9 @@
 	2026/01/13	hibiki sakuma
 */
 #include "achievementmanager.h"
-#include "direct3d.h"
 #include <fstream>
 #include <sstream>
-#include <SpriteFont.h>
-#include <SpriteBatch.h>
 #include <windows.h> 
-
-// 変数宣言
-// スマートポインタで安全に管理
-static std::unique_ptr<DirectX::SpriteBatch> g_FontBatch;
-static std::unique_ptr<DirectX::SpriteFont>  g_Font;
 
 // 内部関数
 std::wstring Utf8ToWstring(const std::string& src) {
@@ -115,23 +107,3 @@ void AchievementManager::LoadMasterData(){
         }
     }
 }
-
-void AchievementManager::LoadSaveData() {
-    Load(); // 以前作成したLoad()を呼び出す
-}
-
-void AchievementManager::Update(double elapsed_time) {
-    if (m_notifications.empty()) return;
-
-    // 先頭の通知を取り出す
-    auto& notify = m_notifications.front();
-
-    // タイマーを減らす
-    notify.displayTimer -= (float)elapsed_time;
-
-    // 0秒になったら削除（次の通知があれば自動的にそれが先頭になる）
-    if (notify.displayTimer <= 0.0f) {
-        m_notifications.erase(m_notifications.begin());
-    }
-}
-

@@ -263,7 +263,6 @@ namespace
 			AchievementManager::Instance().OnNotify("CLEAR_PLAYER", 1);
 		}
 
-		AchievementManager::Instance().Update(elapsed_time);
 	}
 
 

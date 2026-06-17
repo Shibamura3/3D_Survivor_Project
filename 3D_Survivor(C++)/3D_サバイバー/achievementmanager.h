@@ -3,15 +3,14 @@
 
 	2026/01/13	hibiki sakuma
 */
-#ifndef ACHIEVEMENTMANAGWE_H
-#define ACHIEVEMENTMANAGWE_H
+#ifndef ACHIEVEMENTMANAGER_H
+#define ACHIEVEMENTMANAGER_H
 
 #include <iostream>
 #include <memory> // std::unique_ptr を使う
 #include <string>
 #include <vector>
 #include <DirectXMath.h>
-using namespace DirectX;
 
 // 判定の抽象クラス
 class AchievementCondition {
@@ -74,43 +73,22 @@ struct Achievement {
     bool isUnlocked = false;
 };
 
-// ポップアップ用構造体
-struct AchievementNotify {
-    std::wstring title;
-    float displayTimer{}; // 表示されている残り時間
-    bool isActive{};      // 現在表示中か
-};
-
 class AchievementManager {
 private:
     AchievementManager() = default;
 
-    // 1. 全実績を保持するリスト（実体）
-    // unique_ptrを含む構造体なので、vectorがメモリ管理を自動で行ってくれます
-    std::vector<Achievement> m_achievements; // 本命　ずっと記憶
-
-    // 2. 今回解除した実績を一時的に指し示すリスト（ポインタ）
-    // 実体は m_achievements にあるので、こちらはポインタで管理します
-    std::vector<Achievement*> m_newlyUnlocked; // 付箋　今回のみ
-
-    std::vector<AchievementNotify> m_notifications; // 通知待ちリスト
+    // 全実績を保持するリスト
+    std::vector<Achievement> m_achievements; 
 
     void Save();
     void Load();
     // 外部から個別に呼ばれる必要がないものは隠す
     void LoadMasterData();
-    void LoadSaveData();
 public:
     // ゲームの初期化処理からこれを一度だけ呼ぶ
     void Initialize() {
         LoadMasterData(); // 内部でマスターを読み込む
-        LoadSaveData();   // 内部でセーブ状況を反映する
-    }
-
-    void Update(double elapsed_time); // 通知のタイマー管理用
-
-    void ClearNewlyUnlocked() {
-        m_newlyUnlocked.clear();
+        Load();   // 内部でセーブ状況を反映する
     }
 
     static AchievementManager& Instance() {
@@ -120,23 +98,18 @@ public:
 
     // イベント通知
     void OnNotify(const std::string& eventName, int value = 1) {
-        for (auto& ach : m_achievements) {
+
+        for (auto& ach : m_achievements)
+        {
             if (ach.isUnlocked) continue;
 
-            if (ach.condition && ach.condition->IsClear(eventName, value)) {
+            if (ach.condition && ach.condition->IsClear(eventName, value))
+            {
                 ach.isUnlocked = true;
-                m_newlyUnlocked.push_back(&ach);
-
-                // 通知リストに登録
-                AchievementNotify notify;
-                notify.title = ach.title;
-                notify.displayTimer = 3.0f; // 3秒間
-                notify.isActive = true;
-                m_notifications.push_back(notify);
-
                 Save(); // セーブ
             }
         }
+
     }
 
     // 実績の追加用（初期化時などに呼ぶ）
@@ -151,4 +124,4 @@ public:
     }
 };
 
-#endif // !ACHIEVEMENTMANAGWE_H
+#endif // !ACHIEVEMENTMANAGER_H
