@@ -116,10 +116,6 @@ double SystemTimer_GetElapsedTime(void)
     double elapsed_time = (double)(time.QuadPart - g_LastElapsedTime) / (double)g_TicksPerSec;
     g_LastElapsedTime = time.QuadPart;
 
-    // タイマーが正確であることを保証するために、更新時間を０にクランプする。
-    // elapsed_timeは、プロセッサが節電モードに入るか、何らかの形で別のプロセッサにシャッフルされると、この範囲外になる可能性がある。
-    // よって、メインスレッドはSetThreadAffinityMaskを呼び出して、別のプロセッサにシャッフルされないようにする必要がある。
-    // 他のワーカースレッドはSetThreadAffinityMaskを呼び出すべきではなく、メインスレッドから収集されたタイマーデータの共有コピーを使用すること。
     if( elapsed_time < 0.0 ) {
         elapsed_time = 0.0;
     }
@@ -138,7 +134,6 @@ void LimitThreadAffinityToCurrentProc(void)
 {
     HANDLE hCurrentProcess = GetCurrentProcess();
 
-    // Get the processor affinity mask for this process
     DWORD_PTR dwProcessAffinityMask = 0;
     DWORD_PTR dwSystemAffinityMask = 0;
 

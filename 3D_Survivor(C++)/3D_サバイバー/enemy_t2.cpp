@@ -34,9 +34,6 @@ void Enemy_T2::Activate(const DirectX::XMFLOAT3& pos) {
 void Enemy_T2::Update(double elapsed_time) {
 	if (!m_isActive) return;
 
-	// プレイヤーに向かって移動する処理（これまでの Chase 処理）
-		// プレイヤーに向かって進む
-	using namespace DirectX;
 	// 移動計算
 	XMVECTOR vPos = XMLoadFloat3(&m_position);
 	XMVECTOR vPlayerPos = XMLoadFloat3(&GetPlayer()->GetPosition());

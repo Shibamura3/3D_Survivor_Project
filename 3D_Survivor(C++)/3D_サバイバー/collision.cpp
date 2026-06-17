@@ -116,12 +116,14 @@ Hit Collision_IsHitAABB(const AABB& a, const AABB& b)
 	XMStoreFloat3(&hit.normal, normal);
 	return hit;
 }
+
 bool PointInsideAABB(const XMFLOAT3& p, const AABB& b){
 
 	return  p.x >= b.min.x && p.x <= b.max.x &&
 			p.y >= b.min.y && p.y <= b.max.y &&
 			p.z >= b.min.z && p.z <= b.max.z;
 }
+
 bool Collision_RaycastAABB(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, const AABB& box, float& outT, DirectX::XMFLOAT3& outNormal){
 	XMVECTOR vStart = XMLoadFloat3(&start);
 	XMVECTOR vEnd = XMLoadFloat3(&end);
@@ -170,6 +172,7 @@ bool Collision_RaycastAABB(const DirectX::XMFLOAT3& start, const DirectX::XMFLOA
 	outT = tMin;
 	return true;
 }
+
 bool Collision_RaycastSphere(const DirectX::XMFLOAT3& start, DirectX::XMFLOAT3& end, const Sphere& sphere, float& outT, DirectX::XMFLOAT3& outNormal){
 	XMVECTOR p0 = XMLoadFloat3(&start);
 	XMVECTOR p1 = XMLoadFloat3(&end);
@@ -201,6 +204,7 @@ bool Collision_RaycastSphere(const DirectX::XMFLOAT3& start, DirectX::XMFLOAT3& 
 
 	return true;
 }
+
 // カプセルの判定用の変数
 float ClosestRaySegment(const DirectX::XMFLOAT3& rayStart, const DirectX::XMFLOAT3& rayDir, const DirectX::XMFLOAT3& segA, const DirectX::XMFLOAT3& segB, float& outRayT){
 	XMVECTOR p = XMLoadFloat3(&rayStart);
@@ -272,6 +276,7 @@ bool Collision_RaycastCapsule(const DirectX::XMFLOAT3& start, const DirectX::XMF
 	XMStoreFloat3(&outNormal, normal);
 	return true;
 }
+
 //CapsulevsAABB で使用する関数
 // 線分 vs 点 の最近接点
 XMFLOAT3 ClosestPointOnSegment(const XMFLOAT3& a, const XMFLOAT3& b, const XMFLOAT3& p){
@@ -454,7 +459,6 @@ bool Collision_SweptCapsuleVsAABB(const Capsule& oldCap, const Capsule& newCap, 
 			
 			if (t <= 1e-4f) return;
 		};
-
 
 	// 下端レイ
 	testRay(oldCap.start, newCap.start);
@@ -682,10 +686,6 @@ void Collision_Debud3DFinalize() {
 	SAFE_RELEASE(g_DebugVB); // 頂点バッファの解放
 }
 
-// 登録した頂点を超えたら朝―とで止める
-// デバックドロウを呼ぶたびに頂点情報をバッファに書き込んで終わり→頂点数を計算
-// 登録しながら数える　そのフレームの最後に書き込む
-//　頂点数を数える関数を作れば三通ともにできる
 void Collision_DebugDraw(const AABB& aabb, const XMFLOAT4 color)
 {
 	// 頂点数チェック（24個分）

@@ -72,14 +72,12 @@ static Bullet_Enemy g_EnemyBullets[MAX_BULLET]; // ポインタではなく実体配列
 
 void Bullet_Enemy_Initialize() {
 	for (int i = 0; i < MAX_BULLET; i++) {
-		//delete g_Bullet[i];
 		g_EnemyBullets[i].Deactivate(); // 全ての弾を非アクティブ化
 	}
 }
 
 void Bullet_Enemy_Finalize() {
 	for (int i = 0; i < MAX_BULLET; i++) {
-		//delete g_pBullet[i];
 		g_EnemyBullets[i].Deactivate(); // 全ての弾を非アクティブ化
 	}
 }
@@ -112,11 +110,10 @@ void Bullet_Enemy_Create(const XMFLOAT3& position, const XMFLOAT3& velocity) {
 	for (int i = 0; i < MAX_BULLET; i++) {
 		if (!g_EnemyBullets[i].IsActive()) {
 			g_EnemyBullets[i].Activate(position, velocity);
-			return; // createは１つのみ
+			return;
 		}
 	}
 }
-
 
 int Bullet_Enemy_GetBulletCount() { return MAX_BULLET; }
 

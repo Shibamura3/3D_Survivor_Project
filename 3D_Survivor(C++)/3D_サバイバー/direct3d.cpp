@@ -65,22 +65,16 @@ bool Direct3D_Initialize(HWND hWnd)
     DXGI_SWAP_CHAIN_DESC swap_chain_desc{};
     swap_chain_desc.Windowed = TRUE;
     swap_chain_desc.BufferCount = 2;
-    // swap_chain_desc.BufferDesc.Width = 0;
-    // swap_chain_desc.BufferDesc.Height = 0;
-	// ⇒ ウィンドウサイズに合わせて自動的に設定される
     swap_chain_desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
     swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     swap_chain_desc.SampleDesc.Count = 1;
     swap_chain_desc.SampleDesc.Quality = 0;
-    //fpsの解放しない場合、する場合
 	swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
-	//swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	swap_chain_desc.OutputWindow = hWnd;
 
 	UINT device_flags = 0;
 
 #if defined(DEBUG) || defined(_DEBUG)
-	//たまに動かない場合は下をコメントアウト
     device_flags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
@@ -124,10 +118,6 @@ bool Direct3D_Initialize(HWND hWnd)
 		MessageBox(hWnd, "オフスクリーン用バックバッファの設定に失敗しました", "エラー", MB_OK);
 		return false;
 	}
-
-	// αブレンド...処理が重いので注意
-	// 色:RGBにAを足す。
-	// A好きに使ってよい。基本は透明の表現に使われる
 	
 	// ブレンドステート設定
 	D3D11_BLEND_DESC bd = {};
@@ -141,12 +131,6 @@ bool Direct3D_Initialize(HWND hWnd)
 	bd.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
 	bd.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
 	bd.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;//OP:演算子
-	//srcソース、今から描く絵　destもともと書いてある絵
-	//srcRGB * srcA + DestRGB * (1 - srcA) = RGBの計算結果
-	//乗算合成
-
-	//srcRGB * srcA + DestRGB * 1 = だんだん値があだり白に近づく、黒は透明に
-	//加算合成
 	
 	//α
 	bd.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;//1
@@ -154,9 +138,6 @@ bool Direct3D_Initialize(HWND hWnd)
 	bd.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;//演算子
 	
 	bd.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-	//srcA * 1 + DestA * 0
-	//SRC...ソース：今から描く絵：色
-	//dest...すでに描かれた絵：色
 
 	g_pDevice->CreateBlendState(&bd, &g_pBlendStateMultiply);
 
@@ -168,11 +149,9 @@ bool Direct3D_Initialize(HWND hWnd)
 
 	//RGB
 	bd.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
-	//srcRGB * srcA + DestRGB * 1 = だんだん値があだり白に近づく、黒は透明に
-	//加算合成
 
 	//α
-	bd.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;//1
+	bd.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
 
 	g_pDevice->CreateBlendState(&bd, &g_pBlendStateAdd);
 	/*----加算ブレンドの設定----*/
@@ -200,9 +179,7 @@ bool Direct3D_Initialize(HWND hWnd)
 	// ラスタライザステートの作成
 	D3D11_RASTERIZER_DESC rd = {};
 	rd.FillMode = D3D11_FILL_SOLID;
-	//rd.FillMode = D3D11_FILL_WIREFRAME; // ワイヤーフレームでの表示
 	rd.CullMode = D3D11_CULL_BACK;
-	//rd.CullMode = D3D11_CULL_NONE;
 	rd.DepthClipEnable = TRUE;
 	rd.MultisampleEnable = FALSE;
 	g_pDevice->CreateRasterizerState(&rd, &g_pRasterizerState);
@@ -217,7 +194,6 @@ void Direct3D_Finalize()
 {
 	SAFE_RELEASE(g_pDepthStencilStateDepthDisable);
 	SAFE_RELEASE(g_pDepthStencilStateDepthEnable);
-	//SAFE_RELEASE(g_pDepthStencilStateDepthWriteDisable);
 	SAFE_RELEASE(g_pBlendStateMultiply);
 	SAFE_RELEASE(g_pRasterizerState);
 
@@ -233,11 +209,7 @@ void Direct3D_Finalize()
 void Direct3D_Present()
 {
 	// スワップチェーンの表示
-	//表画面と裏画面の切り替え
-	//g_pDeviceContextはすぐに実行せず命令をためる
-	//GPUはif文に弱いが繰り返しにはとても強い
-	g_pSwapChain->Present(1, 0);//0にすると交信できる速度で頑張る
-	//ベンチマークをとるときhs第一引数を0にする
+	g_pSwapChain->Present(1, 0);
 }
 
 unsigned int Direct3D_GetBackBufferWidth()

@@ -30,7 +30,7 @@ static constexpr int MASS_V_POINT = MASS_V_COUNT + 1; // 縦の頂点数
 static constexpr int NUM_VERTEX = MASS_H_POINT * MASS_V_POINT; // 全体の頂点数 = 横の頂点数 × 縦の頂点数
 static constexpr int NUM_INDEX = NUM_VERTEX * 6;
 
-static constexpr int INTERVAL = 15; // 10マス間隔
+static constexpr int INTERVAL = 15; 
 static constexpr int ROAD_HALF_WIDTH = 1; // 道の太さ（中心から1マスずつ＝合計2〜3マス幅）
 
 static ID3D11Buffer* g_pVertexBuffer = nullptr; // 頂点バッファ

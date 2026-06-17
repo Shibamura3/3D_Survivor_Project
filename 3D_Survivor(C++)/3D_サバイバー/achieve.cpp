@@ -95,22 +95,21 @@ void Achieve_Update(double elapsed_time){
 	Mouse_GetState(&ms);
 
 	// スクロール処理 (ホイール)
-	// scrollWheelValue は 1ノッチにつき 120 (WHEEL_DELTA) という値が入るのが一般的です
 	if (ms.scrollWheelValue != 0) {
-		// 感度調整のため 0.5f などを掛ける
+		// 感度調整のため 0.5f を掛ける
 		g_ScrollY -= static_cast<float>(ms.scrollWheelValue) * 0.5f;
 
-		// 値を読み取ったら累計値をリセットする（重要！）
+		// 値を読み取ったら累計値をリセットする
 		Mouse_ResetScrollWheelValue();
 	}
 
-	// スクロール処理 (ゲームパッドの右スティック等でも動かせると親切)
+	// スクロール処理
 	if (PadLogger_IsConnected()) {
 		XMFLOAT2 rightStick = PadLogger_GetRightThumbStick(0); // 右スティック
-		g_ScrollY -= rightStick.y * 10.0f; // スティックの倒し具合で加算
+		g_ScrollY -= rightStick.y * 10.0f; 
 	}
 
-	// 3. スクロールの範囲制限（これがないと無限に上や下へ行ってしまう）
+	// スクロールの範囲制限
 	const auto& achievements = AchievementManager::Instance().GetAll();
 	float totalHeight = (achievements.size() * ACHIEVE_STEP_Y) + 150.0f; // 150.0f の余白を追加
 	float windowHeight = Direct3D_GetBackBufferHeight() * 0.7f; // 表示領域の高さ

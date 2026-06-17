@@ -47,14 +47,11 @@ void Player_Camera_Finalize(){
 }
 
 void Player_Camera_Update(double elapsed_time){
-	//Mouse_SetMode(MOUSE_POSITION_MODE_RELATIVE); // 一時的に画面外に行かないようにマウスを相対モード（中央固定）にする
 	float rotationInput = 0.0f;
 
 	// パッドが刺さっている間はマウスを無視
 	if (PadLogger_IsConnected()) {
-		// パッド入力
 		XMFLOAT2 rightStick = PadLogger_GetRightThumbStick(0);
-
 		rotationInput -= rightStick.x * 5.0f;
 	} else {
 		// キー入力（パッドがない時だけ実行）
@@ -69,15 +66,14 @@ void Player_Camera_Update(double elapsed_time){
 	// 感度と経過時間を考慮して角度を更新
 	g_CameraAngleX += rotationInput * g_sensitivity * (float)elapsed_time;
 
-	// --- 2. カメラ座標の算出（水平回転） ---
+	// カメラ座標の算出（水平回転
 	XMVECTOR playerPos = XMLoadFloat3(&GetPlayer()->GetPosition());
 
 	// プレイヤーの座標から「現在の高さ」を抜き出し、
-	// ジャンプしても変わらない「基準となる高さ（地面の高さなど）」に差し替える
 	float baseHeight = 0.0f; // 地面の高さが0なら0.0f、ステージに合わせて調整
 	XMVECTOR stablePos = XMVectorSet(XMVectorGetX(playerPos), baseHeight, XMVectorGetZ(playerPos), 0.0f);
 
-	// 注視点：プレイヤーの少し上（1.5m上）
+	// 注視点
 	XMVECTOR target = stablePos + XMVectorSet(0.0f, 1.5f, 0.0f, 0.0f);
 
 	// 球面座標から座標を計算
@@ -88,7 +84,6 @@ void Player_Camera_Update(double elapsed_time){
 
 	XMVECTOR position = target + XMVectorSet(offsetX, offsetY, -offsetZ, 0.0f);
 
-	// --- 3. 行列の作成と保存 ---
 	XMVECTOR front = XMVector3Normalize(target - position);
 	XMStoreFloat3(&g_Player_CameraPosition, position);
 	XMStoreFloat3(&g_Player_CameraFront, front);

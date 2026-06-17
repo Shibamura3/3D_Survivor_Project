@@ -21,7 +21,6 @@ static ID3D11Buffer* g_pVSConstantBuffer2 = nullptr; //
 static XMFLOAT3 g_CameraPosition = { 0.0f,5.0f,-10.0 };
 static Mouse_State g_MouseState{};
 // 三方向のベクトル
-// たくさんのカメラを使用する際は構造体やクラスを使用
 static XMFLOAT3 g_CameraFront = { 0.0f, 0.0f, 1.0 }; // 前 Z軸の＋
 static XMFLOAT3 g_CameraUp    = { 0.0f, 1.0f, 0.0 }; // 上 Y軸の＋
 static XMFLOAT3 g_CameraRight = { 1.0f, 0.0f, 0.0 }; // 右 X軸の＋
@@ -38,8 +37,6 @@ static constexpr float CAMERA_MOVE_SPEED = 3.0f;
 static constexpr float CAMERA_ROTATION_SPEED = XMConvertToRadians(30); // 一秒間に30回転
 
 void Camera_Initialize(const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& front, const DirectX::XMFLOAT3& right) {
-	// 念のためInitializeでも初期化
-
 	Camera_Initialize();
 
 	g_CameraPosition = position;
@@ -52,14 +49,9 @@ void Camera_Initialize(const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT
 	XMStoreFloat3(&g_CameraRight, I_right);
 	XMStoreFloat3(&g_CameraUp, up);
 
-
-	//XMStoreFloat4x4(&g_CameraMatrix, XMMatrixIdentity());
-	//XMStoreFloat4x4(&g_Perspective, XMMatrixIdentity());
-
 }
 
 void Camera_Initialize(){
-	// 念のためInitializeでも初期化
 	g_CameraPosition = { 0.0f,5.0f,-10.0 };
 	g_CameraFront = { 0.0f, 0.0f, 1.0 };
 	g_CameraUp = { 0.0f, 1.0f, 0.0 }; 
@@ -115,7 +107,6 @@ void Camera_Update(double elapsed_time){
 		XMMATRIX rotation = XMMatrixRotationAxis(right, CAMERA_ROTATION_SPEED * elapsed_time); // 右ベクトルを主軸に他２ベクトルを回転
 		front = XMVector3TransformNormal(front, rotation);
 		front = XMVector3Normalize(front); // floatの誤差が少し出るため１に戻す
-		// 2本のベクトルを外積で＊と直角になる
 		up = XMVector3Cross(front, right); // 外積はかける順番で符号が変わる
 
 	}
@@ -203,7 +194,6 @@ void Camera_Update(double elapsed_time){
 	// 頂点シェーダーにビュー座標変換行列を設定
 	// ビュー変換行列を保存
 	XMStoreFloat4x4(&g_CameraMatrix, mtmView);
- 	//Shader3d_SetViewMatrix(mtmView); // test
 
 	// パースペクティブ行列の作成
 	float aspecctRatio = (float)Direct3D_GetBackBufferWidth() / Direct3D_GetBackBufferHeight();
@@ -212,8 +202,6 @@ void Camera_Update(double elapsed_time){
 
 	XMMATRIX mtxPerspective = XMMatrixPerspectiveFovLH(g_Fov, aspecctRatio, nearz, farz);
 
-	// 頂点シェーダーに変換行列を設定
-	//Shader3d_SetProjectionMatrix(mtxPerspective); // test
 	// パースペクティブ変換行列を保存
 	XMStoreFloat4x4(&g_Perspective, mtxPerspective);
 

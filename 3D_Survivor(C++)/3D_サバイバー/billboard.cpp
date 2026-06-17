@@ -115,7 +115,7 @@ void Billboard_Draw(int texId, const DirectX::XMFLOAT3& position, const DirectX:
 	ShaderBillboard_Begin();
 
 	ShaderBillboard_SetColor(color);
-	//
+	
 	Texture_SetTexture(texId);
 
 	// 頂点バッファを描画パイプラインに設定

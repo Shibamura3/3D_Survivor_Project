@@ -19,7 +19,7 @@ void KeyLogger_Initialize(){
 
 void KeyLogger_Update(){
 	const Keyboard_State* pState = Keyboard_GetState();
-	LPBYTE pn = (LPBYTE)pState; // unsigned char pointer ‚Æ‚µ‚Ä‚²‚Ü‚©‚µ
+	LPBYTE pn = (LPBYTE)pState;
 	LPBYTE pp = (LPBYTE)&g_PrevState;
 	LPBYTE pt = (LPBYTE)&g_TriggerState;
 	LPBYTE pr = (LPBYTE)&g_Releasestate;

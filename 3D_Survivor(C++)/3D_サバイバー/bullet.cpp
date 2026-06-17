@@ -74,14 +74,12 @@ static Bullet g_Bullets[MAX_BULLET]; // ポインタではなく実体配列
 
 void Bullet_Initialize(const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& front){
 	for (int i = 0; i < MAX_BULLET; i++) {
-		//delete g_Bullet[i];
 		g_Bullets[i].Deactivate(); // 全ての弾を非アクティブ化
 	}
 }
 
 void Bullet_Finalize(){
 	for (int i = 0; i < MAX_BULLET; i++) {
-		//delete g_pBullet[i];
 		g_Bullets[i].Deactivate(); // 全ての弾を非アクティブ化
 	}
 }
@@ -115,7 +113,7 @@ void Bullet_Create(const XMFLOAT3& position, const XMFLOAT3& velocity) {
 		if (!g_Bullets[i].IsActive()) {
 			g_Bullets[i].Activate(position, velocity);
 			PlayAudio(Resouce_Manager_GetAudioId(Bullet_SE));
-			return; // createは１つのみ
+			return; 
 		}
 	}
 }

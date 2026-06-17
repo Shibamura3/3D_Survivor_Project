@@ -21,7 +21,6 @@ static constexpr int NUM_VERTEX = 24; // ’¸“_” 1–Ê‚ÉOŠpŒ`2–‡@1–ÊF6’¸“_@6–Ê
 
 static ID3D11Buffer* g_pVertexBuffer = nullptr; // ’¸“_ƒoƒbƒtƒ@
 static ID3D11Buffer* g_pIndexBuffer = nullptr; // ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@
-//static ID3D11ShaderResourceView* g_pTexture = nullptr; // ƒeƒNƒXƒ`ƒƒ
 
 // ’ˆÓI‰Šú‰»‚ÅŠO•”‚©‚çİ’è‚³‚ê‚é‚à‚ÌBRelease•s—vB
 static ID3D11Device* g_pDevice = nullptr;
@@ -75,7 +74,7 @@ static Vertex3d g_CubeVertex[24]{
 static Vertex3d g_DebagCubeVertex[24]{};
 
 
-static unsigned short g_CubeIndex[36]{ // unsigned short 0-65535 Å‘å’¸“_” int@‚Ì•û‚ªƒnƒCƒ|ƒŠ‚¾‚ª—e—Ê‘½
+static unsigned short g_CubeIndex[36]{ // 
 	 0, 1, 2, 0, 3, 1, // 1
 	 4, 5, 6, 4, 7, 5, // 2
 	 8, 9,10, 8,11, 9, // 3
@@ -92,10 +91,10 @@ void Cube_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext){
 
 	// ’¸“_ƒoƒbƒtƒ@¶¬
 	D3D11_BUFFER_DESC bd = {};
-	bd.Usage = D3D11_USAGE_DEFAULT; // Usage:g‚¢•û@DYNAMIC:‘‚«Š·‚¦‚Äg‚¤
-	bd.ByteWidth = sizeof(Vertex3d) * NUM_VERTEX; // sizeof(g_CubeVertex)”z—ñ‚È‚Ì‚Å‚±‚ê‚Å‚à‚¨‚‹
+	bd.Usage = D3D11_USAGE_DEFAULT; 
+	bd.ByteWidth = sizeof(Vertex3d) * NUM_VERTEX; 
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bd.CPUAccessFlags = 0; // 1“xì¬‚µ‚½‚ç“®‚©‚³‚È‚¢ “Ç‚İ‘‚«•s‰Â
+	bd.CPUAccessFlags = 0; 
 
 	D3D11_SUBRESOURCE_DATA sd{};
 	sd.pSysMem = g_CubeVertex;
@@ -103,10 +102,10 @@ void Cube_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext){
 	g_pDevice->CreateBuffer(&bd, &sd, &g_pVertexBuffer);
 
 	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@ì¬
-	bd.Usage = D3D11_USAGE_DEFAULT; // Usage:g‚¢•û@DYNAMIC:‘‚«Š·‚¦‚Äg‚¤
+	bd.Usage = D3D11_USAGE_DEFAULT;
 	bd.ByteWidth = sizeof(unsigned short) * NUM_INDEX;
 	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	bd.CPUAccessFlags = 0; // 1“xì¬‚µ‚½‚ç“®‚©‚³‚È‚¢ “Ç‚İ‘‚«•s‰Â
+	bd.CPUAccessFlags = 0; 
 
 	sd.pSysMem = g_CubeIndex;
 

@@ -32,10 +32,8 @@ HWND GameWindow_Create(HINSTANCE hinstance)
 	wcex.lpfnWndProc = WndProc;
 	wcex.hInstance = hinstance;
 	wcex.hIcon = LoadIcon(hinstance, IDI_APPLICATION);
-//	wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
 	wcex.hCursor = nullptr;
 	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-	//wcex.lpszMenuName = nullptr;//メニュバーの表示、今回は使わない
 	wcex.lpszClassName = WINDOW_CLASS;
 	wcex.hIconSm = LoadIcon(wcex.hInstance, IDI_APPLICATION);
 
@@ -64,8 +62,6 @@ HWND GameWindow_Create(HINSTANCE hinstance)
 		WINDOW_CLASS,
 		TITLE,
 		style,
-		//WS_OVERLAPPEDWINDOW ^ (WS_THICKFRAME | WS_MAXIMIZEBOX),
-		//WS_OVERLAPPEDWINDOW & ~(WS_THICKFRAME | WS_MAXIMIZEBOX),
 		WINDOW_X,
 		WINDOW_Y,
 		WINDOW_WIDTH,
@@ -91,8 +87,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
 	case WM_INPUT:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	case WM_ACTIVATEAPP:
-		//Keyboard_ProcessMessage(message, wParam, lParam);
-		//Mouse_ProcessMessage(message, wParam, lParam);
 		SystemTimer_Stop();
 		break;
 	case WM_MOUSEMOVE:
@@ -108,13 +102,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
 	case WM_MOUSEHOVER:
 		Mouse_ProcessMessage(message, wParam, lParam);
 		break;
-	//case WM_SETCURSOR:
-	//	// クライアント領域に入ったらカーソルを消す
-	//	if (LOWORD(lParam) == HTCLIENT) {
-	//		SetCursor(nullptr);
-	//		return TRUE; // Windowsに処理させない
-	//	}
-	//	break;
 	case WM_KEYDOWN:
 		if (wParam == VK_ESCAPE) {//エスケープキーの場合
 			SendMessage(hWnd, WM_CLOSE, 0, 0); //sendmessageはオリジナルのメッセージを飛ばすこともできる

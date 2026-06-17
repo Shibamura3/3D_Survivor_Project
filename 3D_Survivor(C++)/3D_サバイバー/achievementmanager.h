@@ -108,8 +108,6 @@ public:
     }
 
     void Update(double elapsed_time); // 通知のタイマー管理用
-    void DrawNotification();      // 画面右上に描画する用
-    void DrawNewlyUnlocked(float startX, float startY); // result画面での表示
 
     void ClearNewlyUnlocked() {
         m_newlyUnlocked.clear();

@@ -36,7 +36,7 @@ void Enemy_T3::Activate(const DirectX::XMFLOAT3& pos) {
 void Enemy_T3::Update(double elapsed_time) {
 	if (!m_isActive) return;
 
-	// --- 1. プレイヤーの方向を向く（回転のみ） ---
+	// プレイヤーの方向を向く
 	DirectX::XMFLOAT3 playerPos = GetPlayer()->GetPosition();
 
 	// プレイヤーへの方向と向きを計算

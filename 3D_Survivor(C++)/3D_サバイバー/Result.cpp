@@ -82,9 +82,6 @@ void Result_Initialize(){
 	// タイトルボタン
 	g_ButtonPos = { Direct3D_GetBackBufferWidth() * 0.5f - SELECT_SIZE_X, Direct3D_GetBackBufferHeight() * 0.7f };
 
-	//BGMの再生
-	//PlayAudio(g_Title_BGM, true);
-
 	// resultに来た時からクリア判定
 	if (UI_GetTime() <= 0.0) {
 		g_IsClear = true;
@@ -116,7 +113,7 @@ void Result_Finalize(){
 
 void Result_Update(double elapsed_time){
 	if (g_IsNaming) { // ランキングの入力
-		// --- 名前入力ロジック ---
+		// 名前入力ロジック
 		// A-Zまでの入力を簡易的にチェック（Key_loggerを使用）
 		for (int i = (int)KK_A; i <= (int)KK_Z; ++i) {
 			if (KeyLogger_IsTrigger((Keyboard_Keys)i)) {
@@ -225,8 +222,6 @@ void Result_Draw(){
 	if (!g_IsNaming) {
 		float alpha = g_Button_Title ? 0.5f : 1.0f;
 		Sprite_Draw(Resouce_Manager_GetTexId(Title_Button),
-			//Direct3D_GetBackBufferWidth() * 0.5f - SELECT_SIZE_X * 0.5f,
-			//Direct3D_GetBackBufferHeight() * 0.75 - SELECT_SIZE_Y * 0.5f,
 			g_ButtonPos.x + SELECT_SIZE_X * 0.5f,
 			g_ButtonPos.y,
 			SELECT_SIZE_X, SELECT_SIZE_Y, { 1, 1, 1, alpha });

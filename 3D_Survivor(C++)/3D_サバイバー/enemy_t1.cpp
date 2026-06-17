@@ -23,7 +23,7 @@ Capsule Enemy_T1::GetCapsule() const{
 	c.radius = 0.5f; // 敵の太さ
 	c.start = m_position; // 足元
 	c.end = m_position;
-	c.start.y -= 0.50f;      // 身長
+	c.start.y -= 0.50f; // 身長
 	return c;
 }
 
@@ -59,7 +59,7 @@ void Enemy_T1::Update(double elapsed_time) {
 	XMStoreFloat3(&m_position, vPos);
 
 	
-		// 1. 障害物との当たり判定（押し出し）
+		// 障害物との当たり判定
 		Capsule myCap = GetCapsule();
 		for (int i = 0; i < Map_GetObjectsCount(); i++) {
 			auto obj = Map_GetObject(i);

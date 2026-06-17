@@ -377,12 +377,6 @@
     <FxCompile Include="shader_pixel_3d_unlit.hlsl">
       <Filter>シェーダーファイル</Filter>
     </FxCompile>
-    <FxCompile Include="shader_pixel_depth.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="shader_vertex_depth.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
     <FxCompile Include="shader_vertex_instance.hlsl">
       <Filter>シェーダーファイル</Filter>
     </FxCompile>

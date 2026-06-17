@@ -9,7 +9,7 @@
 #include <sstream>
 #include <SpriteFont.h>
 #include <SpriteBatch.h>
-#include <windows.h> // MultiByteToWideCharを使うために必要
+#include <windows.h> 
 
 // 変数宣言
 // スマートポインタで安全に管理
@@ -20,12 +20,12 @@ static std::unique_ptr<DirectX::SpriteFont>  g_Font;
 std::wstring Utf8ToWstring(const std::string& src) {
     if (src.empty()) return L"";
 
-    // 1. 文字列の前後にある改行コードや空白を掃除する（トリミング）
+    // トリミング
     std::string cleanSrc = src;
     cleanSrc.erase(cleanSrc.find_last_not_of(" \n\r\t") + 1);
     cleanSrc.erase(0, cleanSrc.find_first_not_of(" \n\r\t"));
 
-    // 2. BOM対策（以前のコードと同様）
+    // BOM対策
     const char* pszSrc = cleanSrc.c_str();
     if (cleanSrc.size() >= 3 && (unsigned char)pszSrc[0] == 0xEF && (unsigned char)pszSrc[1] == 0xBB && (unsigned char)pszSrc[2] == 0xBF) {
         pszSrc += 3;
@@ -41,13 +41,10 @@ std::wstring Utf8ToWstring(const std::string& src) {
 }
 
 void AchievementManager::Save(){
-    // 実行ファイルと同じ階層に "achievements.dat" を作成
     std::ofstream ofs("resource/data/achievements.dat");
     if (!ofs) return; // ファイルが開けない
 
     for (const auto& ach : m_achievements) {
-        // ID, 解除フラグ を一行ずつ書き出す
-        // 例: KILL_100,1
         ofs << ach.id << "," << (ach.isUnlocked ? 1 : 0) << "\n";
     }
 }
@@ -62,7 +59,6 @@ void AchievementManager::Load(){
         std::string id, unlockedStr;
 
         if (std::getline(ss, id, ',') && std::getline(ss, unlockedStr, ',')) {
-            // m_achievementsの中から、ファイルから読んだIDと同じものを探す
             auto it = std::find_if(m_achievements.begin(), m_achievements.end(),
                 [&](const Achievement& a) { return a.id == id; });
 
@@ -139,17 +135,3 @@ void AchievementManager::Update(double elapsed_time) {
     }
 }
 
-void AchievementManager::DrawNewlyUnlocked(float startX, float startY){
-    if (m_newlyUnlocked.empty()) return;
-
-    g_FontBatch->Begin();
-    float y = startY;
-    g_Font->DrawString(g_FontBatch.get(), L"【今回獲得した実績】", XMFLOAT2(startX, y), Colors::Gold);
-
-    y += 40.0f;
-    for (auto* ach : m_newlyUnlocked) {
-        g_Font->DrawString(g_FontBatch.get(), ach->title.c_str(), XMFLOAT2(startX + 20, y), Colors::White);
-        y += 30.0f;
-    }
-    g_FontBatch->End();
-}
