@@ -25,7 +25,7 @@ struct Trajectory3d { // エフェクトの構造体
 };
 
 //定数宣言
-static constexpr unsigned int TRAJECTORY_MAX = 1024; // 軌跡の最大数
+static constexpr unsigned int TRAJECTORY_MAX = 128; // 軌跡の最大数
 
 //変数宣言
 static Trajectory3d g_Trajectorys[TRAJECTORY_MAX] = {};

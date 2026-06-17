@@ -79,8 +79,6 @@ void AchievementManager::LoadMasterData(){
         std::getline(ss, type, ',');
         std::getline(ss, targetStr, ',');
 
-        if (id.empty() || targetStr.empty()) continue;
-
         int targetValue = std::stoi(targetStr); // ターゲット実数
         std::wstring title = Utf8ToWstring(titleStr); // 実績名
         std::unique_ptr<AchievementCondition> cond; 

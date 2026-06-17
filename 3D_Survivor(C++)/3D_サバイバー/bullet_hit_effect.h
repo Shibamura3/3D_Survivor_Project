@@ -8,7 +8,6 @@
 
 #include <DirectXMath.h>
 
-// C++のポリモーフィズムでエフェクトを一括管理できる
 void Bullet_HitEffect_Initialize();
 void Bullet_HitEffect_Finalize();
 void Bullet_HitEffect_Update();

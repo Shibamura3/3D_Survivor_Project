@@ -63,7 +63,7 @@ void Enemy_T3::Update(double elapsed_time) {
 
 			// 少し高い位置（砲口のイメージ）から発射
 			XMFLOAT3 muzzlePos = m_position;
-			muzzlePos.y += 0.5f;
+			muzzlePos.y += 0.25f;
 
 			Bullet_Enemy_Create(muzzlePos, velocity);
 		}

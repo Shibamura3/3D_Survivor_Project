@@ -6,11 +6,9 @@
 #ifndef ACHIEVEMENTMANAGER_H
 #define ACHIEVEMENTMANAGER_H
 
-#include <iostream>
 #include <memory> // std::unique_ptr を使う
 #include <string>
 #include <vector>
-#include <DirectXMath.h>
 
 // 判定の抽象クラス
 class AchievementCondition {
@@ -77,7 +75,7 @@ class AchievementManager {
 private:
     AchievementManager() = default;
 
-    // 全実績を保持するリスト
+    // 全実績の状態（解除状況を含む）を保持する
     std::vector<Achievement> m_achievements; 
 
     void Save();
