@@ -263,6 +263,7 @@ void Player::ResolveMovementAndCollision(double elapsed_time) {
 
 void Player::ResolvePenetration(XMVECTOR& position, XMVECTOR& velocity) {
     for (int loop = 0; loop < 3; loop++) {
+
         bool anyHit = false;
         Capsule cap = GetCapsuleAt(position);
 
@@ -272,24 +273,12 @@ void Player::ResolvePenetration(XMVECTOR& position, XMVECTOR& velocity) {
             Hit hit = Collision_IsHitCapsulevsAABB(cap, box);
             if (!hit.isHit) continue;
 
-            // 床に乗った時だけ元の上面を使う
-            if (hit.normal.y > GROUND_Y && XMVectorGetY(velocity) <= -LANDING_Y_EPSILON) {
-                float currentX = XMVectorGetX(position);
-                float currentZ = XMVectorGetZ(position);
-            
-                float snappedY = box.max.y + PLAYER_GROUND_OFFSET + SKIN;
-            
-                position = XMVectorSet(currentX, snappedY, currentZ, 0.0f);
-            
-                m_isGround = true;
-                m_isJump = false;
-            
-                velocity = XMVectorSetY(velocity, 0.0f);
-            
-                anyHit = true;
+            // 床はここでは処理しない
+            if (fabs(hit.normal.y) > GROUND_Y) {
                 continue;
             }
-            // 壁・それ以外の場合通常押し出し
+
+            // 壁だけ押し出す
             position += XMLoadFloat3(&hit.normal) * (hit.depth + SKIN);
             anyHit = true;
         }
@@ -302,6 +291,7 @@ void Player::ResolveSweptCollision(XMVECTOR& position, XMVECTOR& velocity, doubl
     XMVECTOR remaining = velocity * (float)elapsed_time;
 
     for (int iter = 0; iter < MAX_SWEEP; iter++) {
+
         if (XMVectorGetX(XMVector3LengthSq(remaining)) < 1e-6f)
             break;
 
@@ -316,23 +306,33 @@ void Player::ResolveSweptCollision(XMVECTOR& position, XMVECTOR& velocity, doubl
         bool hitAny = false;
 
         for (int i = 0; i < Map_GetObjectsCount(); i++) {
-            AABB box = Map_GetObject(i)->Aabb_collision;
+            auto* obj = Map_GetObject(i);
+            AABB box = obj->Aabb_collision;
 
             float t;
             XMFLOAT3 n;
+
             if (Collision_SweptCapsuleVsAABB(oldCap, newCap, box, t, n)) {
 
-                if (n.y >= FLOOR_NORMAL_Y) {
-                    continue;
-                }
+                float velocityY = XMVectorGetY(velocity);
+                float playerFootY = XMVectorGetY(oldPos) - PLAYER_GROUND_OFFSET;
+                float floorY = box.max.y;
+                if (obj->isOneWay) {
+                    if (n.y < -FLOOR_NORMAL_Y) continue;
 
+                    if (n.y > FLOOR_NORMAL_Y) {
+                        // 下から侵入 
+                        if (playerFootY < floorY - 0.05f && velocityY >= 0.0f) {
+                            continue;
+                        }
+                    }
+                }
                 if (t >= 0.0f && t < hitT) {
                     hitT = t;
                     hitNormal = n;
                     hitAny = true;
                 }
             }
-
         }
 
         if (!hitAny) {
@@ -342,14 +342,43 @@ void Player::ResolveSweptCollision(XMVECTOR& position, XMVECTOR& velocity, doubl
 
         XMVECTOR n = XMLoadFloat3(&hitNormal);
 
+        // 接触点まで移動
         position = oldPos + remaining * hitT + n * SKIN;
 
         float remainRate = 1.0f - hitT;
         remaining *= remainRate;
 
-        float vn = XMVectorGetX(XMVector3Dot(remaining, n));
-        if (vn < 0.0f) {
-            remaining -= n * vn;
+        // 床判定
+        if (hitNormal.y > FLOOR_NORMAL_Y) {
+            float velocityY = XMVectorGetY(velocity);
+
+            // 下向きのときだけ乗る
+            if (velocityY <= 0.0f) {
+                // 接地状態
+                m_isGround = true;
+                m_isJump = false;
+
+                // Y速度削除
+                velocity = XMVectorSetY(velocity, 0.0f);
+
+                // Y方向の移動を止める
+                remaining = XMVectorSet(
+                    XMVectorGetX(remaining),
+                    0,
+                    XMVectorGetZ(remaining),
+                    0.0f
+                );
+            } else {
+                // 上向き → すり抜ける
+                continue;
+            }
+        } else {
+            // 壁スライド
+            float vn = XMVectorGetX(XMVector3Dot(remaining, n));
+
+            if (vn < 0.0f) {
+                remaining -= n * vn;
+            }
         }
     }
     velocity = remaining / (float)elapsed_time;
@@ -389,7 +418,9 @@ void Player::ResolveGroundContact(DirectX::XMVECTOR& position, DirectX::XMVECTOR
         float distToTop = footY - box.max.y;
 
         // 床のすぐ近くにいるときだけ接地させる
-        if (distToTop >= -SKIN && distToTop <= GROUND_PROBE_DISTANCE) {
+        if (XMVectorGetY(velocity) <= 0.0f &&
+            distToTop >= -SKIN &&
+            distToTop <= GROUND_PROBE_DISTANCE) {
             if (box.max.y > bestGroundY) {
                 bestGroundY = box.max.y;
                 foundGround = true;
@@ -413,7 +444,6 @@ void Player::ResolveGroundContact(DirectX::XMVECTOR& position, DirectX::XMVECTOR
     }
 
 }
-
 
 void Player::ApplyFriction(double elapsed_time) {
     XMVECTOR velocity = XMLoadFloat3(&m_velocity);

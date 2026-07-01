@@ -493,8 +493,7 @@ bool Collision_SweptCapsuleVsAABB(const Capsule& oldCap, const Capsule& newCap, 
 }
 
 //デバック用
-//ある理由から頂点の数ぴったりにする
-static constexpr int NUM_VERTEX = 5000; // 頂点数 約1600*3.14
+static constexpr int NUM_VERTEX = 10000; // 頂点数 
 
 static ID3D11Buffer* g_pVertexBuffer = nullptr; // 頂点バッファ
 static ID3D11ShaderResourceView* g_pTexture = nullptr; // テクスチャ
@@ -655,7 +654,7 @@ struct DebugVertex
 
 
 // 定数宣言
-static constexpr int DEBUG_VERTEX_MAX = 4096; // 1フレームで描画できる最大頂点数
+static constexpr int DEBUG_VERTEX_MAX = 8192; // 1フレームで描画できる最大頂点数
 
 // 変数宣言
 static DebugVertex g_DebugVertexArray[DEBUG_VERTEX_MAX]; // 頂点を溜めるバケツ

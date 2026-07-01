@@ -33,8 +33,9 @@ ID3D11Device* Direct3D_GetDevice();
 ID3D11DeviceContext* Direct3D_GetContext();
 
 //Direct3D_アルファブレンドの切り替えよう
-void Direct3D_SetAlphaBlendTransparent(); // 透過処理、乗算合成
-void Direct3D_SetAlphaBlendAdd(); // 加算合成
+void Direct3D_SetAlphaBlendTransparent();
+void Direct3D_SetAlphaBlendAdd();
+void Direct3D_SetAlphaBlendNone();
 
 //深度バッファの設定
 void Direct3D_SetDepthEnable(bool enable);
@@ -70,11 +71,6 @@ void Direct3D_SetDepthTexture(int slot);
 
 // ライトビュープロジェクション行列の定数バッファへの登録と設定
 void Direct3D_SetLightViewProjrctionMatrix(const DirectX::XMMATRIX & matrix);
-
-// シャドウマップ関連
-void Direct3D_ClearShadowMap();
-void Direct3D_SetShadowMap();
-void Direct3D_SetShadowMapTexture(int slot);
 
 void Direct3D_DebugColorClear();
 

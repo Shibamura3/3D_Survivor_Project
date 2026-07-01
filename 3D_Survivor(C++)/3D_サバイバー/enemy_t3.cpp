@@ -7,6 +7,7 @@
 #include "enemy_t3.h"
 #include "collision.h"
 #include "player.h"
+#include "map.h"
 #include "bullet_enemy.h"
 #include "shader3d.h"
 #include "resource_manager.h"
@@ -16,7 +17,8 @@ MODEL* Enemy_T3::s_pModel = nullptr;
 
 static constexpr float ENEMY_SPEED = 1.5f;
 static constexpr double SHOOT_INTERVAL = 5.0;
-static constexpr float SHOOT_RANGE_SQ = 225.0f; // 15*15
+static constexpr float OFFSET_Y = 0.75f;
+static constexpr float SHOOT_RANGE_SQ = 440.0f; // 20*20
 
 void Enemy_T3::LoadModel() {
 	if (!s_pModel) s_pModel = Resouce_Manager_GetModelId(EnemyModel_T3);
@@ -72,7 +74,7 @@ void Enemy_T3::Update(double elapsed_time) {
 	}
 
 	// “®‚©‚È‚¢“G‚Ì‚½‚ß’n–Ê‚ÉŒÅ’è
-	m_position.y = 1.0f;
+	m_position.y = Map_GetGroundHeight(m_position.x, m_position.z, m_position.y) + OFFSET_Y;
 
 	if (m_hp <= 0) m_isActive = false;
 }

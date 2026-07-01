@@ -66,12 +66,26 @@ void Player_Camera_Update(double elapsed_time){
 	// 感度と経過時間を考慮して角度を更新
 	g_CameraAngleX += rotationInput * g_sensitivity * (float)elapsed_time;
 
-	// カメラ座標の算出（水平回転
 	XMVECTOR playerPos = XMLoadFloat3(&GetPlayer()->GetPosition());
 
-	// プレイヤーの座標から「現在の高さ」を抜き出し、
-	float baseHeight = 0.0f; // 地面の高さが0なら0.0f、ステージに合わせて調整
-	XMVECTOR stablePos = XMVectorSet(XMVectorGetX(playerPos), baseHeight, XMVectorGetZ(playerPos), 0.0f);
+	static float cameraY = 0.0f;
+
+	// 目標Y
+	float targetY = XMVectorGetY(playerPos);
+
+	// 補間の強さ
+	float lerp = GetPlayer()->IsGround() ? 0.15f : 0.05f;
+
+	// なめらかに追従
+	cameraY += (targetY - cameraY) * lerp;
+
+	// 安定位置
+	XMVECTOR stablePos = XMVectorSet(
+		XMVectorGetX(playerPos),
+		cameraY,
+		XMVectorGetZ(playerPos),
+		0.0f
+	);
 
 	// 注視点
 	XMVECTOR target = stablePos + XMVectorSet(0.0f, 1.5f, 0.0f, 0.0f);

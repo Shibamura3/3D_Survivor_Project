@@ -20,6 +20,7 @@ static ID3D11DeviceContext* g_pDeviceContext = nullptr;
 static IDXGISwapChain* g_pSwapChain = nullptr;
 static ID3D11BlendState* g_pBlendStateMultiply = nullptr;
 static ID3D11BlendState* g_pBlendStateAdd = nullptr;
+static ID3D11BlendState* g_pBlendStateOpaque = nullptr;
 static ID3D11DepthStencilState* g_pDepthStencilStateDepthDisable = nullptr;
 static ID3D11DepthStencilState* g_pDepthStencilStateDepthEnable = nullptr;
 static ID3D11DepthStencilState* g_pDepthStencilStateDepthWriteDisable = nullptr;
@@ -156,6 +157,16 @@ bool Direct3D_Initialize(HWND hWnd)
 	g_pDevice->CreateBlendState(&bd, &g_pBlendStateAdd);
 	/*----加算ブレンドの設定----*/
 
+	// 不透明（ブレンドしない）
+	D3D11_BLEND_DESC bd_opaque = {};
+	bd_opaque.AlphaToCoverageEnable = FALSE;
+	bd_opaque.IndependentBlendEnable = FALSE;
+
+	bd_opaque.RenderTarget[0].BlendEnable = FALSE; // ←これが重要
+	bd_opaque.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	g_pDevice->CreateBlendState(&bd_opaque, &g_pBlendStateOpaque);
+
 	// 深度ステンシルステート設定
 	D3D11_DEPTH_STENCIL_DESC dsd = {};
 	dsd.DepthFunc = D3D11_COMPARISON_LESS;
@@ -242,6 +253,11 @@ void Direct3D_SetAlphaBlendAdd(){
 	float blend_factor[4]{ 0.0f, 0.0f, 0.0f, 0.0f };
 	g_pDeviceContext->OMSetBlendState(g_pBlendStateAdd, blend_factor, 0xffffffff);
 
+}
+
+void Direct3D_SetAlphaBlendNone(){
+	float blend_factor[4]{ 0, 0, 0, 0 }; 
+	g_pDeviceContext->OMSetBlendState(g_pBlendStateOpaque, blend_factor, 0xffffffff);
 }
 
 void Direct3D_SetDepthEnable(bool enable){
@@ -579,8 +595,6 @@ void releaseDepthBackBuffer() {
 	SAFE_RELEASE(g_pDepthDepthStencilBuffer);
 	SAFE_RELEASE(g_pDepthDepthStencilView);
 }
-
-
 
 void Direct3D_DebugColorClear() {
 	// 影用テクスチャを「真っ赤」に塗りつぶす

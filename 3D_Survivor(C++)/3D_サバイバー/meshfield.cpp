@@ -175,9 +175,55 @@ void MeshField_Draw(){
 	g_pContext->DrawIndexed(NUM_INDEX, 0, 0);
 }
 
+void MeshField_Draw(const XMFLOAT3& position, float scale) {
+	ShaderField_Begin();
+
+	Texture_SetTexture(Resouce_Manager_GetTexId(Color_Ground1), 0);
+	Texture_SetTexture(Resouce_Manager_GetTexId(Color_Ground2), 1);
+
+	UINT stride = sizeof(Vertex3d);
+	UINT offset = 0;
+	g_pContext->IASetVertexBuffers(0, 1, &g_pVertexBuffer, &stride, &offset);
+	g_pContext->IASetIndexBuffer(g_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+
+	XMMATRIX world = XMMatrixIdentity();
+
+	float offset_x = MESH_H_SIZE * 0.5f;
+	float offset_z = MESH_V_SIZE * 0.5f;
+
+	// 中心補正
+	world *= XMMatrixTranslation(-offset_x, 0.0f, -offset_z);
+
+	// スケール
+	world *= XMMatrixScaling(scale, 1.0f, scale);
+
+	// 外部指定位置
+	world *= XMMatrixTranslation(position.x, position.y, position.z);
+
+	g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	ShaderField_SetWorldMatrix(world);
+	ShaderField_SetColor({ 1,1,1,1 });
+
+	g_pContext->DrawIndexed(NUM_INDEX, 0, 0);
+}
+
+
 AABB MeshField_GetAABB()
 {
 	return { { -(float)(MASS_V_COUNT) * 0.5f, -2.0f , -(float)(MASS_H_COUNT) * 0.5f},
 			 {  (float)(MASS_V_COUNT) * 0.5f, -0.01f,  (float)(MASS_H_COUNT) * 0.5f} };
+}
+
+AABB MeshField_GetAABB(const DirectX::XMFLOAT3& position){
+	return { { (-(float)(MASS_V_COUNT) * 0.5f) + position.x,
+				-0.002f + position.y,
+			   (- (float)(MASS_H_COUNT) * 0.5f) + position.z} ,
+			 { ( (float)(MASS_V_COUNT) * 0.5f) + position.x,
+				-0.001f + position.y,  
+			   ( (float)(MASS_H_COUNT) * 0.5f) + position.z
+			 }
+	};
+
 }
 

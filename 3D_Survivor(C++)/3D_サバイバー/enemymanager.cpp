@@ -5,6 +5,7 @@
 */
 #include "enemymanager.h"
 #include "player.h"
+#include "map.h"
 #include "model.h"
 #include "meshfield.h"
 #include <vector>
@@ -29,11 +30,14 @@ static constexpr int    START_ENEMY_LIMIT = 10;
 static constexpr double ENEMY_LIMIT_UP = 5.0;
 
 // スポーン位置
+static constexpr float FLOOR_MIDDLE = 10.0f;
+static constexpr float FLOOR_TOP = 20.0f;
 static constexpr float CAMERA_FRONT_DISTANCE = 15.0f;
-static constexpr float CAMERA_FAR_DISTANCE = 100.0f;
+static constexpr float CAMERA_FAR_DISTANCE = 20.0f;
+static constexpr float OFFSET_Y = 0.5f;
 
 // デスポーン
-static constexpr float DESPAWN_DISTANCE = 100.0f;
+static constexpr float DESPAWN_DISTANCE = 50.0f;
 
 // 抽選率
 static constexpr int SPAWN_T1_PERCENT = 30;
@@ -87,7 +91,7 @@ namespace
             XMVECTOR posV = XMLoadFloat3(&enemy.GetPosition());
             float distSq = XMVectorGetX(XMVector3LengthSq(posV - playerPosV));
 
-            if (frustum.Contains(posV) == DISJOINT && distSq > (DESPAWN_DISTANCE * DESPAWN_DISTANCE)) {
+            if (distSq > (DESPAWN_DISTANCE * DESPAWN_DISTANCE)) {
                 enemy.Deactivate();
                 continue;
             }
@@ -172,8 +176,22 @@ void EnemyManager::Finalize() {
 void EnemyManager::Update(double elapsed_time) {
     g_GameTime += elapsed_time;
 
+    int baseCount = START_ENEMY_LIMIT + (int)(g_GameTime / COUNTUP_TIME * ENEMY_LIMIT_UP);
+
+    float playerY = GetPlayer()->GetPosition().y;
+
+    float heightFactor = 1.0f;
+
+    if (playerY > FLOOR_TOP) {
+        heightFactor = 2.0f; // 上：2倍
+    } else if (playerY > FLOOR_MIDDLE) {
+        heightFactor = 1.5f; // 中：1.5倍
+    } else {
+        heightFactor = 1.0f; // 下：変化なし
+    }
+
     // 同時存在上限の更新
-    g_CurrentMaxEnemies = START_ENEMY_LIMIT + (int)(g_GameTime / COUNTUP_TIME * ENEMY_LIMIT_UP);
+    g_CurrentMaxEnemies = (int)(baseCount * heightFactor);    
     if (g_CurrentMaxEnemies > TOTAL_MAX) g_CurrentMaxEnemies = TOTAL_MAX;
 
     // カメラの視錐台（見える空間）を作成
@@ -253,11 +271,11 @@ DirectX::XMFLOAT3 EnemyManager::CalculateSpawnPosition() {
 
     DirectX::XMFLOAT3 pos{};
     pos.x = playerPos.x + sinf(finalAngle) * dist;
-    pos.y = 1.0;
     pos.z = playerPos.z + cosf(finalAngle) * dist;
+    pos.y = Map_GetGroundHeight(pos.x, pos.z, playerPos.y) + OFFSET_Y;
 
     // マップ境界チェック
-    AABB mapBounds = MeshField_GetAABB();
+    AABB mapBounds = MeshField_GetAABB(pos);
     float margin = 5.0f;
     if (pos.x < mapBounds.min.x + margin || pos.x > mapBounds.max.x - margin ||
         pos.z < mapBounds.min.z + margin || pos.z > mapBounds.max.z - margin)

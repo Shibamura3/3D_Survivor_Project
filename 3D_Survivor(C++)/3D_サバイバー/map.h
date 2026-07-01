@@ -17,11 +17,13 @@ void Map_UpDate(double elapsed_time); // 移動床などの動くものがある際は必要
 void Map_Draw(); 
 
 int Map_GetObjectsCount(); // 構造体の個数を返す→マップ内のオブジェクト数を返す
+float Map_GetGroundHeight(float x, float z, float targetY); // 現在の床情報の取得
 
 struct MapObject {
 	int KindId; // 種類の番号
 	DirectX::XMFLOAT3 Position;
-	AABB Aabb_collision; // 動くものは毎回更新が必要になるので別のファイルを作る方が良い→mapは動かないオブジェクトの管理
+	AABB Aabb_collision; 
+	bool isOneWay;
 };
 
 const MapObject* Map_GetObject(int index); // 生成した構造体のindex番を返す

@@ -17,7 +17,7 @@ MODEL* Enemy_T1::s_pModel = nullptr;
 
 // 定数宣言
 static constexpr float SKIP_METER = 5.0f * 5.0f;
-
+static constexpr float OFFSET_Y = 1.0f;
 Capsule Enemy_T1::GetCapsule() const{
 	Capsule c{};
 	c.radius = 0.5f; // 敵の太さ
@@ -37,6 +37,11 @@ void Enemy_T1::UnloadModel() {
 
 void Enemy_T1::Activate(const DirectX::XMFLOAT3& pos) {
 	m_position = pos;
+	
+	// 地面に合わせる    
+	float groundY = Map_GetGroundHeight(pos.x, pos.z, pos.y);
+	m_position.y = groundY + OFFSET_Y;
+
 	m_hp = 10;
 	m_stateTimer = 0.0f;
 	m_isActive = true; // ここで「生きている」状態にする
@@ -44,6 +49,9 @@ void Enemy_T1::Activate(const DirectX::XMFLOAT3& pos) {
 
 void Enemy_T1::Update(double elapsed_time) {
 	if (!m_isActive) return;
+
+	float groundY = Map_GetGroundHeight(m_position.x, m_position.z, m_position.y);
+	m_position.y = groundY + OFFSET_Y;
 
 	// 移動計算
 	XMVECTOR vPos = XMLoadFloat3(&m_position);
@@ -87,7 +95,7 @@ void Enemy_T1::Update(double elapsed_time) {
 
 		}
 
-	if (m_position.y < 1.0f || m_position.y > 1.0f) m_position.y = 1.0f;
+	if (m_position.y < 1.0f ) m_position.y = 1.0f;
 	
 	if (m_hp <= 0) m_isActive = false;
 

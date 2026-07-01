@@ -82,6 +82,7 @@ public:
     void Draw();
 
     // ゲッター類
+    bool IsGround() const { return m_isGround; }
     // 当たり判定
     Capsule GetCapsule() const;  // 衝突用
     Capsule GetCapsuleAt(const DirectX::XMVECTOR& position) const; // スイープ用
