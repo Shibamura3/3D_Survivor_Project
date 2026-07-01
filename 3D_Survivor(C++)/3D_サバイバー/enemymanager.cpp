@@ -286,3 +286,31 @@ DirectX::XMFLOAT3 EnemyManager::CalculateSpawnPosition() {
 
     return pos;
 }
+
+bool EnemyManager_GetNearestEnemy( const DirectX::XMFLOAT3& from, DirectX::XMFLOAT3& outPos) {
+    float bestDistSq = FLT_MAX;
+    bool found = false;
+
+    for (int i = 0; i < EnemyManager::GetMaxCount(); i++) {
+        Enemy* e = EnemyManager::GetEnemy(i);
+
+        if (!e || !e->IsActive())
+            continue;
+
+        const XMFLOAT3& pos = e->GetPosition();
+
+        float dx = pos.x - from.x;
+        float dy = pos.y - from.y;
+        float dz = pos.z - from.z;
+
+        float distSq = dx * dx + dy * dy + dz * dz;
+
+        if (distSq < bestDistSq) {
+            bestDistSq = distSq;
+            outPos = pos;
+            found = true;
+        }
+    }
+
+    return found;
+}

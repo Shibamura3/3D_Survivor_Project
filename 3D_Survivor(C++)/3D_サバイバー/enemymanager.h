@@ -34,4 +34,7 @@ private:
     static DirectX::XMFLOAT3 CalculateSpawnPosition();
 };
 
+// ŠO•”‚©‚çˆê”Ô‹ß‚¢“G‚ðŒŸ’m‚·‚é
+bool EnemyManager_GetNearestEnemy(const DirectX::XMFLOAT3& from, DirectX::XMFLOAT3& outPos);
+
 #endif // !ENEMYMANAGER_H

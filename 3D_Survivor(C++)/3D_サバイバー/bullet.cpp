@@ -1,5 +1,5 @@
-/*
-	’eŠÛ‚ÌŠÇ—Fbullet.cpp
+ï»¿/*
+	å¼¾ä¸¸ã®ç®¡ç†ï¼šbullet.cpp
 
 	2025/11/12	hibiki sakuma
 */
@@ -7,50 +7,83 @@
 #include "bullet.h"
 #include "model.h"
 #include "Audio.h"
+#include "enemymanager.h"
 #include "resource_manager.h"
 #include "trajectory3d.h"
 using namespace DirectX;
 
-// ’è”éŒ¾
+// å®šæ•°å®£è¨€
 static constexpr double TIME_LIMIT = 3.0;
-static constexpr double MAX_LIMIT = 1.0; // ’e‚ª‰æ–Ê‚Éc‚Á‚Ä‚¢‚éŠÔ
+static constexpr double MAX_LIMIT = 1.0; // å¼¾ãŒç”»é¢ã«æ®‹ã£ã¦ã„ã‚‹æ™‚é–“
 
 class  Bullet {
 	XMFLOAT3 m_position{};
 	XMFLOAT3 m_prevposition{};
 	XMFLOAT3 m_velocity{};
 	double m_accumlatedTime = 0;
-	bool m_isActive = false; // ’e‚ÌƒAƒNƒeƒBƒu”»’è
+	bool m_isActive = false; // å¼¾ã®ã‚¢ã‚¯ãƒ†ã‚£ãƒ–åˆ¤å®š
 public:
-	// ƒfƒtƒHƒ‹ƒgƒRƒ“ƒXƒgƒ‰ƒNƒ^ ”z—ñ¶¬
+	// ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ é…åˆ—ç”Ÿæˆæ™‚
 	Bullet() : m_isActive(false) {}
 
-	// Ä—˜—pi”­Ëj‚·‚é‚½‚ß‚ÌŠÖ”
+	// å†åˆ©ç”¨ï¼ˆç™ºå°„ï¼‰ã™ã‚‹ãŸã‚ã®é–¢æ•°
 	void Activate(const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& velocity) {
 		m_position = position;
 		m_prevposition = position;
 		m_velocity = velocity;
 		m_accumlatedTime = 0;
-		m_isActive = true; // ¶‘¶ƒtƒ‰ƒO‚ğ—§‚Ä‚é
+		m_isActive = true; // ç”Ÿå­˜ãƒ•ãƒ©ã‚°ã‚’ç«‹ã¦ã‚‹
 	}
 
 	void Updata(double elapsed_time) {
 		if (!m_isActive) return;
-		m_accumlatedTime += elapsed_time;
-		m_prevposition = m_position; // ’¼‘O‚ÌˆÊ’u‚ğ•Û‘¶
-		XMVECTOR vPrev = XMLoadFloat3(&m_position); // XV‘O‚ÌˆÊ’u
-		XMStoreFloat3(&m_position, XMLoadFloat3(&m_position) + XMLoadFloat3(&m_velocity) * elapsed_time); // ˆÚ“®ˆ—
-		XMVECTOR vCurr = XMLoadFloat3(&m_position); // XVŒã‚ÌˆÊ’u
-		if (m_isActive) { // ¶‚«‚Ä‚¢‚éŠÔ‚¾‚¯ƒGƒtƒFƒNƒg‚ğo‚·
-			for (float t = 0.5f; t <= 1.0f; t += 0.5f) {
-				XMFLOAT3 spawnPos;
-				XMStoreFloat3(&spawnPos, XMVectorLerp(vPrev, vCurr, t));
-				Trajectory3d_Create(spawnPos, { 0.2f,0.2f,1.0f,1.0f }, 0.5f, 0.50f);
-			}
-			
-		}
-		if (m_accumlatedTime >= TIME_LIMIT) m_isActive = false; // ŠÔØ‚ê‚Å”ñƒAƒNƒeƒBƒu‚É
 
+		m_accumlatedTime += elapsed_time;
+		m_prevposition = m_position;
+
+		// ãƒ›ãƒ¼ãƒŸãƒ³ã‚°ï¼ˆæ•µç‰ˆï¼‰
+		{
+			XMFLOAT3 targetPos;
+			if (EnemyManager_GetNearestEnemy(m_position, targetPos)) {
+				XMVECTOR pos = XMLoadFloat3(&m_position);
+				XMVECTOR target = XMLoadFloat3(&targetPos);
+				XMVECTOR toTarget = target - pos;
+
+				if (XMVectorGetX(XMVector3LengthSq(toTarget)) > 0.0001f) {
+					XMVECTOR desiredDir = XMVector3Normalize(toTarget);
+					XMVECTOR currentDir = XMVector3Normalize(XMLoadFloat3(&m_velocity));
+
+					float homingPower = 0.01f; 
+
+					XMVECTOR newDir = XMVector3Normalize(
+						currentDir * (1.0f - homingPower) +
+						desiredDir * homingPower
+					);
+
+					float speed = XMVectorGetX(XMVector3Length(XMLoadFloat3(&m_velocity)));
+
+					XMStoreFloat3(&m_velocity, newDir * speed);
+				}
+			}
+		}
+
+		// ç§»å‹•å‡¦ç†
+		XMVECTOR vPrev = XMLoadFloat3(&m_position);
+		XMStoreFloat3(&m_position,
+			XMLoadFloat3(&m_position) +
+			XMLoadFloat3(&m_velocity) * (float)elapsed_time
+		);
+		XMVECTOR vCurr = XMLoadFloat3(&m_position);
+
+		// ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
+		for (float t = 0.5f; t <= 1.0f; t += 0.5f) {
+			XMFLOAT3 spawnPos;
+			XMStoreFloat3(&spawnPos, XMVectorLerp(vPrev, vCurr, t));
+			Trajectory3d_Create(spawnPos, { 0.2f,0.2f,1.0f,1.0f }, 0.5f, 0.50f);
+		}
+
+		if (m_accumlatedTime >= TIME_LIMIT)
+			m_isActive = false;
 	}
 
 	const XMFLOAT3& GetPosition() const { return m_position; }
@@ -69,18 +102,18 @@ public:
 
 static constexpr int MAX_BULLET = 256;
 
-// ŠÇ—•”•ª
-static Bullet g_Bullets[MAX_BULLET]; // ƒ|ƒCƒ“ƒ^‚Å‚Í‚È‚­À‘Ì”z—ñ
+// ç®¡ç†éƒ¨åˆ†
+static Bullet g_Bullets[MAX_BULLET]; // ãƒã‚¤ãƒ³ã‚¿ã§ã¯ãªãå®Ÿä½“é…åˆ—
 
 void Bullet_Initialize(const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& front){
 	for (int i = 0; i < MAX_BULLET; i++) {
-		g_Bullets[i].Deactivate(); // ‘S‚Ä‚Ì’e‚ğ”ñƒAƒNƒeƒBƒu‰»
+		g_Bullets[i].Deactivate(); // å…¨ã¦ã®å¼¾ã‚’éã‚¢ã‚¯ãƒ†ã‚£ãƒ–åŒ–
 	}
 }
 
 void Bullet_Finalize(){
 	for (int i = 0; i < MAX_BULLET; i++) {
-		g_Bullets[i].Deactivate(); // ‘S‚Ä‚Ì’e‚ğ”ñƒAƒNƒeƒBƒu‰»
+		g_Bullets[i].Deactivate(); // å…¨ã¦ã®å¼¾ã‚’éã‚¢ã‚¯ãƒ†ã‚£ãƒ–åŒ–
 	}
 }
 
@@ -89,7 +122,7 @@ void Bullet_Update(double elapsed_time){
 		if (g_Bullets[i].IsActive()) {
 			g_Bullets[i].Updata(elapsed_time);
 
-			// õ–½‚ª—ˆ‚½‚ç–³Œø‰»
+			// å¯¿å‘½ãŒæ¥ãŸã‚‰ç„¡åŠ¹åŒ–
 			if (g_Bullets[i].IsDestroy()) {
 				g_Bullets[i].Deactivate();
 			}
@@ -100,7 +133,7 @@ void Bullet_Update(double elapsed_time){
 void Bullet_Draw(){
 	XMMATRIX mtxWorld;
 	for (int i = 0; i < MAX_BULLET; i++) {
-		if (!g_Bullets[i].IsActive()) continue; // ”ñƒAƒNƒeƒBƒu‚É’e‚ğ–³‹
+		if (!g_Bullets[i].IsActive()) continue; // éã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã«å¼¾ã‚’ç„¡è¦–
 		XMVECTOR position = XMLoadFloat3(&g_Bullets[i].GetPosition());
 		mtxWorld = XMMatrixTranslationFromVector(position);
 		ModelDraw(Resouce_Manager_GetModelId(Bullet_Model), mtxWorld);
@@ -145,5 +178,3 @@ Sphere Bullet_GetSphere(int index)
 {
 	return { g_Bullets[index].GetPosition(), Resouce_Manager_GetModelId(Bullet_Model)->local_aabb.GetCenter().x };
 }
-
-
