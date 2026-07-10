@@ -40,6 +40,7 @@ static constexpr float PLAYER_GROUND_OFFSET = PLAYER_HEIGHT * 0.5f - CAPSULE_FOO
 // 地面判定用
 static constexpr float FLOOR_NORMAL_Y = 0.95f;
 static constexpr float GROUND_PROBE_DISTANCE = 0.08f;
+static constexpr float ONE_WAY_FLOOR_TOLERANCE = 0.05f;
 
 // わずかに浮かせて刺さりを防ぐ
 static constexpr float GROUND_CONTACT_BIAS = 0.01f;
@@ -268,17 +269,16 @@ void Player::ResolvePenetration(XMVECTOR& position, XMVECTOR& velocity) {
         Capsule cap = GetCapsuleAt(position);
 
         for (int i = 0; i < Map_GetObjectsCount(); i++) {
-            AABB box = Map_GetObject(i)->Aabb_collision;
+            const MapObject* obj = Map_GetObject(i);
+            AABB box = obj->Aabb_collision;
 
             Hit hit = Collision_IsHitCapsulevsAABB(cap, box);
             if (!hit.isHit) continue;
 
-            // 床はここでは処理しない
-            if (fabs(hit.normal.y) > GROUND_Y) {
-                continue;
-            }
-
-            // 壁だけ押し出す
+            // ワンウェイ床はPenetrationでは上下方向を処理しない
+            if (obj->isOneWay && fabs(hit.normal.y) > GROUND_Y) continue;
+            
+            // 通常オブジェクトは押し出す
             position += XMLoadFloat3(&hit.normal) * (hit.depth + SKIN);
             anyHit = true;
         }
@@ -306,7 +306,7 @@ void Player::ResolveSweptCollision(XMVECTOR& position, XMVECTOR& velocity, doubl
         bool hitAny = false;
 
         for (int i = 0; i < Map_GetObjectsCount(); i++) {
-            auto* obj = Map_GetObject(i);
+            const MapObject* obj = Map_GetObject(i);
             AABB box = obj->Aabb_collision;
 
             float t;
@@ -314,19 +314,35 @@ void Player::ResolveSweptCollision(XMVECTOR& position, XMVECTOR& velocity, doubl
 
             if (Collision_SweptCapsuleVsAABB(oldCap, newCap, box, t, n)) {
 
-                float velocityY = XMVectorGetY(velocity);
-                float playerFootY = XMVectorGetY(oldPos) - PLAYER_GROUND_OFFSET;
+                float remainingY = XMVectorGetY(remaining);
+
+                float oldFootY = XMVectorGetY(oldPos) - PLAYER_GROUND_OFFSET;
+                float newFootY = XMVectorGetY(newPos) - PLAYER_GROUND_OFFSET;
                 float floorY = box.max.y;
+
+                // ワンウェイ床だけ特別処理
                 if (obj->isOneWay) {
+
+                    // 下面ヒットは常に無視
                     if (n.y < -FLOOR_NORMAL_Y) continue;
 
+                    // 上面ヒットの場合
                     if (n.y > FLOOR_NORMAL_Y) {
-                        // 下から侵入 
-                        if (playerFootY < floorY - 0.05f && velocityY >= 0.0f) {
-                            continue;
-                        }
+
+                        // 上から床面をまたいで落ちてきた時だけ有効
+                        bool isLandingFromAbove =
+                            remainingY <= 0.0f &&
+                            oldFootY >= floorY - ONE_WAY_FLOOR_TOLERANCE &&
+                            newFootY <= floorY + ONE_WAY_FLOOR_TOLERANCE;
+
+                        if (!isLandingFromAbove) continue;
+
+                    } else {
+                        // ワンウェイ床の側面は必要なければ無視
+                        continue;
                     }
                 }
+
                 if (t >= 0.0f && t < hitT) {
                     hitT = t;
                     hitNormal = n;
@@ -350,29 +366,20 @@ void Player::ResolveSweptCollision(XMVECTOR& position, XMVECTOR& velocity, doubl
 
         // 床判定
         if (hitNormal.y > FLOOR_NORMAL_Y) {
-            float velocityY = XMVectorGetY(velocity);
 
-            // 下向きのときだけ乗る
-            if (velocityY <= 0.0f) {
-                // 接地状態
-                m_isGround = true;
-                m_isJump = false;
+            m_isGround = true;
+            m_isJump = false;
 
-                // Y速度削除
-                velocity = XMVectorSetY(velocity, 0.0f);
+            velocity = XMVectorSetY(velocity, 0.0f);
 
-                // Y方向の移動を止める
-                remaining = XMVectorSet(
-                    XMVectorGetX(remaining),
-                    0,
-                    XMVectorGetZ(remaining),
-                    0.0f
-                );
-            } else {
-                // 上向き → すり抜ける
-                continue;
-            }
-        } else {
+            remaining = XMVectorSet(
+                XMVectorGetX(remaining),
+                0.0f,
+                XMVectorGetZ(remaining),
+                0.0f
+            );
+        }
+        else {
             // 壁スライド
             float vn = XMVectorGetX(XMVector3Dot(remaining, n));
 
@@ -381,9 +388,9 @@ void Player::ResolveSweptCollision(XMVECTOR& position, XMVECTOR& velocity, doubl
             }
         }
     }
+
     velocity = remaining / (float)elapsed_time;
 }
-
 void Player::ResolveGroundContact(DirectX::XMVECTOR& position, DirectX::XMVECTOR& velocity) {
 
     // 落下中または静止中のみ接地判定
@@ -419,13 +426,18 @@ void Player::ResolveGroundContact(DirectX::XMVECTOR& position, DirectX::XMVECTOR
 
         // 床のすぐ近くにいるときだけ接地させる
         if (XMVectorGetY(velocity) <= 0.0f &&
-            distToTop >= -SKIN &&
+            footY >= box.max.y - 0.01f &&
             distToTop <= GROUND_PROBE_DISTANCE) {
             if (box.max.y > bestGroundY) {
                 bestGroundY = box.max.y;
                 foundGround = true;
             }
         }
+
+        OutputDebugStringA(
+            ("footY = " + std::to_string(footY) +
+                " floorY = " + std::to_string(box.max.y) + "\n").c_str()
+        );
     }
 
     if (foundGround) {
